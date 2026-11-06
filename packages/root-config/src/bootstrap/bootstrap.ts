@@ -23,6 +23,7 @@ import {start} from 'single-spa';
 import {defineCustomElements} from '../../../shared-components/loader';
 import {registerInterceptors} from './interceptors/interceptors-registration';
 import {runtimeConfigurationBootstrap} from './runtime-configuration/runtime-configuration';
+import {registerAuthenticationEventHandlers} from './security/authentication-event-handlers';
 
 const logger = LoggerProvider.logger;
 let isInitialBootstrap = true;
@@ -46,6 +47,7 @@ const executePromises = <T>(bootstrapFns: Array<() => Promise<T> | T>): Array<Pr
 const loadEssentials = () => {
   const essentialLoaders = executePromises([...licenseBootstrap, ...pluginsBootstrap, ...productInfoBootstrap, ...languageBootstrap]);
   return Promise.all([
+    registerAuthenticationEventHandlers(),
     // Interceptors should be registered first to ensure all requests are intercepted before any backend calls are made.
     registerInterceptors(),
     // Await each bootstrap promise, not the array itself, otherwise promises wouldn't be awaited at all.

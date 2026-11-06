@@ -232,6 +232,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     const authenticationService = service(AuthenticationService);
     const securityContextService = service(SecurityContextService);
     const repositoryContextService = service(RepositoryContextService);
+    const eventService = service(EventService);
+    const applicationLifecycleContextService = service(ApplicationLifecycleContextService);
     /**
      * When the timeout finishes, the popover will open.
      */
@@ -777,7 +779,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         }
         // clearAuthentication() triggers broadcast of `securityInit` which triggers $rootScope.redirectToLogin()
         $jwtAuth.clearAuthentication();
-        toastrService.success($translate.instant('sign.out.success'));
     }
 
     const closeActiveRepoPopoverEventHandler = function(event) {
@@ -1127,13 +1128,13 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     };
     subscribeToRouteChangeStart();
 
-    service(EventService).subscribe(EventName.APPLICATION_MOUNTED, (payload) => {
+    eventService.subscribe(EventName.APPLICATION_MOUNTED, (payload) => {
         isApplicationMounted = true;
         subscribeToRouteChangeStart();
         onRouteChangeStart();
     });
 
-    service(EventService).subscribe(EventName.APPLICATION_UNMOUNTED, (payload) => {
+    eventService.subscribe(EventName.APPLICATION_UNMOUNTED, (payload) => {
         routeChangeStartSubscription?.();
     });
 
@@ -1142,13 +1143,13 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         LocalStorageAdapter.clearClassHieararchyState();
     });
 
-    const onLoginSubscription = service(EventService).subscribe(EventName.LOGIN, () => {
+    const onLoginSubscription = eventService.subscribe(EventName.LOGIN, () => {
         $jwtAuth.initSecurity();
     });
 
-    const onLogoutSubscription = service(EventService).subscribe(EventName.LOGOUT, () => logout());
+    const onLoggedOutSubscription = eventService.subscribe(EventName.LOGGED_OUT, () => logout());
 
-    service(EventService).subscribe(EventConstants.RDF_SEARCH_ICON_CLICKED, () => {
+    eventService.subscribe(EventConstants.RDF_SEARCH_ICON_CLICKED, () => {
         $rootScope.$broadcast('rdfResourceSearchExpanded');
     });
 
@@ -1164,8 +1165,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
      */
     window.addEventListener('storage', localStoreChangeHandler);
 
-    const onAppStateBeforeChangeSubscription = service(ApplicationLifecycleContextService).onApplicationsStateBeforeChange(onApplicationsStateBeforeChangedHandler);
-    const onAppDataLoaded = service(ApplicationLifecycleContextService).onApplicationDataStateChanged(onApplicationDataStateChangedHandler);
+    const onAppStateBeforeChangeSubscription = applicationLifecycleContextService.onApplicationsStateBeforeChange(onApplicationsStateBeforeChangedHandler);
+    const onAppDataLoaded = applicationLifecycleContextService.onApplicationDataStateChanged(onApplicationDataStateChangedHandler);
 
     // subscribe to repository changes, once we are certain they are loaded
     const licenseUpdatedSubscription = service(LicenseContextService).onLicenseChanged(onLicenseUpdated);
@@ -1184,7 +1185,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         licenseUpdatedSubscription?.();
         onAppStateBeforeChangeSubscription?.();
         onAppDataLoaded?.();
-        onLogoutSubscription?.();
+        onLoggedOutSubscription?.();
         onLoginSubscription?.();
         broadcastUnsubscribe?.();
         securityConfigChangedSubscription?.();

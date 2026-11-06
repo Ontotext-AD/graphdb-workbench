@@ -13,5 +13,6 @@
   "guide.step-type.info": "Cette étape fournit des informations. Aucune action requise autre que de cliquer sur le bouton Suivant.",
   "guide.step-type.mouse": "Cette étape attend une action de l'utilisateur avec la souris, généralement un clic sur quelque chose.",
   "guide.step-type.input": "Cette étape attend une entrée de l'utilisateur, généralement en tapant ou en collant un morceau de texte.",
-  "guides.error.guide-not-found": "Le guide demandé est introuvable."
+  "guides.error.guide-not-found": "Le guide demandé est introuvable.",
+  "logout.success": "Déconnecté"
 }
