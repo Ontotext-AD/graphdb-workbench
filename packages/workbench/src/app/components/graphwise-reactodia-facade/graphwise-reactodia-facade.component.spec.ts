@@ -70,6 +70,12 @@ describe('GraphwiseReactodiaFacadeComponent', () => {
     });
   });
 
+  it('should link a node to its resource view', () => {
+    const {getResourceLinkUrl} = (getReactodiaElement() as unknown as {config: {getResourceLinkUrl: (iri: string) => string}}).config;
+
+    expect(getResourceLinkUrl('http://example.com/a#b')).toBe('resource?uri=http%3A%2F%2Fexample.com%2Fa%23b');
+  });
+
   describe('graphwise-reactodia errors', () => {
     it.each([
       ['missing-required-prop', ERROR_LABELS['missing-required-prop']],
