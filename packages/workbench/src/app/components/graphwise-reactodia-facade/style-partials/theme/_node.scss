@@ -1,0 +1,13 @@
+@use 'sass:string';
+
+$type-color-count: 20;
+
+:host {
+  @for $i from 1 through $type-color-count {
+    $slot: string.slice('0#{$i}', -2);
+
+    --graphwise-reactodia-type-color-#{$slot}: var(--gw-foreground-visual-diagram-categorical-#{$slot});
+  }
+
+  --graphwise-reactodia-type-color-contrast: var(--gw-foreground-visual-diagram-categorical-contrast);
+}
