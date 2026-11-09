@@ -1,18 +1,9 @@
 /*
- * Maps the styleguide tokens onto the Theme API of the graphwise-reactodia component
+ * Maps the styleguide tokens onto the Theme API of the graphwise-reactodia component, one partial per family
  */
 
-@use 'sass:string';
-
-$type-color-count: 20;
-
-:host {
-  /* Graph Navigator type colors */
-  @for $i from 1 through $type-color-count {
-    $slot: string.slice('0#{$i}', -2);
-
-    --graphwise-reactodia-type-color-#{$slot}: var(--gw-foreground-visual-diagram-categorical-#{$slot});
-  }
-
-  --graphwise-reactodia-type-color-contrast: var(--gw-foreground-visual-diagram-categorical-contrast);
-}
+@use 'theme/node';
+@use 'theme/shape';
+@use 'theme/button';
+@use 'theme/toolbar';
+@use 'theme/input';
