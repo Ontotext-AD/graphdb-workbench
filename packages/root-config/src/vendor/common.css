@@ -45,7 +45,7 @@ a:where(:not(.btn, .nav-link, .dropdown-item, .page-link, .menu-element-root, .n
 
 /* General links on hover and actual links that lead to an external site */
 a:hover, a:active, a[href^="http"], a[href^="http"]:hover, a[href^="http"]:active {
-    text-decoration-line: underline;
+    text-decoration-line: var(--gw-link-text-decoration);
     text-decoration-style: solid;
     text-decoration-thickness: var(--link-decoration-thickness);
     text-underline-offset: var(--link-underline-offset);
@@ -233,7 +233,7 @@ button:-moz-focusring {
 }
 
 .btn-link, .btn-link:hover, .btn-link:focus {
-    text-decoration-line: underline;
+    text-decoration-line: var(--gw-link-text-decoration);
     text-decoration-style: dotted;
     text-decoration-thickness: var(--link-decoration-thickness);
     text-underline-offset: var(--link-underline-offset);

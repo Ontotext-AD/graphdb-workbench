@@ -327,7 +327,7 @@ main menu height */
 .navbar-component a.sub-menu-link:not([href]):hover .menu-item,
 .navbar-component a.sub-menu-link[href=""]:hover .menu-item {
   // Overriding !important in _anchor.scss
-  text-decoration-line: underline !important;
+  text-decoration-line: var(--gw-link-text-decoration) !important;
 }
 
 /* ---------------- Focus ---------------- */

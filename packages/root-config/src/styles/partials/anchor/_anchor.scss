@@ -4,7 +4,7 @@ a {
   &[href^="http"]:not(.nodes-list .data-value, .no-underline),
   &[href^="http"]:hover:not(.no-underline),
   &[href^="http"]:active:not(.no-underline) {
-    text-decoration-line: underline !important;
+    text-decoration-line: var(--gw-link-text-decoration) !important;
     text-decoration-style: solid !important;
     text-decoration-thickness: var(--link-decoration-thickness) !important;
     text-underline-offset: var(--link-underline-offset) !important;

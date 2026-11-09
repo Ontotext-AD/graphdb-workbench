@@ -615,6 +615,7 @@ code {
 }
 
 .tag-primary {
+    color: var(--gw-tag-primary-color);
     background-color: var(--gw-tag-primary-background);
 }
 
