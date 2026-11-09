@@ -4,6 +4,10 @@ export class LicenseStubs {
         cy.intercept('GET', '/rest/graphdb-settings/license').as('get-license');
     }
 
+    static stubLicenseUnauthorized() {
+        cy.intercept('GET', '/rest/graphdb-settings/license', {statusCode: 401}).as('unauthorizedLicense');
+    }
+
     static stubFreeLicense() {
         cy.intercept('GET', '/rest/graphdb-settings/license', {
             statusCode: 200,
