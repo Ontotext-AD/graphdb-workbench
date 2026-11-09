@@ -367,7 +367,7 @@ ul.nodes-list li a {
 }
 
 ul.nodes-list li a:hover {
-    text-decoration: underline;
+    text-decoration-line: var(--gw-link-text-decoration);
 }
 
 .index-cell {

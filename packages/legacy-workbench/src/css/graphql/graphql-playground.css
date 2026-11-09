@@ -630,7 +630,7 @@ div[data-radix-popper-content-wrapper] * {
 .graphiql-dialog .graphiql-dialog-section a,
 .graphiql-dialog .graphiql-dialog-section a:hover,
 .graphiql-dialog .graphiql-dialog-section a:focus {
-    text-decoration-line: underline;
+    text-decoration-line: var(--gw-link-text-decoration);
     text-decoration-style: dotted;
     text-decoration-thickness: var(--link-decoration-thickness);
     text-underline-offset: var(--link-underline-offset);
