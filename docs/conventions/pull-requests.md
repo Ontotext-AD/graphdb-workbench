@@ -3,7 +3,7 @@
 How to write a pull request description. The skeleton lives in
 [`.github/pull_request_template.md`](../../.github/pull_request_template.md) and GitHub pre-fills it.
 
-The goal: a reviewer understands **why** the change exists and **the shape of the implementation**
+The goal: a reviewer understands **what** changes, **why** it exists, and **the shape of the implementation**
 before opening the diff.
 
 ## Title and branch
@@ -19,6 +19,7 @@ before opening the diff.
 | Section | Rule |
 |---|---|
 | Header | Link to the Jira ticket. Add the parent ticket, design, or related PRs when relevant. |
+| **What** | One or two sentences. What changes, at the level of behaviour, not a list of files. |
 | **Why** | One or two sentences. The problem, not the solution. |
 | **Special things to note** | 1-3 bullets a reviewer must not miss: surprising decisions, deliberate omissions, compatibility or migration concerns, what was not verified. Write `None.` when there are none. |
 | **How to use** | Optional. How to trigger a new UI interaction a reviewer would not find by looking (see below). |
@@ -64,7 +65,7 @@ Write it when at least one of these applies:
 | The change spans **two or more packages** | |
 
 Otherwise write `Not needed.`. A local bug fix, style changes, a rename or a dependency bump usually does
-not need one; Why and Screenshots are enough.
+not need one; What, Why and Screenshots are enough.
 
 ### Views
 

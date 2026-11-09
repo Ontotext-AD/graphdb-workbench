@@ -6,9 +6,14 @@ HTML comments are not rendered; you can leave them in.
 
 [GDB-XXXXX](https://graphwise.atlassian.net/browse/GDB-XXXXX)
 
+## What
+
+<!-- One or two sentences: what this PR changes, at the level of behaviour, not a list of files. -->
+
+
 ## Why
 
-<!-- One or two sentences: the problem this PR solves and what changes for the user once it ships. -->
+<!-- One or two sentences: the problem this PR solves and why it matters to the user. -->
 
 
 ## Special things to note
@@ -62,6 +67,6 @@ the environments covered.
 - [ ] Commit messages follow `docs/conventions/commits.md`
 - [ ] Commits are squashed
 - [ ] PR title follows `GDB-XXXXX: Description`
-- [ ] PR description is complete (Why, Change outline, Testing, Screenshots)
+- [ ] PR description is complete (What, Why, Change outline, Testing, Screenshots)
 - [ ] Tests added or updated
 - [ ] Browser support verified
