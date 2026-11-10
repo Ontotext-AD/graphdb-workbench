@@ -1065,7 +1065,9 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     $scope.$on('$routeChangeSuccess', function($event, current, previous) {
         $scope.clicked = false;
         $scope.hideRdfResourceSearch = false;
-        if (previous) {
+        // The license endpoint is not accessible without a session or free access, e.g. when navigating away on logout.
+        const canReadLicense = !authenticationService.isSecurityEnabled() || authenticationService.isLoggedIn() || authorizationService.hasFreeAccess();
+        if (previous && canReadLicense) {
             // Recheck license status on navigation within the workbench (security is already inited)
             licenseService.updateLicenseStatus()
                 .then(() => TrackingService.applyTrackingConsent())
