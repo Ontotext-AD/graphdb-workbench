@@ -122,7 +122,7 @@ describe('Attach remote location', () => {
         RepositorySteps.getSparqlOntopicTable().should('not.exist');
     });
 
-    it('should be able to create a remote location with encrypted password', () => {
+    it('should create a remote location with basic auth without an encrypt password flag', () => {
         // Given I have a running GDB instance and I am on the Repositories view
         RepositorySteps.visit();
         // When I start the location creation
@@ -130,28 +130,20 @@ describe('Attach remote location', () => {
         AttachRepositorySteps.enterURL(remoteLocationName);
         // And I select basic auth type
         AttachRepositorySteps.selectBasicRadioBtn();
-        // Then I expect to see a security warning
-        AttachRepositorySteps.getUnencryptedPasswordWarning().should('be.visible');
-        // And I should not see the warning for the backward compatibility issues when encrypting the password
-        AttachRepositorySteps.getBackwardCompatibilityWarning().should('not.exist');
-        // When I select to encrypt the password
-        AttachRepositorySteps.encryptPassword();
-        // Then I should see the backward compatibility warning
-        AttachRepositorySteps.getBackwardCompatibilityWarning().should('be.visible');
-        // And the unencrypted password warning should not be visible
-        AttachRepositorySteps.getUnencryptedPasswordWarning().should('not.exist');
+        // Then I should not see an option to encrypt the password
+        AttachRepositorySteps.getEncryptPasswordCheckbox().should('not.exist');
         // When I fill in username and password
         AttachRepositorySteps.enterUsername('locationadmin');
         AttachRepositorySteps.enterPassword('admin123');
         // And I save the location
         RemoteLocationStubs.spyRemoteLocationCreate();
         AttachRepositorySteps.attachRemoteLocation();
-        // Then encrypt password flag should be sent
+        // Then the encrypt password flag should not be sent
         cy.wait('@add-remote-location')
             .its('request.body')
-            .should('include', {
-                encryptPassword: true,
-                username: 'locationadmin'
+            .should((body) => {
+                expect(body).to.include({username: 'locationadmin'});
+                expect(body).not.to.have.property('encryptPassword');
             });
     });
 
