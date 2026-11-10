@@ -142,7 +142,7 @@ module.exports = (webpackConfigEnv, argv) => {
                     },
                     {
                       context: 'node_modules/graphwise-reactodia',
-                      from: '{NOTICE,COPYING,COPYING.LESSER}',
+                      from: '{NOTICE,COPYING,COPYING.LESSER,THIRD-PARTY-LICENSES.txt,reactodia-workspace/THIRDPARTY.md}',
                       to: 'licenses/graphwise-reactodia'
                     },
                     {
