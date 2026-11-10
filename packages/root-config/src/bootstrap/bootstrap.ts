@@ -44,8 +44,7 @@ const executePromises = <T>(bootstrapFns: Array<() => Promise<T> | T>): Array<Pr
  * Executes all promises, which are essential to be loaded prior to bootstrapping the workbench.
  */
 const loadEssentials = () => {
-  // The license bootstrap subscribes to the login event, so it must run before the security bootstrap emits it.
-  const essentialLoaders = executePromises([...licenseBootstrap, ...pluginsBootstrap, ...productInfoBootstrap, ...languageBootstrap]);
+  const essentialLoaders = executePromises([...pluginsBootstrap, ...productInfoBootstrap, ...languageBootstrap]);
   return Promise.all([
     // Interceptors should be registered first to ensure all requests are intercepted before any backend calls are made.
     registerInterceptors(),
@@ -143,8 +142,10 @@ export const bootstrapWorkbench = (): Promise<void> => {
         throw error;
       }
     })
-    .then(loadApplicationData)
+    // The license and the application data depend on the security bootstrap, but not on each other.
+    .then(() => Promise.all([licenseBootstrap.loadInitialLicense(), loadApplicationData()]))
     .then(() => {
+      licenseBootstrap.subscribeToLoginState();
       subscribeToAuthenticatedUserChange();
       initializeRestrictions();
       defineCustomElements();
