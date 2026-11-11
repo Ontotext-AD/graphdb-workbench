@@ -27,6 +27,7 @@ repository selector, and language selector.
 - [onto-language-selector](../onto-language-selector)
 - [onto-user-menu](../onto-user-menu)
 - [onto-user-login](../onto-user-login)
+- [translate-label](../translate-label)
 
 ### Graph
 ```mermaid
@@ -39,6 +40,7 @@ graph TD;
   onto-header --> onto-language-selector
   onto-header --> onto-user-menu
   onto-header --> onto-user-login
+  onto-header --> translate-label
   onto-rdf-search --> onto-search-resource-input
   onto-rdf-search --> onto-search-icon
   onto-operations-notification --> translate-label

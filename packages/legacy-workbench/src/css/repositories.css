@@ -525,6 +525,11 @@ span.label {
     margin-bottom: 0.5em;
 }
 
+.repository .deprecated-tag {
+    margin-left: 0.4em;
+    vertical-align: middle;
+}
+
 .repository-status, .location-type {
     font-weight: bolder;
     font-variant-caps: all-small-caps;

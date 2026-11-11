@@ -28,6 +28,7 @@ import {Tooltip} from 'primeng/tooltip';
 import {RepositoryPickerListViewModel} from './repository-picker-list.view-model';
 import {Checkbox} from 'primeng/checkbox';
 import {Popover} from 'primeng/popover';
+import {Tag} from 'primeng/tag';
 import {RepositoryInfo} from './models/repository-info';
 import {LoggerProvider} from '../../services/logger/logger-provider';
 
@@ -51,6 +52,7 @@ const REPOSITORY_INFO_DELAY = 300;
     Tooltip,
     Checkbox,
     Popover,
+    Tag,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './repository-picker-list.component.html',

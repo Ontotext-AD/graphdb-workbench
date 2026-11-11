@@ -1,6 +1,6 @@
 <link href="css/repository-info-popover.css?v=[AIV]{version}[/AIV]" rel="stylesheet">
 <!-- Review after GDB-15277 is merged -->
-<div ng-init="getRepositorySize()" class="repository-info-popover">
+<div ng-init="getRepositorySize()" class="repository-info-popover" data-test="repository-info-popover">
 
     <div class="title">
         <h6 class="property-value" ng-class="{'inactive': repository.state === repoStates.INACTIVE }">
@@ -66,12 +66,12 @@
                 </span>
             </div>
         </div>
-        
+
         <div ng-show="repositorySize.loading">
             <onto-loader loading="repositorySize.loading" size="50"></onto-loader>
         </div>
-        
-        <div ng-hide="repositorySize.total >= 0 || repositorySize.loading"> 
+
+        <div ng-hide="repositorySize.total >= 0 || repositorySize.loading">
             {{'size.info.not.available' | translate}}
         </div>
     </div>
@@ -83,5 +83,9 @@
         <div class="message">
             <p>{{'size.info.repository.inactive' | translate}}</p>
         </div>
+    </div>
+
+    <div ng-if="popoverRepo.deprecated" class="alert alert-warning compact deprecation-message body-sm-light" data-test="repository-deprecation-message">
+        {{'fedx.repository.popover.deprecation.message' | translate}}
     </div>
 </div>

@@ -136,6 +136,12 @@
         font-weight: var(--gw-font-weight-600);
       }
 
+      .deprecated-tag {
+        flex-shrink: 0;
+        margin-left: .5em;
+        font-size: .7em;
+      }
+
       .repository-description {
         display: block;
       }

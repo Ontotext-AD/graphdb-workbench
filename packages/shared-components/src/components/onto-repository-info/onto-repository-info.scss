@@ -83,7 +83,8 @@ onto-repository-info {
       align-items: center;
     }
 
-    &.inactive-repo-message {
+    &.inactive-repo-message,
+    &.deprecation-message {
       font-size: 1.15em;
       background-color: var(--gw-message-help-background);
       color: var(--gw-message-help-color);
@@ -96,6 +97,12 @@ onto-repository-info {
       p {
         margin: 0;
       }
+    }
+
+    &.deprecation-message {
+      background-color: var(--gw-message-warning-background);
+      color: var(--gw-message-warning-color);
+      border-color: var(--gw-message-warning-border-color);
     }
   }
 }

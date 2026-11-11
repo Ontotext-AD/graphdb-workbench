@@ -15,6 +15,7 @@ import {
     RepositoryContextService,
     RepositoryLocationContextService,
     mapRepositoryListResponseToModel,
+    RepositoryType,
     AuthorizationService,
     AuthenticationService,
     SecurityContextService,
@@ -152,8 +153,9 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
             }
         };
 
-        this.assignHashesToRepositories = function(repositoriesData) {
+        this.prepareRepositories = function(repositoriesData) {
             return repositoriesData.map((repo) => {
+                repo.deprecated = repo.type === RepositoryType.FEDX;
                 const hashGenerator = md5HashGenerator();
                 repo.hash = hashGenerator(JSON.stringify(repo));
                 return repo;
@@ -175,7 +177,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
                                 .then(function(result) {
                                     that.location = location;
                                     Object.entries(result.data).forEach(([key, value]) => {
-                                        const reposWithHashes = that.assignHashesToRepositories(value);
+                                        const reposWithHashes = that.prepareRepositories(value);
                                         that.clearLocationErrorMsg(key);
                                         that.repositories.set(key, reposWithHashes);
                                     });

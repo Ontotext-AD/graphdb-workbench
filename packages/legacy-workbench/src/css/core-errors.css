@@ -218,6 +218,11 @@
     font-weight: 600;
 }
 
+.repository-errors-container .repository-list .deprecated-tag {
+    flex-shrink: 0;
+    margin-left: 0.5em;
+}
+
 .repository-errors-container .repository-list .repository-description {
     display: block;
     font-weight: 400;

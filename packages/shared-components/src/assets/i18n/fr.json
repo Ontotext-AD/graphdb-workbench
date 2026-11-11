@@ -87,7 +87,8 @@
     "btn": {
       "toggle": "Choisissez le dépôt",
       "no_repositories": "Aucun dépôt accessible"
-    }
+    },
+    "deprecated": "Obsolète"
   },
   "repository-info": {
     "location": "L'emplacement",
@@ -116,7 +117,9 @@
       "expansion_ratio": "Taux d'expansion (total/explicite)",
       "repository_inactive": "Activez le dépôt pour consulter les informations du relevé.",
       "repository-info-not-available": "Info de taille non disponible."
-    }
+    },
+    "fedx_deprecated": "Les dépôts FedX sont obsolètes : ils seront supprimés dans GraphDB 13. Migrez vers la fédération SPARQL 1.1.",
+    "fedx_learn_more": "En savoir plus"
   },
   "license_alert": {
     "label": "Aucune licence valide",

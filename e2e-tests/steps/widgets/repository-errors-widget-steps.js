@@ -22,4 +22,11 @@ export class RepositoryErrorsWidgetSteps {
     static getRepositoryList() {
         return RepositoryErrorsWidgetSteps.getWidget().find('.repos .repository');
     }
+
+    static getRepositoryFedxDeprecatedTag(repositoryId) {
+        return RepositoryErrorsWidgetSteps.getWidget()
+            .contains('[data-test="core-errors-repository-id"]', repositoryId)
+            .closest('[data-test="core-errors-repository"]')
+            .getByTestId('core-errors-fedx-deprecated-tag');
+    }
 }

@@ -483,12 +483,20 @@ function UploadRepositoryConfigCtrl($scope, $uibModalInstance, Upload, toastr, $
     };
 }
 
-ChooseRepositoryCtrl.$inject = ['$scope', '$location'];
+ChooseRepositoryCtrl.$inject = ['$scope', '$location', 'ModalService', '$translate'];
 
-function ChooseRepositoryCtrl($scope, $location) {
+function ChooseRepositoryCtrl($scope, $location, ModalService, $translate) {
     $scope.repositoryTypes = REPOSITORY_TYPES;
     $scope.chooseRepositoryType = function(repoType) {
-        $location.path(`${$location.path()}/${repoType}`);
+        const openCreatePage = () => $location.path(`${$location.path()}/${repoType}`);
+        if (repoType !== REPOSITORY_TYPES.fedx) {
+            openCreatePage();
+            return;
+        }
+        ModalService.openConfirmationModal({
+            title: $translate.instant('fedx.deprecation.confirm.title'),
+            message: decodeHTML($translate.instant('fedx.deprecation.confirm.message', {documentationUrl: $scope.fedxMigrationDocumentationUrl})),
+        }, openCreatePage);
     };
 }
 

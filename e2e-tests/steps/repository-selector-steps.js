@@ -32,6 +32,10 @@ export class RepositorySelectorSteps {
         RepositorySelectorSteps.getRepositoryItem(repositoryId).realHover();
     }
 
+    static getRepositoryFedxDeprecatedTag(repositoryId) {
+        return RepositorySelectorSteps.getRepositoryItem(repositoryId).find('[data-test="repository-selector-fedx-deprecated-tag"]');
+    }
+
     static getRepositoryTooltip() {
         return cy.get('.onto-tooltip-box onto-repository-info');
     }

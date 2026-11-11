@@ -24,6 +24,10 @@ export class RepositoryPickerListSteps extends BaseSteps {
         return this.getRepositoryRow(repositoryId).find(this.buildTestIdAttr('repository-picker-repository-location'));
     }
 
+    static getRepositoryFedxDeprecatedTag(repositoryId) {
+        return this.getRepositoryRow(repositoryId).find(this.buildTestIdAttr('repository-picker-fedx-deprecated-tag'));
+    }
+
     static getSelectRepositoryButton(repositoryId) {
         return this.getRepositoryRow(repositoryId).find(this.buildTestIdAttr('repository-picker-select-btn'));
     }
