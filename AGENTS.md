@@ -81,3 +81,17 @@ blocks and are tested directly, once. Full guide:
 ## Deep reference
 
 For how internals actually work (build pipeline, CI/release, context/persistence APIs, security testing, known issues) see the **[Developers Guide](docs/developers-guide.md)**.
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in Jira, project `GDB`, and are accessed through the Atlassian MCP. Draft first, create only on explicit go-ahead. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default five-role vocabulary, applied as Jira labels. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: root `GLOSSARY.md` + `docs/adr/`. See `docs/agents/domain.md`.
