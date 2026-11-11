@@ -1352,7 +1352,7 @@ input.switch:empty {
     height: 1px;
     margin: -1px;
     overflow: hidden;
-    clip-path: inset(50%);
+    clip: rect(0, 0, 0, 0);
     opacity: 0;
 }
 
