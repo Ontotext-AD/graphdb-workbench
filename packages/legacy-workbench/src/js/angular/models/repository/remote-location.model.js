@@ -4,7 +4,6 @@ export class RemoteLocationModel {
         this.label = data.label || '';
         this.username = data.username;
         this.password = data.password;
-        this.encryptPassword = data.encryptPassword !== undefined ? data.encryptPassword : false;
         this.authType = data.authType || 'none';
         this.active = data.active;
         this.local = data.local;
