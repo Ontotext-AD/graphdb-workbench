@@ -57,21 +57,22 @@ app-yasgui-component-facade {
     .ontotext-dropdown-menu .ontotext-dropdown-menu-item {
       padding: .5em 1.2em;
       font-size: 1rem;
+    }
 
-      &:hover {
-        color: var(--gw-tieredmenu-item-focus-color) !important;
-        background-color: var(--gw-tieredmenu-item-focus-background) !important;
+    .ontotext-dropdown-menu.open {
+      border: 1px solid var(--gw-tieredmenu-border-color) !important;
+      box-shadow: var(--gw-tieredmenu-shadow-1-offset-x) var(--gw-tieredmenu-shadow-1-offset-y) var(--gw-tieredmenu-shadow-1-blur) var(--gw-tieredmenu-shadow-1-spread) var(--gw-tieredmenu-shadow-1-color);
+
+      .ontotext-dropdown-menu-item {
+        color: var(--gw-tieredmenu-item-color) !important;
+        background-color: var(--gw-tieredmenu-background) !important;
       }
+    }
 
-      &.open {
-        border: 1px solid var(--gw-tieredmenu-border-color) !important;
-        box-shadow: var(--gw-tieredmenu-shadow-1-offset-x) var(--gw-tieredmenu-shadow-1-offset-y) var(--gw-tieredmenu-shadow-1-blur) var(--gw-tieredmenu-shadow-1-spread) var(--gw-tieredmenu-shadow-1-color);
-
-        .ontotext-dropdown-menu-item {
-          color: var(--gw-tieredmenu-item-color) !important;
-          background-color: var(--gw-tieredmenu-background) !important;
-        }
-      }
+    /* Must come after the ".open" rule above: both selectors have the same specificity, so the hover colours win only by order. */
+    .ontotext-dropdown-menu .ontotext-dropdown-menu-item:hover {
+      color: var(--gw-tieredmenu-item-focus-color) !important;
+      background-color: var(--gw-tieredmenu-item-focus-background) !important;
     }
   }
 
@@ -112,7 +113,7 @@ app-yasgui-component-facade {
         border-bottom: none;
       }
 
-      .yasr_btnGroup .yasr_btn.selected:not(.disabled):hover {
+      .yasr_btnGroup .yasr_btn:not(.disabled):hover {
         color: var(--gw-tabs-tab-hover-color) !important;
         background-color: var(--gw-tabs-tab-hover-background) !important;
         fill: var(--gw-tabs-tab-hover-color) !important;
@@ -120,7 +121,7 @@ app-yasgui-component-facade {
         border-bottom-width: 1px !important;
       }
 
-      .yasr_btnGroup .yasr_btn .yasr-fullscreen-button {
+      .yasr_btnGroup .yasr-fullscreen-button {
         background-color: var(--gw-button-tertiary-background);
         color: var(--gw-button-tertiary-color);
         padding-left: .73em;

@@ -107,17 +107,6 @@ app-yasgui-component-facade {
 
   /* #region YASGUI QUERY TABS */
   .yasgui {
-    .tab .closeTab:hover,
-    .addTab:hover {
-      color: var(--gw-button-primary-link-hover-color) !important;
-    }
-
-    .tab .closeTab .ri-close-line,
-    .addTab .ri-add-circle-line {
-      font-size: 1.225em;
-      font-weight: 100;
-    }
-
     .tabsList {
       .tab {
         padding: 0.46em !important;
@@ -187,13 +176,25 @@ app-yasgui-component-facade {
         color: var(--gw-tabs-tab-active-color) !important;
         background-color: var(--gw-tabs-tab-active-background) !important;
         border-color: var(--gw-tabs-tab-active-border-color) var(--gw-tabs-tab-active-border-color) transparent !important;
+      }
 
-        .addTab {
-          font-size: 1rem;
-          color: var(--gw-button-secondary-color) !important;
-          background-color: var(--gw-tabs-tab-background);
-          border-color: var(--gw-tabs-tab-border-color) var(--gw-tabs-tab-border-color) transparent;
-        }
+      .addTab {
+        font-size: 1rem;
+        color: var(--gw-button-secondary-color) !important;
+        background-color: var(--gw-tabs-tab-background);
+        border-color: var(--gw-tabs-tab-border-color) var(--gw-tabs-tab-border-color) transparent;
+      }
+
+      /* Scoped under ".tabsList", so they are more specific than the ".closeTab" and ".addTab" rules above. */
+      .tab .closeTab:hover,
+      .addTab:hover {
+        color: var(--gw-button-primary-link-hover-color) !important;
+      }
+
+      .tab .closeTab .ri-close-line,
+      .addTab .ri-add-circle-line {
+        font-size: 1.225em;
+        font-weight: 100;
       }
     }
   }
@@ -218,6 +219,106 @@ app-yasgui-component-facade {
     }
   }
   /* #endregion YASGUI DIALOGS */
+
+  /* #region YASGUI CHECKBOXES */
+  /* Themed native checkboxes. The yasgui component renders native checkboxes, which otherwise inherit their look from
+     the OS and ignore the theme. Scoped to the component, because the rest of the new app uses PrimeNG checkboxes. */
+  input[type="checkbox"] {
+    appearance: none;
+    color: var(--gw-checkbox-color);
+    background-color: var(--gw-checkbox-background);
+    border: 1px solid var(--gw-checkbox-border-color);
+    width: 1em;
+    height: 1em;
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+  }
+
+  /* Like PrimeNG checkboxes, show the focus ring on keyboard focus only. */
+  input[type="checkbox"]:focus-visible {
+    outline: var(--gw-checkbox-focus-ring-width) var(--gw-checkbox-focus-ring-style) var(--gw-checkbox-focus-ring-color);
+    outline-offset: var(--gw-checkbox-focus-ring-offset);
+  }
+
+  input[type="checkbox"]:hover {
+    border-color: var(--gw-checkbox-hover-border-color);
+  }
+
+  input[type="checkbox"]:hover:checked {
+    background-color: var(--gw-checkbox-checked-hover-background);
+    border-color: var(--gw-checkbox-checked-hover-border-color);
+  }
+
+  input[type="checkbox"]:checked {
+    background-color: var(--gw-checkbox-checked-background);
+    border-color: var(--gw-checkbox-checked-border-color);
+  }
+
+  input[type="checkbox"]:checked:disabled {
+    background-color: var(--gw-checkbox-checked-disabled-background);
+    border-color: var(--gw-checkbox-checked-disabled-border-color);
+    opacity: var(--gw-checkbox-disabled-opacity);
+  }
+
+  input[type="checkbox"]:disabled {
+    background-color: var(--gw-checkbox-disabled-background);
+    opacity: var(--gw-checkbox-disabled-opacity);
+  }
+
+  input[type="checkbox"]:checked::after {
+    content: "\2713"; /* checkmark */
+    display: block;
+    text-align: center;
+    color: var(--gw-checkbox-icon-checked-color);
+    font-size: 0.8em;
+    line-height: var(--gw-body-xs-regular-line-height);
+  }
+
+  input[type="checkbox"]:checked:hover::after {
+    color: var(--gw-checkbox-icon-checked-hover-color);
+  }
+
+  input[type="checkbox"]:checked:disabled::after {
+    color: var(--gw-checkbox-icon-disabled-color);
+  }
+
+  /* A partial selection, e.g. a folder with some of its files selected. Looks like the checked state, with a dash.
+     TODO: Replace the --gw-checkbox-checked-* and --gw-checkbox-icon-checked-* tokens in the :indeterminate rules
+     below with --gw-checkbox-indeterminate-* tokens once graphwise-styleguide provides them. */
+  input[type="checkbox"]:indeterminate {
+    background-color: var(--gw-checkbox-checked-background);
+    border-color: var(--gw-checkbox-checked-border-color);
+  }
+
+  input[type="checkbox"]:hover:indeterminate {
+    background-color: var(--gw-checkbox-checked-hover-background);
+    border-color: var(--gw-checkbox-checked-hover-border-color);
+  }
+
+  input[type="checkbox"]:indeterminate:disabled {
+    background-color: var(--gw-checkbox-checked-disabled-background);
+    border-color: var(--gw-checkbox-checked-disabled-border-color);
+    opacity: var(--gw-checkbox-disabled-opacity);
+  }
+
+  input[type="checkbox"]:indeterminate::after {
+    content: "\2013"; /* en dash */
+    display: block;
+    text-align: center;
+    color: var(--gw-checkbox-icon-checked-color);
+    font-size: 0.8em;
+    line-height: var(--gw-body-xs-regular-line-height);
+  }
+
+  input[type="checkbox"]:indeterminate:hover::after {
+    color: var(--gw-checkbox-icon-checked-hover-color);
+  }
+
+  input[type="checkbox"]:indeterminate:disabled::after {
+    color: var(--gw-checkbox-icon-disabled-color);
+  }
+  /* #endregion YASGUI CHECKBOXES */
 }
 
 /* #region YASGUI FLOATING TOOLTIP */

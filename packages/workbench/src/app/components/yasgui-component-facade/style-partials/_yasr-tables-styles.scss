@@ -1,5 +1,20 @@
 app-yasgui-component-facade {
   .yasr {
+    /* Keep the specificity low (0,1,2), so Bootstrap's "a:not([href]):not([tabindex])" (0,2,1) still wins for links
+    without href (e.g. the pivot table sort icons) and they inherit the text colour. */
+    a {
+      color: var(--gw-link-idle-color);
+
+      &:visited {
+        color: var(--gw-link-visited-color);
+      }
+
+      &:hover,
+      &:focus {
+        color: var(--gw-link-hover-color);
+      }
+    }
+
     .yasr_results {
       /* #region YASR - overlay content and buttons */
       .overlay_content {
@@ -10,19 +25,6 @@ app-yasgui-component-facade {
         color: var(--gw-button-secondary-color) !important;
         background: var(--gw-button-secondary-background) !important;
         border-color: var(--gw-button-secondary-border-color) !important;
-      }
-
-      a {
-        color: var(--gw-link-idle-color);
-
-        &:visited {
-          color: var(--gw-link-visited-color);
-        }
-
-        &:hover,
-        &:focus {
-          color: var(--gw-link-hover-color);
-        }
       }
 
       /* #endregion YASR - overlay content and buttons */
@@ -62,6 +64,17 @@ app-yasgui-component-facade {
           color: var(--gw-dialog-color);
           background-color: var(--gw-dialog-background);
           border-color: var(--gw-dialog-border-color);
+        }
+
+        .pvtFilterBox button {
+          color: var(--gw-button-secondary-color);
+          background-color: var(--gw-dialog-background);
+          border-color: var(--gw-button-secondary-border-color);
+        }
+
+        .pvtFilterBox button:hover {
+          background-color: var(--gw-button-secondary-hover-background);
+          cursor: pointer;
         }
 
         .pvtFilterBox .pvtSearch {
@@ -117,7 +130,29 @@ app-yasgui-component-facade {
     /* #endregion - YASR extended boolean plugin */
 
     /* #region - YASR google visualization table */
+
+    /* Google Charts sets a height of 600px (and max-height: 100%) on the table, on its wrapper and on the scrolling div
+    between them. Let them take the height of the rows, so few results are not stretched and leave no empty space.
+    Limit the scrolling div (it has overflow: auto) to the screen height instead of 600px, so the table scrolls inside
+    only when it does not fit on the screen. Google inlines these styles, and an inline style can be overridden only
+    with "!important". */
+    .google-visualization-table,
+    .google-visualization-table > div:has(> .google-visualization-table-table) {
+      height: auto !important;
+    }
+
+    .google-visualization-table > div:has(> .google-visualization-table-table) {
+      max-height: 80vh !important;
+    }
+
+    /* In fullscreen the results area scrolls by itself, so the table is not limited. Google inlines max-height: 100% on
+    this div, and an inline style can be overridden only with "!important" (this also overrides the 80vh rule above). */
+    &.yasr-fullscreen .google-visualization-table > div:has(> .google-visualization-table-table) {
+      max-height: none !important;
+    }
+
     .google-visualization-table-table {
+      height: auto !important;
       font-size: 1rem;
       color: var(--gw-datatable-row-color) !important;
       background: var(--gw-datatable-row-background) !important;
