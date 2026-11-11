@@ -127,6 +127,12 @@
                       data-test="repository-picker-repository-state-label"
                       [id]="stateElementId">{{ stateLabel }}</span>
                 <span class="repository-id label-base-bold" data-test="repository-picker-repository-id">{{ repository.id }}</span>
+                @if (repository.isFedx()) {
+                  <p-tag class="deprecated-tag"
+                         severity="warn"
+                         data-test="repository-picker-fedx-deprecated-tag"
+                         [value]="'components.repository_picker_list.deprecated' | transloco"></p-tag>
+                }
                 @if (!vm().localOnly) {
                   <small class="repository-location" data-test="repository-picker-repository-location">
                     &#64; {{ repositoryLocation }}

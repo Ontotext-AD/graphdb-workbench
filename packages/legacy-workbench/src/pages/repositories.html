@@ -110,7 +110,7 @@
                                     </td>
                                     <td>
                                         <div class="lead repository-lead" ng-mouseover="setPopoverRepo(repository)" ng-focus="setPopoverRepo(repository)">
-                                            <span class="repository-popover"
+                                            <span class="repository-popover" data-test="repository-popover-trigger"
                                                   popover-popup-delay="500"
                                                   popover-trigger="mouseenter"
                                                   popover-placement="bottom-left"
@@ -121,6 +121,9 @@
                                                     <div class="repository-details">
                                                         <div class="repository-main-info">
                                                             <strong class="repository-id">{{repository.id}}</strong>
+                                                            <span class="tag tag-warning deprecated-tag"
+                                                                  ng-if="repository.deprecated"
+                                                                  data-test="repository-fedx-deprecated-tag">{{'fedx.repository.deprecated.tag' | translate}}</span>
                                                             <span class="repository-status">
                                                                 &middot;
                                                                 <span class="text-secondary">{{repository.state}}</span>
@@ -301,7 +304,7 @@
                                         </td>
                                         <td>
                                             <div class="lead repository-lead" ng-mouseover="setPopoverRepo(repository)" ng-focus="setPopoverRepo(repository)">
-                                            <span class="repository-popover"
+                                            <span class="repository-popover" data-test="repository-popover-trigger"
                                                   popover-popup-delay="500"
                                                   popover-trigger="mouseenter"
                                                   popover-placement="bottom-left"
@@ -312,6 +315,7 @@
                                                     <div class="repository-details">
                                                         <div class="repository-main-info">
                                                             <strong class="repository-id">{{repository.id}}</strong>
+                                                            <span class="tag tag-warning deprecated-tag" ng-if="repository.deprecated" data-test="repository-fedx-deprecated-tag">{{'fedx.repository.deprecated.tag' | translate}}</span>
                                                             <span class="repository-status">
                                                                 &middot;
                                                                 <span class="text-secondary">{{repository.state}}</span>
@@ -457,7 +461,7 @@
     <div class="btns-all" ng-if="isRepoManager()">
         <div class="btn-group" uib-dropdown>
             <a id="wb-repositories-addRepositoryLink" class="btn btn-primary label-base-regular" ng-href="repository/create" guide-selector="createRepository">
-                <span class="ri-add-circle-line"></span> 
+                <span class="ri-add-circle-line"></span>
                 {{'repository.create.btn' | translate}}
             </a>
             <button type="button" class="btn btn-primary dropdown-toggle-split dropdown-toggle  label-base-regular" uib-dropdown-toggle>

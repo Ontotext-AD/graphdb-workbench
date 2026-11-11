@@ -268,6 +268,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     $scope.userLoggedIn = false;
     $scope.embedded = $location.search().embedded;
     $scope.productInfo = productInfo;
+    $scope.fedxMigrationDocumentationUrl = UriUtil.resolveDocumentationUrl(productInfo.shortVersion, 'sparql-federation.html');
     $scope.guidePaused = 'true' === LocalStorageAdapter.get(GUIDE_PAUSE);
     $scope.licenseIsSet = false;
     $scope.hideRdfResourceSearch = false;

@@ -87,7 +87,8 @@
     "btn": {
       "toggle": "Choose repository",
       "no_repositories": "No accessible repositories"
-    }
+    },
+    "deprecated": "Deprecated"
   },
   "repository-info": {
     "location": "Location",
@@ -116,7 +117,9 @@
       "expansion_ratio": "Expansion ratio (total/explicit)",
       "repository_inactive": "Activate the repository to view statement information",
       "repository-info-not-available": "Size info not available."
-    }
+    },
+    "fedx_deprecated": "FedX repositories are deprecated: Will be removed in GraphDB 13. Migrate to SPARQL 1.1 federation.",
+    "fedx_learn_more": "Learn more"
   },
   "license_alert": {
     "label": "No valid license",

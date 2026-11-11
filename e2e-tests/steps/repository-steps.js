@@ -1,5 +1,6 @@
 import {REPOSITORIES_URL} from "../support/repository-commands";
 import {BaseSteps} from "./base-steps.js";
+import {ModalDialogSteps} from "./modal-dialog-steps.js";
 
 export class RepositorySteps extends BaseSteps {
 
@@ -190,6 +191,40 @@ export class RepositorySteps extends BaseSteps {
 
     static createFedexRepositoryType() {
         RepositorySteps.chooseRepositoryType('fedx');
+        // FedX is deprecated, so its creation is confirmed in a dialog.
+        RepositorySteps.confirmModal();
+    }
+
+    static getRepositoryTypeFedxDeprecationMessage(type) {
+        return RepositorySteps.getRepositoryTypeButton(type).find(RepositorySteps.buildTestIdAttr('repository-type-fedx-deprecation-message'));
+    }
+
+    static getRepositoryFedxDeprecatedTag(repositoryId) {
+        return RepositorySteps.getRepositoryFromList(repositoryId).find(RepositorySteps.buildTestIdAttr('repository-fedx-deprecated-tag'));
+    }
+
+    static hoverRepositoryInList(repositoryId) {
+        // "mouseover" sets the repository of the popover, "mouseenter" opens it.
+        RepositorySteps.getRepositoryFromList(repositoryId).find(RepositorySteps.buildTestIdAttr('repository-popover-trigger'))
+            .trigger('mouseover')
+            .trigger('mouseenter');
+    }
+
+    static getRepositoryPopoverDeprecationMessage() {
+        return RepositorySteps.getByTestId('repository-info-popover').find(RepositorySteps.buildTestIdAttr('repository-deprecation-message'));
+    }
+
+    static getFedxDeprecationWarning() {
+        return RepositorySteps.getByTestId('fedx-deprecation-warning');
+    }
+
+    static getFedxMigrationLink() {
+        return RepositorySteps.getByTestId('fedx-migration-link');
+    }
+
+    static getFedxDeprecationDialogMigrationLink() {
+        // The link comes from a translation rendered as HTML, which cannot keep a data-test attribute.
+        return ModalDialogSteps.getDialogBody().find('a');
     }
 
     static getGDBRepositoryTypeButton() {

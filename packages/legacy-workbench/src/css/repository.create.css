@@ -35,6 +35,11 @@
     color: var(--gw-primary-base);
 }
 
+.create-repo-btn .deprecation-message {
+  align-self: center;
+  margin-bottom: 0.5em;
+}
+
 .repo-description {
   display: flex;
   flex-direction: row;

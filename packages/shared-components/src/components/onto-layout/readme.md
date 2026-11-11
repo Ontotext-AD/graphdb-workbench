@@ -31,6 +31,7 @@ graph TD;
   onto-header --> onto-language-selector
   onto-header --> onto-user-menu
   onto-header --> onto-user-login
+  onto-header --> translate-label
   onto-rdf-search --> onto-search-resource-input
   onto-rdf-search --> onto-search-icon
   onto-operations-notification --> translate-label

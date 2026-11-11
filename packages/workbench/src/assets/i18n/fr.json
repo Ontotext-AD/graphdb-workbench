@@ -74,6 +74,7 @@
         "label": "Créer un dépôt"
       },
       "select_repository_aria_label": "Sélectionner le dépôt {{repositoryId}} à l'emplacement {{location}}",
+      "deprecated": "Obsolète",
       "location_local_label": "Local",
       "filter_placeholder": "Filtrer par nom ou titre",
       "state_filter_aria_label": "Filtrer par état",

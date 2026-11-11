@@ -2,17 +2,21 @@ import {Component, h, Host, Prop, State, VNode} from '@stencil/core';
 import {
   LanguageContextService,
   LanguageService,
+  ProductInfoContextService,
   Repository,
   RepositoryPermissionType,
   RepositorySizeInfo,
   RepositoryState,
+  RepositoryType,
   service,
-  SubscriptionList
+  SubscriptionList,
+  UriUtil
 } from '@ontotext/workbench-api';
 import {LoggerProvider} from '../../services/logger-provider';
 import {parseJsonIfString} from '../../utils/object-utils';
 
 const TRANSLATION_PREFIX = 'repository-info';
+const FEDX_MIGRATION_DOCUMENTATION_PAGE = 'sparql-federation.html';
 
 /**
  * A StencilJS component that renders the information about a repository: its id and state, description, location,
@@ -39,6 +43,9 @@ export class OntoRepositoryInfo {
   private readonly languageContextService = service(LanguageContextService);
   private readonly languageService = service(LanguageService);
   private readonly subscriptions = new SubscriptionList();
+  private readonly productInfoContextService = service(ProductInfoContextService);
+
+  private readonly fedxMigrationDocumentationUrl = this.resolveFedxMigrationDocumentationUrl();
 
   /**
    * Formatter for the statement counts. It is recreated when the language changes.
@@ -100,6 +107,7 @@ export class OntoRepositoryInfo {
           {this.renderRow('type', 'type', this.renderLabel(`types.${repository.type || 'unknown'}`))}
           {this.renderRow('permissions', 'permissions_label', this.renderPermission())}
           {this.renderStatements(repository)}
+          {repository.type === RepositoryType.FEDX && this.renderFedxDeprecationMessage()}
         </div>
       </Host>
     );
@@ -186,6 +194,23 @@ export class OntoRepositoryInfo {
     );
   }
 
+  private renderFedxDeprecationMessage(): VNode {
+    return (
+      <div class="repository-info-row deprecation-message" data-test="repository-info-deprecation">
+        <div class="icon">
+          <i class="ri-alert-line"></i>
+        </div>
+        <div class="message">
+          <p>
+            {this.renderLabel('fedx_deprecated')}{' '}
+            <a href={this.fedxMigrationDocumentationUrl} target="_blank" rel="noopener noreferrer"
+              data-test="repository-info-fedx-migration-link">{this.renderLabel('fedx_learn_more')}</a>
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   /**
    * Renders a row with a label and a value.
    *
@@ -226,6 +251,10 @@ export class OntoRepositoryInfo {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     });
+  }
+
+  private resolveFedxMigrationDocumentationUrl(): string {
+    return UriUtil.resolveDocumentationUrl(this.productInfoContextService.getProductInfo()?.shortVersion, FEDX_MIGRATION_DOCUMENTATION_PAGE);
   }
 
   /**

@@ -65,6 +65,7 @@
                 <ul class="repos repository-list" ng-mouseleave="hidePopoverForRepo($event)">
                     <li ng-repeat="repository in getFilteredRepositories()"
                         class="repository"
+                        data-test="core-errors-repository"
                         ng-mouseenter="showPopoverForRepo($event, repository)">
                         <span class="type-column">
                             <em class="type-icon icon-lg" ng-class="'icon-repo-' + repository.type" aria-hidden="true"
@@ -85,7 +86,8 @@
                                     gdb-tooltip="{{'core.errors.repository.state.' + (repository.state | lowercase) | translate}}"
                                     tooltip-placement="top"></em>
                                 <span class="screen-reader-only" ng-attr-id="{{'core-errors-repository-state-' + $id}}">{{'core.errors.repository.state.' + (repository.state | lowercase) | translate}}</span>
-                                <span class="repository-id">{{repository.id}}</span>
+                                <span class="repository-id" data-test="core-errors-repository-id">{{repository.id}}</span>
+                                <span class="tag tag-warning deprecated-tag" ng-if="repository.deprecated" data-test="core-errors-fedx-deprecated-tag">{{'core.errors.repository.deprecated.tag' | translate}}</span>
                                 <small class="repository-location" ng-if="!repositoryFilter.localOnly">
                                     @ {{repository.location || ('core.errors.location.local.label' | translate)}}
                                 </small>

@@ -217,6 +217,21 @@ describe('onto-repository-info', () => {
     expect(getElement(root, 'not-available')).not.toBeNull();
   });
 
+  it('shows the deprecation notice for a FedX repository', async () => {
+    const root = await render({repository: {...INACTIVE_REPOSITORY, type: 'fedx'}, permission: 'READ'});
+
+    expect(getText(root, 'deprecation'))
+      .toBe('FedX repositories are deprecated: Will be removed in GraphDB 13. Migrate to SPARQL 1.1 federation. Learn more');
+    expect(getElement(root, 'fedx-migration-link').getAttribute('href'))
+      .toBe('https://graphdb.ontotext.com/documentation/12.0/sparql-federation.html');
+  });
+
+  it('shows no deprecation notice for a repository that is not FedX', async () => {
+    const root = await render({repository: RUNNING_REPOSITORY, permission: 'READ', sizeInfo: SIZE_INFO});
+
+    expect(getElement(root, 'deprecation')).toBeNull();
+  });
+
   it('shows nothing when no repository is passed', async () => {
     const root = await render({permission: 'READ'});
 
@@ -239,11 +254,16 @@ function mockWorkbenchApi() {
       return jest.fn();
     },
     getDefaultLanguage: () => 'en',
+    getProductInfo: () => ({shortVersion: '12.0'}),
   };
   return {
     HtmlUtil: {sanitize: (html: string) => html},
     LanguageContextService: class {},
     LanguageService: class {},
+    ProductInfoContextService: class {},
+    UriUtil: {
+      resolveDocumentationUrl: (version: string, page: string) => `https://graphdb.ontotext.com/documentation/${version}/${page}`,
+    },
     Loggers: {getLoggerInstance: () => ({error: jest.fn(), warn: jest.fn()})},
     RepositoryState: {
       INACTIVE: 'INACTIVE',
@@ -252,6 +272,7 @@ function mockWorkbenchApi() {
       RESTARTING: 'RESTARTING',
       STOPPING: 'STOPPING',
     },
+    RepositoryType: {FEDX: 'fedx'},
     ServiceProvider: {get: () => languageContextService},
     service: () => languageContextService,
     SubscriptionList: class {

@@ -96,4 +96,8 @@
     .inactive-repo-message .icon {
         font-size: 1.14em;
     }
+
+    .deprecation-message {
+        margin: 0.5rem 0 0;
+    }
 }

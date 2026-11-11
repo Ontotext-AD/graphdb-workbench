@@ -1,5 +1,5 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {Repository, RepositoryContextService, RepositoryList, service} from '@ontotext/workbench-api';
+import {Repository, RepositoryContextService, RepositoryList, RepositoryType, service} from '@ontotext/workbench-api';
 
 import {RepositoryPickerListComponent} from './repository-picker-list.component';
 import {provideTranslocoForTesting} from '../../../testing-utils/transloco-utils';
@@ -37,5 +37,21 @@ describe('RepositoryPickerListComponent', () => {
 
     // THEN: the state filter has an accessible name
     expect(picker.querySelector(STATE_FILTER_SELECTOR)?.getAttribute('aria-label')).toBe('Filter by state');
+  });
+
+  it('should mark only FedX repositories as deprecated', () => {
+    // GIVEN: there is a FedX and a GraphDB repository to pick
+    repositoryContextService.updateRepositoryList(new RepositoryList([
+      new Repository({id: 'fedx-repo', type: RepositoryType.FEDX, sesameType: 'graphdb:FedXRepository'}),
+      new Repository({id: 'graphdb-repo', type: RepositoryType.GRAPH_DB}),
+    ]));
+
+    // WHEN: rendering the picker
+    render();
+
+    // THEN: only the FedX repository has the deprecated tag
+    const deprecatedTags = Array.from(picker.querySelectorAll('[data-test="repository-picker-fedx-deprecated-tag"]'));
+    expect(deprecatedTags.map((tag) => tag.closest('[data-test="repository-picker-row"]')
+      ?.querySelector('[data-test="repository-picker-repository-id"]')?.textContent?.trim())).toEqual(['fedx-repo']);
   });
 });
