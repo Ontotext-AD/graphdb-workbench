@@ -215,11 +215,11 @@ export class RepositorySteps extends BaseSteps {
     }
 
     static getFedxDeprecationWarning() {
-        return RepositorySteps.getByTestId('fedx-deprecation-warning');
+        return RepositorySteps.getByTestId('repository-fedx-deprecation-warning');
     }
 
     static getFedxMigrationLink() {
-        return RepositorySteps.getByTestId('fedx-migration-link');
+        return RepositorySteps.getByTestId('repository-fedx-migration-link');
     }
 
     static getFedxDeprecationDialogMigrationLink() {

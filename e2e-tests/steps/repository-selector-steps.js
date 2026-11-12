@@ -33,7 +33,7 @@ export class RepositorySelectorSteps {
     }
 
     static getRepositoryFedxDeprecatedTag(repositoryId) {
-        return RepositorySelectorSteps.getRepositoryItem(repositoryId).find('[data-test="repository-selector-fedx-deprecated-tag"]');
+        return RepositorySelectorSteps.getRepositoryItem(repositoryId).getByTestId('repository-selector-fedx-deprecated-tag');
     }
 
     static getRepositoryTooltip() {

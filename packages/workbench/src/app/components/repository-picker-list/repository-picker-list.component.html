@@ -99,6 +99,7 @@
             @let stateElementId = 'repository-picker-repository-state-' + rowIndex;
             @let isRunning = repository.state === RepositoryState.RUNNING;
             @let isInactive = repository.state === RepositoryState.INACTIVE;
+            @let isDeprecated = repository.isFedx();
             <button type="button"
                     class="repository-select"
                     data-test="repository-picker-select-btn"
@@ -127,7 +128,7 @@
                       data-test="repository-picker-repository-state-label"
                       [id]="stateElementId">{{ stateLabel }}</span>
                 <span class="repository-id label-base-bold" data-test="repository-picker-repository-id">{{ repository.id }}</span>
-                @if (repository.isFedx()) {
+                @if (isDeprecated) {
                   <p-tag class="deprecated-tag"
                          severity="warn"
                          data-test="repository-picker-fedx-deprecated-tag"
