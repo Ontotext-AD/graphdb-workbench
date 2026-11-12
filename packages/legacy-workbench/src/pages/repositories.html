@@ -122,7 +122,7 @@
                                                         <div class="repository-main-info">
                                                             <strong class="repository-id">{{repository.id}}</strong>
                                                             <span class="tag tag-warning deprecated-tag"
-                                                                  ng-if="repository.deprecated"
+                                                                  ng-if="repository.isDeprecated"
                                                                   data-test="repository-fedx-deprecated-tag">{{'fedx.repository.deprecated.tag' | translate}}</span>
                                                             <span class="repository-status">
                                                                 &middot;
@@ -315,7 +315,7 @@
                                                     <div class="repository-details">
                                                         <div class="repository-main-info">
                                                             <strong class="repository-id">{{repository.id}}</strong>
-                                                            <span class="tag tag-warning deprecated-tag" ng-if="repository.deprecated" data-test="repository-fedx-deprecated-tag">{{'fedx.repository.deprecated.tag' | translate}}</span>
+                                                            <span class="tag tag-warning deprecated-tag" ng-if="repository.isDeprecated" data-test="repository-fedx-deprecated-tag">{{'fedx.repository.deprecated.tag' | translate}}</span>
                                                             <span class="repository-status">
                                                                 &middot;
                                                                 <span class="text-secondary">{{repository.state}}</span>

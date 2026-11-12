@@ -155,7 +155,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
 
         this.prepareRepositories = function(repositoriesData) {
             return repositoriesData.map((repo) => {
-                repo.deprecated = repo.type === RepositoryType.FEDX;
+                repo.isDeprecated = repo.type === RepositoryType.FEDX;
                 const hashGenerator = md5HashGenerator();
                 repo.hash = hashGenerator(JSON.stringify(repo));
                 return repo;
