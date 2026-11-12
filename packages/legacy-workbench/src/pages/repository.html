@@ -6,10 +6,10 @@
         {{'repo.no.active.location.warning' | translate}}<a ng-href="repository" href="repository">{{'repo.choose.location.warning' | translate}}</a>.
     </p>
     <div class="top-offset row" ng-if="repositoryInfo.type === 'fedx'">
-        <div class="alert alert-warning" data-test="fedx-deprecation-warning">
+        <div class="alert alert-warning" data-test="repository-fedx-deprecation-warning">
             <strong>{{'fedx.deprecation.title' | translate}}</strong>
             <p class="mb-0">{{'fedx.deprecation.banner.message' | translate}}</p>
-            <a data-test="fedx-migration-link" ng-href="{{fedxMigrationDocumentationUrl}}" target="_blank" rel="noopener noreferrer">{{'fedx.deprecation.migration.link' | translate}}</a>
+            <a data-test="repository-fedx-migration-link" ng-href="{{fedxMigrationDocumentationUrl}}" target="_blank" rel="noopener noreferrer">{{'fedx.deprecation.migration.link' | translate}}</a>
         </div>
     </div>
     <div ng-if="!repositoryInfo" class="alert alert-warning">

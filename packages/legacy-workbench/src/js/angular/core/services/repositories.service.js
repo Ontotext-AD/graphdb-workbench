@@ -153,7 +153,13 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
             }
         };
 
-        this.prepareRepositories = function(repositoriesData) {
+        /**
+         * Marks the FedX repositories as deprecated and assigns each repository a hash of its data.
+         *
+         * @param {Object[]} repositoriesData The repositories of a location.
+         * @return {Object[]} The same repositories, each with an `isDeprecated` flag and a `hash`.
+         */
+        this.markDeprecatedAndAssignHashes = function(repositoriesData) {
             return repositoriesData.map((repo) => {
                 repo.isDeprecated = repo.type === RepositoryType.FEDX;
                 const hashGenerator = md5HashGenerator();
@@ -177,7 +183,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
                                 .then(function(result) {
                                     that.location = location;
                                     Object.entries(result.data).forEach(([key, value]) => {
-                                        const reposWithHashes = that.prepareRepositories(value);
+                                        const reposWithHashes = that.markDeprecatedAndAssignHashes(value);
                                         that.clearLocationErrorMsg(key);
                                         that.repositories.set(key, reposWithHashes);
                                     });

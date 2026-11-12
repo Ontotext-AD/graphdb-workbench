@@ -25,7 +25,9 @@ export class RepositoryErrorsWidgetSteps {
 
     static getRepositoryFedxDeprecatedTag(repositoryId) {
         return RepositoryErrorsWidgetSteps.getWidget()
-            .contains('[data-test="core-errors-repository-id"]', repositoryId)
+            .getByTestId('core-errors-repository-id')
+            .contains(repositoryId)
+            // There is no test id command for closest(), so the row is selected by its data-test attribute.
             .closest('[data-test="core-errors-repository"]')
             .getByTestId('core-errors-fedx-deprecated-tag');
     }
