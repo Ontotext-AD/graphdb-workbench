@@ -120,15 +120,7 @@ export class AttachRepositorySteps {
         AttachRepositorySteps.getPasswordInput().clear();
     }
 
-    static getUnencryptedPasswordWarning() {
-        return this.getRemoteLocationSettingsForm().find('.unencrypted-password-warning');
-    }
-
-    static getBackwardCompatibilityWarning() {
-        return this.getRemoteLocationSettingsForm().find('.backward-compatibility-warning');
-    }
-
-    static encryptPassword() {
-        this.getRemoteLocationSettingsForm().find('#encryptPassword').check();
+    static getEncryptPasswordCheckbox() {
+        return this.getRemoteLocationSettingsForm().find('#encryptPassword');
     }
 }
