@@ -19,6 +19,8 @@ describe('License on logout', () => {
         cy.wait('@get-license');
         MainMenuSteps.clickOnMenuImport();
         ImportSteps.getView().should('be.visible');
+        // And the legacy workbench has loaded the license
+        cy.wait('@get-license');
         // And the license is not accessible without a session
         LicenseStubs.stubLicenseUnauthorized();
 
@@ -26,7 +28,7 @@ describe('License on logout', () => {
         LoginSteps.logout();
         LoginSteps.getLoginPage().should('be.visible');
         // And I log in again, which proves that the logout has been fully processed
-        LicenseStubs.spyGetLicense();
+        LicenseStubs.spyGetLicenseFromServer();
         LoginSteps.loginWithUser('admin', 'root');
         cy.wait('@get-license');
 

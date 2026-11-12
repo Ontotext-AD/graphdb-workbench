@@ -4,6 +4,13 @@ export class LicenseStubs {
         cy.intercept('GET', '/rest/graphdb-settings/license').as('get-license');
     }
 
+    /**
+     * Spies on the license request and sends it to the server, bypassing the license stubs defined before.
+     */
+    static spyGetLicenseFromServer() {
+        cy.intercept('GET', '/rest/graphdb-settings/license', (req) => req.continue()).as('get-license');
+    }
+
     static stubLicenseUnauthorized() {
         cy.intercept('GET', '/rest/graphdb-settings/license', {statusCode: 401}).as('unauthorizedLicense');
     }

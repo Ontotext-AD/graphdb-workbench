@@ -4,7 +4,7 @@ import {
   AuthenticationService,
   EventName,
   notify,
-  Notification, NotificationType, NotificationParam,
+  Notification, NotificationParam,
 } from '@ontotext/workbench-api';
 import {LoggerProvider} from '../../services/logger-provider';
 
@@ -28,9 +28,7 @@ export const registerAuthenticationEventHandlers = (): Promise<void> => {
   });
   eventService.subscribe(EventName.LOGGED_OUT, () => {
     notify(
-      new Notification('')
-        .withType(NotificationType.SUCCESS)
-        .withTitle('logout.success')
+      Notification.success('logout.success')
         .withParameters({
           [NotificationParam.SHOULD_TOAST]: true,
         }),
