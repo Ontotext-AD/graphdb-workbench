@@ -32,6 +32,7 @@
         "license-report-graphwise-reactodia": "npx license-checker --production --json --customPath license-checker/license-checker-format.json --start node_modules/graphwise-reactodia --out packages/workbench/dist/license-checker-graphwise-reactodia.json",
         "lint": "sh scripts/lint.sh",
         "lint-staged": "lint-staged",
+        "check:tokens": "node scripts/check-styleguide-tokens.js",
         "validate": "sh scripts/validate.sh",
         "test": "sh scripts/test.sh",
         "test:coverage": "sh scripts/test-coverage.sh",
