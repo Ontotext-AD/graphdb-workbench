@@ -46,6 +46,8 @@ export class OntoNavbar {
   private readonly resizeHandler = () => this.adjustAllSubmenus(this.hostElement);
   private readonly SUBMENU_VERTICAL_MARGIN = 8;
   private readonly MIN_SUBMENU_HEIGHT = 100;
+  private readonly ARIA_CURRENT_PAGE = 'page';
+  private readonly POINTER_TYPE_KEYBOARD = 'keyboard';
 
   private labels = {
     [labelKeys.EXPAND]: TranslationService.translate(labelKeys.EXPAND),
@@ -118,7 +120,7 @@ export class OntoNavbar {
     this.menuModel = internalModel;
   }
 
-  private select(event: MouseEvent, menuItem: NavbarItemModel) {
+  private select(event: PointerEvent, menuItem: NavbarItemModel) {
     event.preventDefault();
     this.clearAllOpenedSubmenuStyles();
 
@@ -127,6 +129,7 @@ export class OntoNavbar {
       if (event.ctrlKey) {
         openInNewTab(menuItem.href);
       } else {
+        this.setAttributes(event);
         navigate(menuItem.href);
       }
     }
@@ -412,7 +415,7 @@ export class OntoNavbar {
   }
 
   private handleSelectMenuItem(item: NavbarItemModel) {
-    return (event: MouseEvent) => {
+    return (event: PointerEvent) => {
       this.select(event, item);
     };
   }
@@ -424,7 +427,7 @@ export class OntoNavbar {
     const toggleLabel = this.isCollapsed ? this.labels[labelKeys.EXPAND] : this.labels[labelKeys.COLLAPSE];
     return (
       <Host>
-        <ul class="navbar-component">
+        <ul id="navbar" class="navbar-component">
           <li class="navbar-toggle">
             <button type="button" class="toggle-menu" title={toggleLabel} onClick={this.toggleNavbarHandler()}>
               <i class={`chevron ${this.isCollapsed ? 'ri-arrow-right-s-line' : 'ri-arrow-left-s-line'}`}
@@ -462,7 +465,7 @@ export class OntoNavbar {
                             </a>
                             :
                             <a class="sub-menu-link" href={submenu.href}
-                              onClick={this.handleSelectMenuItem(submenu)}>
+                              onClick={this.handleSelectMenuItem(submenu)} aria-current={submenu.selected ? this.ARIA_CURRENT_PAGE : undefined}>
                               <translate-label class="menu-item" labelKey={submenu.labelKey}></translate-label>
                               {submenu.icon &&
                                 <span class={`text-muted ${submenu.icon}`}></span>
@@ -477,7 +480,7 @@ export class OntoNavbar {
               }
               {item.children.length === 0 &&
                 <a class={{'menu-element-root': true, 'active': item.selected}}
-                  href={item.href} onClick={this.handleSelectMenuItem(item)}>
+                  href={item.href} onClick={this.handleSelectMenuItem(item)} aria-current={item.selected ? this.ARIA_CURRENT_PAGE : undefined}>
                   <span class={`menu-item-icon ${item.icon}`} aria-hidden="true"></span>&nbsp;
                   <translate-label class="menu-item" labelKey={item.labelKey}></translate-label>
                 </a>
@@ -510,5 +513,18 @@ export class OntoNavbar {
         this.init(this.menuItems);
       })
     );
+  }
+
+  private setAttributes(event: PointerEvent) {
+    const target = event.currentTarget as HTMLElement;
+
+    if(!target.getAttribute('aria-current')) {
+      if (event.pointerId === -1) {
+        target.dataset.pointerType = this.POINTER_TYPE_KEYBOARD;
+        target.dataset.backwardFocusTarget = 'true';
+      } else {
+        target.dataset.pointerType = event.pointerType;
+      }
+    }
   }
 }
