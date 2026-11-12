@@ -85,7 +85,7 @@
         </div>
     </div>
 
-    <div ng-if="popoverRepo.deprecated" class="alert alert-warning compact deprecation-message body-sm-light" data-test="repository-deprecation-message">
+    <div ng-if="popoverRepo.isDeprecated" class="alert alert-warning compact deprecation-message body-sm-light" data-test="repository-deprecation-message">
         {{'fedx.repository.popover.deprecation.message' | translate}}
     </div>
 </div>
