@@ -17,6 +17,7 @@ export interface NavigationEvent extends CustomEvent {
   detail: {
     oldUrl: string;
     newUrl: string;
+    // eslint-disable-next-line no-unused-vars
     cancelNavigation?: (cancel?: boolean | Promise<boolean>) => void;
   };
 }

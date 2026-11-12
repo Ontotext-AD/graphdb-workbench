@@ -160,7 +160,7 @@ graphql-playground {
                             }
 
                             &:hover {
-                                color: var(--gw-button-primary-link-hover-color);
+                                color: var(--gw-button-link-hover-color);
                                 transform: scale(1.2);
                                 transition: transform 0.15s ease-out;
                             }
@@ -180,7 +180,7 @@ graphql-playground {
                             color: var(--gw-tabs-tab-active-color);
 
                             &:hover {
-                                color: var(--gw-button-primary-link-hover-color);
+                                color: var(--gw-button-link-hover-color);
                                 transform: scale(1.2);
                                 transition: transform 0.15s ease-out;
                             }
@@ -212,7 +212,7 @@ graphql-playground {
                 .graphiql-tab-add:hover svg,
                 .graphiql-tab-close:hover {
                     background-color: transparent;
-                    color: var(--gw-button-primary-link-hover-color);
+                    color: var(--gw-button-link-hover-color);
                 }
             }
 
@@ -288,7 +288,7 @@ graphql-playground {
 
                                 &:hover {
                                     svg {
-                                        color: var(--gw-button-primary-link-hover-color);
+                                        color: var(--gw-button-link-hover-color);
                                     }
                                 }
                             }
