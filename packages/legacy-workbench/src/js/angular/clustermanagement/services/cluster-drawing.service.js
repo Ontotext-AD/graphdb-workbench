@@ -282,13 +282,13 @@ const iconMap = {
     [RecoveryState.APPLYING_SNAPSHOT]: {icon: '\uec30', font: font.REMIXICON}, //ri-device-recover-line
     [RecoveryState.BUILDING_SNAPSHOT]: {icon: '\uf3a7', font: font.REMIXICON}, //ri-archive-2-line
     [RecoveryState.SENDING_SNAPSHOT]: {icon: '\uf24a', font: font.REMIXICON}, //ri-upload-2-line
-    [RecoveryState.RECOVERY_OPERATION_FAILURE_WARNING]: {icon: '\ue920', font: font.ICOMOON},
+    [RecoveryState.RECOVERY_OPERATION_FAILURE_WARNING]: {icon: '\uea21', font: font.REMIXICON}, //ri-alert-line
 };
 
 const nodeStateIcons = {
-    [NodeState.CANDIDATE]: {icon: '\ue914', font: font.ICOMOON},
+    [NodeState.CANDIDATE]: {icon: '\ueb81', font: font.REMIXICON}, //ri-checkbox-circle-line
     [NodeState.NO_CONNECTION]: {icon: '\ue931', font: font.ICOMOON},
-    [NodeState.OUT_OF_SYNC]: {icon: '\ue920', font: font.ICOMOON},
+    [NodeState.OUT_OF_SYNC]: {icon: '\uea21', font: font.REMIXICON}, //ri-alert-line
     [NodeState.READ_ONLY]: {icon: '\ue95c', font: font.ICOMOON},
     [NodeState.RESTRICTED]: {icon: '\ue933', font: font.ICOMOON},
 };

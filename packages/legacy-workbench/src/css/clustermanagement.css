@@ -340,19 +340,6 @@ div.nodetooltip {
     margin-right: 12px;
 }
 
-.alert-save.alert-warning:before {
-    content: "\e920";
-}
-
-.alert-save {
-    margin-left: 12px;
-    margin-right: 12px;
-}
-
-.alert-save.alert-warning:before {
-    content: "\e920";
-}
-
 ul.nodes-list {
     list-style: none;
     padding-left: 0;

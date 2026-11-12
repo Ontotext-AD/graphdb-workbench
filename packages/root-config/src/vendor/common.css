@@ -491,7 +491,7 @@ h3 [class^=icon-] {
 .alert-help:before,
 .alert-danger:before,
 .alert-success:before {
-    font-family: 'icomoon', sans-serif !important;
+    font-family: 'remixicon', sans-serif !important;
     font-size: 1.5em;
     vertical-align: middle;
     line-height: 1;
@@ -521,23 +521,23 @@ h3 [class^=icon-] {
 }
 
 .alert-info:before {
-    content: "\e924";
+    content: "\f448"; /* ri-information-2-line */
 }
 
 .alert-warning:before {
-    content: "\e930";
+    content: "\ea21"; /* ri-alert-line */
 }
 
 .alert-help:before {
-    content: "\e929";
+    content: "\f045"; /* ri-question-line */
 }
 
 .alert-danger:before {
-    content: "\e920";
+    content: "\eb97"; /* ri-close-circle-line */
 }
 
 .alert-success:before {
-    content: "\e914";
+    content: "\eb81"; /* ri-checkbox-circle-line */
 }
 
 .no-icon {

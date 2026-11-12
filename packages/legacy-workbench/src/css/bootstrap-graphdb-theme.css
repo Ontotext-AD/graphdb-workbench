@@ -221,13 +221,13 @@ footer.footer .container-fluid.main-container p {
 }
 
 .tab-error:after {
-    font-family: 'icomoon', sans-serif !important;
+    font-family: 'remixicon', sans-serif !important;
     font-size: 1em;
     vertical-align: middle;
     line-height: 1;
     position: absolute;
     left: 0.1em;
-    content: "\e920";
+    content: "\eb97"; /* ri-close-circle-line */
 }
 
 /*-------------------------------------------------------------
@@ -1457,7 +1457,7 @@ input.switch:disabled ~ label:before, input.switch:disabled ~ label:after {
 
 #toast-container > div:before {
     display: block;
-    font-family: 'icomoon', sans-serif !important;
+    font-family: 'remixicon', sans-serif !important;
     font-size: 2em;
     position: absolute;
     left: 0.3em;
@@ -1548,7 +1548,7 @@ input.switch:disabled ~ label:before, input.switch:disabled ~ label:after {
 .toast-warning:before,
 .toast-info:before,
 .toast-success:before {
-    font-family: 'icomoon', sans-serif !important;
+    font-family: 'remixicon', sans-serif !important;
     font-size: 1.5em;
     position: absolute;
     left: 0.6em;
@@ -1561,33 +1561,19 @@ input.switch:disabled ~ label:before, input.switch:disabled ~ label:after {
 }
 
 .toast-info:before {
-    content: "\e924";
+    content: "\f448"; /* ri-information-2-line */
 }
 
 .toast-warning:before {
-    content: "\e930";
+    content: "\ea21"; /* ri-alert-line */
 }
 
 .toast-error:before {
-    content: "\e920";
+    content: "\eb97"; /* ri-close-circle-line */
 }
 
 .toast-success:before {
-    content: "\e914";
-}
-
-
-#toast-container > .toast-error:before,
-#toast-container > .toast-warning:before {
-    content: "\e920";
-}
-
-#toast-container > .toast-success:before {
-    content: "\e914";
-}
-
-#toast-container > .toast-info:before {
-    content: "\e924";
+    content: "\eb81"; /* ri-checkbox-circle-line */
 }
 
 #toast-container > .toast-info {
