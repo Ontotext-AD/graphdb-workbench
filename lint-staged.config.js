@@ -28,4 +28,12 @@ module.exports = {
   'packages/*/src/**/*.{html,css,scss,less,ts,tsx,js,jsx}': (files) => [
     `packages/root-config/node_modules/.bin/gw-check-deprecated --fail ${files.map((file) => `"${file}"`).join(' ')}`
   ],
+  // Fails when a staged file uses a --gw-* token that graphwise-styleguide does not define.
+  'packages/*/src/**/*.{css,scss,less,ts,tsx,js,jsx,html,ejs}': (files) => [
+    `node scripts/check-styleguide-tokens.js ${files.join(' ')}`
+  ],
+  // A styleguide upgrade can remove tokens, so all the sources are checked.
+  'packages/root-config/package.json': () => [
+    'node scripts/check-styleguide-tokens.js'
+  ],
 };

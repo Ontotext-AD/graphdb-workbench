@@ -164,7 +164,7 @@ yasgui-component .saved-queries-container .arrow:after {
 }
 
 yasgui-component .saved-queries-container .saved-queries-popup .saved-query-actions .saved-query-action {
-    color: var(--gw-button-primary-link-color) !important;
+    color: var(--gw-button-link-color) !important;
     background-color: var(--gw-dialog-background) !important;
     font-size: 1rem;
 }

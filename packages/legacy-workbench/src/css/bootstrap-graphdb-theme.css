@@ -700,7 +700,7 @@ code {
 }
 
 .card.button:hover {
-    border-color: var(--gw-primary-hover-color);
+    border-color: var(--gw-primary-del-hover-color);
 }
 
 .card.button .card-block {
@@ -721,7 +721,7 @@ code {
 }
 
 .card.button .btn:hover {
-    background-color: var(--gw-primary-hover-color);
+    background-color: var(--gw-primary-del-hover-color);
 }
 
 .card.button .btn [class^="icon-"] {

@@ -236,7 +236,7 @@
 }
 
 .hotkeys .ri-close-line:hover {
-    color: var(--gw-button-primary-link-hover-color);
+    color: var(--gw-button-link-hover-color);
     font-weight: bold;
 }
 

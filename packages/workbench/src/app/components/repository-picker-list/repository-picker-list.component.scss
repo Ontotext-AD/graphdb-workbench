@@ -66,7 +66,7 @@
 
       .type-icon {
         font-size: 1.2em;
-        color: var(--gw-button-primary-link-hover-color);
+        color: var(--gw-button-link-color);
       }
     }
 
@@ -86,6 +86,7 @@
 
         // The PrimeNG design token "datatable.body.cell.padding", with the "gw" prefix configured in app.config.ts.
         // PrimeNG uses the same variable for the padding of the table cells, so the button stays aligned with them.
+        // check-styleguide-tokens-ignore-next-line: a PrimeNG token, not a styleguide one.
         padding: var(--gw-datatable-body-cell-padding);
         padding-left: .1em;
         border: 0;

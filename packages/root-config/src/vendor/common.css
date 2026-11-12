@@ -237,7 +237,7 @@ button:-moz-focusring {
     text-decoration-style: dotted;
     text-decoration-thickness: var(--link-decoration-thickness);
     text-underline-offset: var(--link-underline-offset);
-    color: var(--gw-button-primary-link-hover-color);
+    color: var(--gw-button-link-color);
 }
 
 .btn-link[href]:has([class^="ri"]),
@@ -252,7 +252,7 @@ button:-moz-focusring {
 }
 
 .btn-link:focus, .btn-link:hover, .btn-link.secondary:hover {
-    color: var(--gw-button-primary-link-hover-color);
+    color: var(--gw-button-link-hover-color);
 }
 
 .btn-link.disabled:focus, .btn-link.disabled:hover, .btn-link.disabled.secondary:hover {
