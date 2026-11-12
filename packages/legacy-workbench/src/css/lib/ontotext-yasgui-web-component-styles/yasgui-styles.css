@@ -136,7 +136,7 @@ yasgui-component .yasgui .tabsList .addTab {
 
 yasgui-component .yasgui .tabsList .tab .closeTab:hover,
 yasgui-component .yasgui .tabsList .addTab:hover {
-    color: var(--gw-button-primary-link-hover-color) !important;
+    color: var(--gw-button-link-hover-color) !important;
 }
 
 yasgui-component .yasgui .tabsList .tab .closeTab .ri-close-line,
