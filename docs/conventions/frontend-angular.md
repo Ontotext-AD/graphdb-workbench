@@ -10,7 +10,7 @@ the workbench-specific services and patterns; the general Angular rules are in
 - [Components and state](#components-and-state): standalone components, signals, `inject()` vs. `service()`.
 - [UI library — PrimeNG](#ui-library--primeng): preferring PrimeNG and its `gw` token prefix.
 - [Dialogs](#dialogs): open them through `DialogProviderService`.
-- [Notifications and errors](#notifications-and-errors): toasts through `NotificationProviderService`, failure handling.
+- [Notifications and errors](#notifications-and-errors): notifications through `NotificationProviderService`, failure handling.
 - [Third-party web components](#third-party-web-components): wrap them in a facade component.
 - [Permission-based rendering](#permission-based-rendering): the `*appRestrictAccess` directive and `ViewPermissions`.
 - [Unsaved changes](#unsaved-changes): registering callbacks with `UnsavedChangesService`.
@@ -42,13 +42,10 @@ Put action buttons in the dialog's `#footer` template, not in the body.
 
 ## Notifications and errors
 
-- Show toasts through `NotificationProviderService` (`services/notification/`), not `OntoToastrService` or
-  `toastr`. It feeds the API-layer `NotificationService` queue, which a future notifications panel will read.
-  Outside Angular DI (Stencil, legacy) call `notify(Notification.error(code))` from `@ontotext/workbench-api`.
-- The toast type carries the severity: no "Error!" title or prefix on an error toast.
+- Show notifications through `NotificationProviderService` (`services/notification/`), not `OntoToastrService` or
+  `toastr`. Codes, severity and text follow [Notifications](notifications.md).
 - Every REST call a user triggers handles failure: catch it and show a notification, or let it reach a caller that
   does. Never swallow it silently.
-- When an error code has no translation, show a generic fallback message; don't hide the error.
 
 ## Third-party web components
 

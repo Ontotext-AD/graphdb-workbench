@@ -57,6 +57,7 @@ Some changes have a twin outside the file you're editing — make both or say wh
   - [Styling](docs/conventions/styling.md) — `--gw-*` not `--p-*`, checking a token exists, common tokens.
 - **[Internationalization](docs/conventions/i18n.md)** — translation files and validation.
 - **[Plugins & extension points](docs/conventions/plugins.md)** — `plugin.js`, `PluginRegistry`.
+- **[Notifications](docs/conventions/notifications.md)** — notification codes, topics, severity, what is retained.
 - **[Logging](docs/conventions/logging.md)** — centralized logging service and `LoggerProvider`.
 - **[HTTP interceptors](docs/conventions/http-interceptors.md)** — request/response chains.
 - **[Testing](docs/conventions/testing.md)** — unit vs integration, public surface, mocking, coverage.
