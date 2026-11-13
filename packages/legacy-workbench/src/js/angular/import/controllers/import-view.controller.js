@@ -427,7 +427,8 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                     // update the status of the files using the response from the server
                     $scope.files.forEach(function(f) {
                         const remoteStatus = _.find(data, _.matches({'name': f.name}));
-                        if (f.status && remoteStatus) {
+                        // Merge file if previously processed (has status) or if newly uploaded (lacks parserSettings)
+                        if ((f.status || !f.parserSettings) && remoteStatus) {
                             _.assign(f, remoteStatus);
                         }
                         if (!f.type) {
