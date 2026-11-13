@@ -9,7 +9,7 @@
    */
   .title-container {
     position: var(--page-title-position);
-    margin-bottom: var(--page-title-margin-bottom);
+    margin-bottom: var(--page-title-margin-bottom, 1rem);
     display: flex;
     align-items: center;
     gap: 0.5rem;
