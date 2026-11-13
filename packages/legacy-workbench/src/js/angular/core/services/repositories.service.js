@@ -15,7 +15,7 @@ import {
     RepositoryContextService,
     RepositoryLocationContextService,
     mapRepositoryListResponseToModel,
-    RepositoryType,
+    Repository,
     AuthorizationService,
     AuthenticationService,
     SecurityContextService,
@@ -154,14 +154,18 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
         };
 
         /**
-         * Marks the FedX repositories as deprecated and assigns each repository a hash of its data.
+         * Sets the `isDeprecated` flag of each repository. Currently, FedX repositories are deprecated.
          *
          * @param {Object[]} repositoriesData The repositories of a location.
-         * @return {Object[]} The same repositories, each with an `isDeprecated` flag and a `hash`.
          */
-        this.markDeprecatedAndAssignHashes = function(repositoriesData) {
+        this.markDeprecatedRepos = function(repositoriesData) {
+            repositoriesData.forEach((repo) => {
+                repo.isDeprecated = new Repository(repo).isFedx();
+            });
+        };
+
+        this.assignHashesToRepositories = function(repositoriesData) {
             return repositoriesData.map((repo) => {
-                repo.isDeprecated = repo.type === RepositoryType.FEDX;
                 const hashGenerator = md5HashGenerator();
                 repo.hash = hashGenerator(JSON.stringify(repo));
                 return repo;
@@ -183,7 +187,8 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
                                 .then(function(result) {
                                     that.location = location;
                                     Object.entries(result.data).forEach(([key, value]) => {
-                                        const reposWithHashes = that.markDeprecatedAndAssignHashes(value);
+                                        const reposWithHashes = that.assignHashesToRepositories(value);
+                                        that.markDeprecatedRepos(reposWithHashes);
                                         that.clearLocationErrorMsg(key);
                                         that.repositories.set(key, reposWithHashes);
                                     });
