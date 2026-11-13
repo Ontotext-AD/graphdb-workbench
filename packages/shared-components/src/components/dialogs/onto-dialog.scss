@@ -22,10 +22,10 @@
   flex-direction: column;
   position: relative;
   justify-content: space-between;
-  border: none;
+  border: 1px solid var(--gw-dialog-border-color);
   color: var(--gw-dialog-color);
   background-color: var(--gw-dialog-background);
-  box-shadow: 0 5px 15px rgb(0 0 0 / 50%);
+  box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
 
   .dialog-header {
     display: flex;

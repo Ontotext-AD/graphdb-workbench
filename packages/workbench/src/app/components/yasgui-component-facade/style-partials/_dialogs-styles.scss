@@ -1,37 +1,26 @@
-/* #region - dialogs scoped under app-yasgui-component-facade. */
-app-yasgui-component-facade {
-  .cancel-button {
-    &:focus,
-    &:hover {
-      /* TODO change this */
-      background-color: #d4d4d4 !important;
-      border-color: #d4d4d4 !important;
-    }
+/* The yasgui dialogs are rendered inside app-yasgui-component-facade, except the confirmation dialog (e.g. when closing
+a tab), which can be attached to the html body in its own <confirmation-dialog> host. The rules below are scoped to
+those two hosts, so they don't style other ".dialog" elements on the page, e.g. onto-dialog. Where a selector was
+global before, the host is wrapped in :where(), so the scoping adds no specificity and the rule wins or loses against
+the yasgui styles as before. */
+
+/* #region - Buttons and the confirmation dialog */
+app-yasgui-component-facade .dialog,
+:where(confirmation-dialog) .confirmation-dialog {
+  .dialog-footer .cancel-button {
+    margin-right: 3px;
   }
 }
 
-/* The confirmation dialog (e.g. when closing a tab) is attached directly to the html body, outside
-app-yasgui-component-facade, so it is listed next to the scoped selectors. */
-app-yasgui-component-facade .dialog,
-.confirmation-dialog {
-  .dialog-body {
-    /* Dialog body should have slightly bigger font-size. */
-    font-size: 1.25rem !important;
-  }
-
-  .dialog-footer .cancel-button {
-    margin-right: 3px;
-
-    /* TODO change this */
-    background-color: #ebebeb;
-    border-color: #ebebeb;
-  }
+/* The confirmation dialog body has a slightly bigger font-size than the other yasgui dialogs. */
+:where(confirmation-dialog) .confirmation-dialog .dialog-body {
+  font-size: 1.25rem !important;
 }
 
 app-yasgui-component-facade .ok-button,
 app-yasgui-component-facade .primary-button,
 app-yasgui-component-facade .confirm-button,
-.confirmation-dialog .dialog-footer .confirm-button {
+:where(confirmation-dialog) .confirmation-dialog .dialog-footer .confirm-button {
   background-color: var(--gw-button-primary-background) !important;
   border-color: var(--gw-button-primary-border-color) !important;
   color: var(--gw-button-primary-color) !important;
@@ -43,20 +32,20 @@ app-yasgui-component-facade .primary-button:focus,
 app-yasgui-component-facade .primary-button:hover,
 app-yasgui-component-facade .confirm-button:focus,
 app-yasgui-component-facade .confirm-button:hover,
-.confirmation-dialog .dialog-footer .confirm-button:focus,
-.confirmation-dialog .dialog-footer .confirm-button:hover {
+:where(confirmation-dialog) .confirmation-dialog .dialog-footer .confirm-button:focus,
+:where(confirmation-dialog) .confirmation-dialog .dialog-footer .confirm-button:hover {
   background-color: var(--gw-button-primary-hover-background) !important;
   border-color: var(--gw-button-primary-hover-border-color) !important;
   color: var(--gw-button-primary-hover-color) !important;
 }
 
-/* #endregion - dialogs scoped under app-yasgui-component-facade. */
+/* #endregion - Buttons and the confirmation dialog */
 
-/* #region Dialogs from the yasgui component. Those are not scoped under app-yasgui-component-facade. */
-.dialog {
+/* #region - Dialogs from the yasgui component */
+:where(app-yasgui-component-facade, confirmation-dialog) .dialog {
   color: var(--gw-dialog-color) !important;
   background-color: var(--gw-dialog-background) !important;
-  border: 1px solid var(--gw-panel-border-color);
+  border: 1px solid var(--gw-dialog-border-color);
   -webkit-box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
   box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
   /* override the Roboto font-family with the new default font-family (Inter) for the dialog */
@@ -90,8 +79,6 @@ app-yasgui-component-facade .confirm-button:hover,
     }
   }
 
-  /* Forms in the dialog */
-
   .dialog-footer {
     border-top-color: var(--gw-dialog-border-color) !important;
 
@@ -109,64 +96,68 @@ app-yasgui-component-facade .confirm-button:hover,
   }
 }
 
-/* #region - Keyboard shortcuts dialog specific styles */
-.keyboard-shortcuts-dialog-button {
-  font-weight: var(--gw-button-label-font-weight);
-  color: var(--gw-button-secondary-color) !important;
-  background-color: var(--gw-button-secondary-background) !important;
-  border-color: var(--gw-button-secondary-border-color) !important;
-}
+/* #endregion - Dialogs from the yasgui component */
 
-.keyboard-shortcuts-dialog-wrapper {
-  height: 20px;
-  line-height: 18px;
-  font-size: 90%;
-
-  .key {
-    border: none;
+/* #region - Keyboard shortcuts dialog */
+/* The keyboard shortcuts button and dialog are rendered inside the component. */
+:where(app-yasgui-component-facade) {
+  .keyboard-shortcuts-dialog-button {
+    font-weight: var(--gw-button-label-font-weight);
+    color: var(--gw-button-secondary-color) !important;
+    background-color: var(--gw-button-secondary-background) !important;
+    border-color: var(--gw-button-secondary-border-color) !important;
   }
 
-  &.resizeable-on {
-    margin-top: -31px;
-  }
+  .keyboard-shortcuts-dialog-wrapper {
+    height: 20px;
+    line-height: 18px;
 
-  .dialog .dialog-header .close-button {
-    color: var(--gw-button-secondary-color);
-    background-color: var(--gw-button-secondary-background);
-    border-color: var(--gw-button-secondary-border-color);
+    .key {
+      border: none;
+    }
 
-    &:hover {
-      color: var(--gw-button-primary-link-hover-color) !important;
+    &.resizeable-on {
+      margin-top: -31px;
+    }
+
+    .dialog .dialog-header .close-button {
+      color: var(--gw-button-secondary-color);
+      background-color: var(--gw-button-secondary-background);
+      border-color: var(--gw-button-secondary-border-color);
+
+      &:hover {
+        color: var(--gw-button-primary-link-hover-color) !important;
+      }
+    }
+
+    .keyboard-shortcut-section-title {
+      color: var(--gw-shortcuts-panel-heading-color);
     }
   }
 
-  .keyboard-shortcut-section-title {
-    color: var(--gw-shortcuts-panel-heading-color);
+  .keyboard-shortcut-description-item {
+    justify-content: flex-start !important;
+  }
+
+  /* Scoped to the wrapper and the content, to be more specific than the yasgui rules for the same elements
+     (.keyboard-shortcuts-dialog-wrapper .keyboard-shortcut-keys and .keyboard-shortcuts-dialog-wrapper .key). */
+  .keyboard-shortcuts-dialog-wrapper .keyboard-shortcuts-content {
+    .keyboard-shortcut-keys {
+      flex: 0 0;
+      min-width: auto;
+    }
+
+    .key {
+      color: var(--gw-shortcuts-panel-key-color);
+      background-color: var(--gw-shortcuts-panel-key-background);
+    }
+  }
+
+  .keyboard-shortcuts-content {
+    .keyboard-shortcut-description-item-description {
+      color: var(--gw-message-info-color) !important;
+    }
   }
 }
 
-.keyboard-shortcut-description-item {
-  justify-content: flex-start !important;
-}
-
-/* Scoped to the wrapper and the content, to be more specific than the yasgui rules for the same elements
-   (.keyboard-shortcuts-dialog-wrapper .keyboard-shortcut-keys and .keyboard-shortcuts-dialog-wrapper .key). */
-.keyboard-shortcuts-dialog-wrapper .keyboard-shortcuts-content {
-  .keyboard-shortcut-keys {
-    flex: 0 0;
-    min-width: auto;
-  }
-
-  .key {
-    color: var(--gw-shortcuts-panel-key-color);
-    background-color: var(--gw-shortcuts-panel-key-background);
-  }
-}
-
-.keyboard-shortcuts-content {
-  .keyboard-shortcut-description-item-description {
-    color: var(--gw-message-info-color) !important;
-  }
-}
-
-/* #endregion - DIALOGS - KEYBOARD SHORTCUTS */
+/* #endregion - Keyboard shortcuts dialog */
