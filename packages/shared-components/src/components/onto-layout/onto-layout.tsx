@@ -33,6 +33,12 @@ import {TranslationService} from '../../services/translation.service';
 import {isFocusLost} from '../../utils/html-utils';
 
 const MAIN_CONTENT_ID = 'main-content';
+const NAVBAR_ID = 'navbar';
+const POINTER_TYPES = {
+  MOUSE: 'mouse',
+  TOUCH: 'touch',
+  PEN: 'pen'
+};
 
 @Component({
   tag: 'onto-layout',
@@ -108,7 +114,7 @@ export class OntoLayout {
       this.shouldFocusMainContentAfterLoading = false;
       // The old page content is hidden while loading and drops the focus, so a focused element in the main content
       // belongs to the new page or was focused by the user and must keep the focus.
-      if (isFocusLost()) {
+      if (isFocusLost() || this.isFocusInNavbar()) {
         this.focusMainContent();
       }
     }
@@ -201,6 +207,32 @@ export class OntoLayout {
     this.windowResizeObserver();
   }
 
+  /**
+   * Event listener for document keydown events. Handles backward focus targeting when Shift + Tab is pressed.
+   * @param event
+   */
+  @Listen('keydown', { target: 'document' })
+  handleDocumentKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Tab' && event.shiftKey) {
+      const backwardFocusTarget = document.querySelector<HTMLElement>('[data-backward-focus-target="true"]');
+      if(backwardFocusTarget) {
+        event.preventDefault();
+        this.focusBackwardTargetInNav(backwardFocusTarget);
+      }
+    }
+  }
+
+  /**
+   * Event listener for global focusin events. Handles cleanup of the backward focus target dataset attribute.
+   */
+  @Listen('focusin', { target: 'document' })
+  handleGlobalFocus(event: FocusEvent): void {
+    const backwardFocusTarget = document.querySelector<HTMLElement>('[data-backward-focus-target="true"]');
+    if (backwardFocusTarget && (event.target as HTMLElement).getAttribute('id') !== MAIN_CONTENT_ID) {
+      delete backwardFocusTarget.dataset.backwardFocusTarget;
+    }
+  }
+
   // ========================
   // Handlers
   // ========================
@@ -255,6 +287,20 @@ export class OntoLayout {
       }
       WindowService.getWindow().location.reload();
     }
+  }
+
+  private focusBackwardTargetInNav(backwardFocusTarget: HTMLElement): void {
+    if (backwardFocusTarget?.classList.contains('sub-menu-link')) {
+      const parentContainer = backwardFocusTarget.parentElement?.parentElement?.previousElementSibling as HTMLElement;
+
+      if (parentContainer?.getAttribute('aria-expanded') === 'false') {
+        parentContainer.click();
+      }
+    } 
+    setTimeout(() => {
+      backwardFocusTarget.focus();
+      delete backwardFocusTarget.dataset.backwardFocusTarget;
+    },10);
   }
 
   // ========================
@@ -387,7 +433,10 @@ export class OntoLayout {
    * @param navigationEndPayload - The old and the new URL of the navigation.
    */
   private focusMainContentOnPageChange({oldUrl, newUrl}: NavigationEndPayload): void {
-    if (!oldUrl || isSamePage(oldUrl, newUrl) || !this.isFocusLostOrInMainContent()) {
+    if (!oldUrl ||
+        isSamePage(oldUrl, newUrl) ||
+        (!this.isFocusInNavbar() && !this.isFocusLostOrInMainContent()) ||
+        (this.isFocusInNavbar() && this.isPointerNavigation())) {
       // The initial load, a query or hash change, or the focus is outside the main content, e.g. in the navbar.
       return;
     }
@@ -402,10 +451,29 @@ export class OntoLayout {
     return isFocusLost() || !!document.getElementById(MAIN_CONTENT_ID)?.contains(document.activeElement);
   }
 
+  private isFocusInNavbar(): boolean {
+    return !!document.getElementById(NAVBAR_ID)?.contains(document.activeElement);
+  }
+
+  // Determines if the last navigation was triggered by a pointer device (mouse, touch, or pen) by 
+  // accessing the dataset of the active element. 
+  // Specific for main navbar.
+  private isPointerNavigation(): boolean {
+    const pointerType = (document.activeElement as HTMLElement)?.dataset.pointerType;
+    delete (document.activeElement as HTMLElement)?.dataset.pointerType;
+
+    return pointerType === POINTER_TYPES.MOUSE || pointerType === POINTER_TYPES.TOUCH || pointerType === POINTER_TYPES.PEN;
+  }
+
   private subscribeToNavigationStart() {
     this.subscriptions.add(
       this.eventService.subscribe(EventName.NAVIGATION_START, ({oldUrl, newUrl}: NavigationStartPayload) => {
         this.isPageChanging = !oldUrl || !newUrl || !isSamePage(oldUrl, newUrl);
+        // Cleanup the backward focus target dataset attribute if the page is changing and the target is the not current page.
+        const backwardFocusTarget = document.querySelector<HTMLElement>('[data-backward-focus-target="true"]');
+        if (this.isPageChanging && backwardFocusTarget?.dataset.ariaCurrent === 'page') {
+          delete backwardFocusTarget.dataset.backwardFocusTarget;
+        }
       }));
   }
 
