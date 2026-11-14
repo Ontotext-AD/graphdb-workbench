@@ -45,7 +45,7 @@
                             gdb-tooltip="{{'interrupt.indexing.tooltip' | translate}}"><span class="ri-close-line"></span></button>
                 </span>
 
-                <span class="tag tag-danger" ng-show="currentRankStatus.indexOf(rdfStatus.ERROR) == 0"><em class="ri-alert-line icon-lg"></em> {{currentRankStatus}}</span>
+                <span class="tag tag-danger" ng-show="currentRankStatus.indexOf(rdfStatus.ERROR) == 0"><em class="ri-close-circle-line icon-lg"></em> {{currentRankStatus}}</span>
                 <span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.OUTDATED"><em class="ri-alert-line icon-lg"></em> {{'outdated.status' | translate}}</span>
 				<span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.CONFIG_CHANGED"><em class="ri-alert-line icon-lg"></em> {{'configuration.changed.warning' | translate}}</span>
                 <span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.CANCELED"><em class="ri-alert-line icon-lg"></em> {{'computation.canceled.warning' | translate}}</span>
