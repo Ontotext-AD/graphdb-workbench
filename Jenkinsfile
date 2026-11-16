@@ -40,6 +40,43 @@ pipeline {
             }
         }
 
+        // Outside the parallel block: in parallel, its components failed to render on CI.
+        stage('Shared-components Cypress Test') {
+            steps {
+                dir('packages/shared-components') {
+                    script {
+                        dockerCompose.buildCmd(composeFile: 'docker-compose.yaml', options: ['--force-rm'])
+
+                        def caughtError = false
+                        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                            try {
+                                dockerCompose.upCmd(
+                                    environment: getUserUidGidPair(),
+                                    composeFile: 'docker-compose.yaml',
+                                    options: ['--abort-on-container-exit', '--exit-code-from cypress']
+                                )
+                            } catch (e) {
+                                caughtError = true
+                            }
+                        }
+
+                        if (caughtError) {
+                            echo "Tests failed — archiving Cypress video artifacts."
+                            archiveArtifacts allowEmptyArchive: true, artifacts: 'cypress/screenshots/**/*.png, cypress/videos/**/*.mp4'
+                            error("Cypress tests failed, job failed.")
+                        }
+
+                        echo "Tests passed — skipping video artifacts."
+                        dockerCompose.downCmd(
+                            composeFile: 'docker-compose.yaml',
+                            options: ['--volumes', '--remove-orphans', '--rmi', 'local'],
+                            ignoreErrors: true
+                        )
+                    }
+                }
+            }
+        }
+
         // Only Build output is needed by these, so they run side by side.
         stage('Checks') {
             parallel {
@@ -88,42 +125,6 @@ pipeline {
                     steps {
                         script {
                             sh 'npm run test'
-                        }
-                    }
-                }
-
-                stage('Shared-components Cypress Test') {
-                    steps {
-                        dir('packages/shared-components') {
-                            script {
-                                dockerCompose.buildCmd(composeFile: 'docker-compose.yaml', options: ['--force-rm'])
-
-                                def caughtError = false
-                                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                                    try {
-                                        dockerCompose.upCmd(
-                                            environment: getUserUidGidPair(),
-                                            composeFile: 'docker-compose.yaml',
-                                            options: ['--abort-on-container-exit', '--exit-code-from cypress']
-                                        )
-                                    } catch (e) {
-                                        caughtError = true
-                                    }
-                                }
-
-                                if (caughtError) {
-                                    echo "Tests failed — archiving Cypress video artifacts."
-                                    archiveArtifacts allowEmptyArchive: true, artifacts: 'cypress/screenshots/**/*.png, cypress/videos/**/*.mp4'
-                                    error("Cypress tests failed, job failed.")
-                                }
-
-                                echo "Tests passed — skipping video artifacts."
-                                dockerCompose.downCmd(
-                                    composeFile: 'docker-compose.yaml',
-                                    options: ['--volumes', '--remove-orphans', '--rmi', 'local'],
-                                    ignoreErrors: true
-                                )
-                            }
                         }
                     }
                 }
