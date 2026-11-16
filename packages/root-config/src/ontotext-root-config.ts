@@ -192,12 +192,8 @@ function initSingleSpa(): void {
 function setupFavicon(): void {
   const iconPath = service(ConfigurationContextService).getApplicationConfiguration().applicationFaviconPath;
 
-  const faviconLink = document.createElement('link');
-  faviconLink.rel = 'icon';
-  faviconLink.type = 'image/png';
+  const faviconLink = document.getElementById('favicon') as HTMLLinkElement;
   faviconLink.href = iconPath;
-  document.head.appendChild(faviconLink);
-
   // Set apple touch icon
   const appleTouchLink = document.createElement('link');
   appleTouchLink.rel = 'apple-touch-icon-precomposed';
