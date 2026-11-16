@@ -548,6 +548,7 @@ describe('User and Access', () => {
                 LoginSteps.loginWithUser(graphqlUser, PASSWORD);
                 cy.wait('@getRepositories');
                 cy.wait('@getRepositories');
+                RepositorySelectorSteps.verifyRepositoryInUrl(repositoryId1);
 
                 MENU_ITEMS_WITHOUT_GRAPHQL.forEach(({path, expectedUrl, checks, expectedTitle}) => {
                     navigateMenuPath(path, expectedUrl, expectedTitle);
@@ -570,6 +571,7 @@ describe('User and Access', () => {
                 LoginSteps.loginWithUser(graphqlUser, PASSWORD);
                 cy.wait('@getRepositories');
                 cy.wait('@getRepositories');
+                RepositorySelectorSteps.verifyRepositoryInUrl(repositoryId1);
                 // RepositorySelectorSteps.selectRepository(repositoryId1);
 
                 GRAPHQL_READ_MENU_ITEMS.forEach(({path, expectedUrl, checks, expectedTitle}) => {
@@ -592,6 +594,7 @@ describe('User and Access', () => {
                 LoginSteps.loginWithUser(graphqlUser, PASSWORD);
                 cy.wait('@getRepositories');
                 cy.wait('@getRepositories');
+                RepositorySelectorSteps.verifyRepositoryInUrl(repositoryId1);
                 GRAPHQL_REPO_MANAGER_MENU_ITEMS.forEach(({path, expectedUrl, checks, expectedTitle}) => {
                     navigateMenuPath(path, expectedUrl, expectedTitle);
                     if (checks) {
@@ -632,6 +635,7 @@ describe('User and Access', () => {
                 HomeSteps.visit();
                 //  I change the repository to this with GraphQL only rights
                 RepositorySelectorSteps.selectRepository(repositoryId3);
+                RepositorySelectorSteps.verifyRepositoryInUrl(repositoryId3);
                 // Then I should have GraphQL only rights
                 FREE_ACCESS_MENU_ITEMS_WITHOUT_GRAPHQL.forEach(({path, expectedUrl, checks, expectedTitle}) => {
                     navigateMenuPath(path, expectedUrl, expectedTitle);

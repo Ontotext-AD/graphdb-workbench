@@ -20,6 +20,14 @@ export class RepositorySelectorSteps {
         RepositorySelectorSteps.getRepositorySelectorButton(repositoryId).click();
     }
 
+    /**
+     * Verifies that the selected repository is in the URL. Adding it to the URL is a navigation that does not show the
+     * layout loader, and the navbar closes an opened submenu when it ends, so call this before using the menu.
+     */
+    static verifyRepositoryInUrl(repositoryId) {
+        cy.location('search').should('contain', `repositoryId=${repositoryId}`);
+    }
+
     static getSelectedRepository() {
         return RepositorySelectorSteps.getRepositorySelectorDropdown().find('.active-repository');
     }

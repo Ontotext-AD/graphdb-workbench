@@ -164,8 +164,11 @@ pipeline {
                                         }
                                         def specList = shardSpecs.join(',')
                                         shards["Shard ${shard}"] = {
-                                            if (!runCypressShard(shard, specList)) {
-                                                failedShards << shard
+                                            // A stage per shard, so each shard shows its own status and time.
+                                            stage("Shard ${shard}") {
+                                                if (!runCypressShard(shard, specList)) {
+                                                    failedShards << shard
+                                                }
                                             }
                                         }
                                     }
