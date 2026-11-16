@@ -3,6 +3,13 @@ app-yasgui-component-facade {
   /* Base font-size of the yasgui; its elements inherit it unless they set their own */
   font-size: 1rem;
 
+  /* The theme focus ring for every element of the component. The component draws its keyboard focus ring from these
+     variables (navy by default). */
+  --yasgui-focus-ring-width: var(--gw-focus-ring-width);
+  --yasgui-focus-ring-style: var(--gw-focus-ring-style);
+  --yasgui-focus-ring-color: var(--gw-focus-ring-color);
+  --yasgui-focus-ring-offset: var(--gw-focus-ring-offset);
+
   .hidden {
     display: none;
   }
@@ -228,17 +235,20 @@ app-yasgui-component-facade {
     color: var(--gw-checkbox-color);
     background-color: var(--gw-checkbox-background);
     border: 1px solid var(--gw-checkbox-border-color);
-    width: 1em;
-    height: 1em;
+
+    /* Same size and corners as the PrimeNG checkboxes in the rest of the app. */
+    width: var(--gw-checkbox-width);
+    height: var(--gw-checkbox-height);
+    border-radius: var(--gw-checkbox-border-radius);
     display: inline-block;
     vertical-align: middle;
     cursor: pointer;
-  }
 
-  /* Like PrimeNG checkboxes, show the focus ring on keyboard focus only. */
-  input[type="checkbox"]:focus-visible {
-    outline: var(--gw-checkbox-focus-ring-width) var(--gw-checkbox-focus-ring-style) var(--gw-checkbox-focus-ring-color);
-    outline-offset: var(--gw-checkbox-focus-ring-offset);
+    /* The checkbox focus ring of the theme. The component draws it on keyboard focus only, like PrimeNG. */
+    --yasgui-focus-ring-width: var(--gw-checkbox-focus-ring-width);
+    --yasgui-focus-ring-style: var(--gw-checkbox-focus-ring-style);
+    --yasgui-focus-ring-color: var(--gw-checkbox-focus-ring-color);
+    --yasgui-focus-ring-offset: var(--gw-checkbox-focus-ring-offset);
   }
 
   input[type="checkbox"]:hover {
@@ -271,8 +281,10 @@ app-yasgui-component-facade {
     display: block;
     text-align: center;
     color: var(--gw-checkbox-icon-checked-color);
-    font-size: 0.8em;
-    line-height: var(--gw-body-xs-regular-line-height);
+    font-size: var(--gw-checkbox-icon-size);
+
+    /* The height of the box without its top and bottom border (2 × 1px = 0.125rem), so the sign is centred vertically. */
+    line-height: calc(var(--gw-checkbox-height) - 0.125rem);
   }
 
   input[type="checkbox"]:checked:hover::after {
@@ -307,8 +319,10 @@ app-yasgui-component-facade {
     display: block;
     text-align: center;
     color: var(--gw-checkbox-icon-checked-color);
-    font-size: 0.8em;
-    line-height: var(--gw-body-xs-regular-line-height);
+    font-size: var(--gw-checkbox-icon-size);
+
+    /* The height of the box without its top and bottom border (2 × 1px = 0.125rem), so the sign is centred vertically. */
+    line-height: calc(var(--gw-checkbox-height) - 0.125rem);
   }
 
   input[type="checkbox"]:indeterminate:hover::after {

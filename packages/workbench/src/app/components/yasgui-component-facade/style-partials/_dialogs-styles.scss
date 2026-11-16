@@ -170,3 +170,40 @@ app-yasgui-component-facade .confirm-button:hover,
 }
 
 /* #endregion - DIALOGS - KEYBOARD SHORTCUTS */
+
+/* #region Focus ring of the yasgui dialog footer buttons */
+/* Inside the component (e.g. the save query dialog) the component draws the keyboard focus ring from the
+   --yasgui-focus-ring-* variables, so only the button tokens are set here. */
+app-yasgui-component-facade .dialog .dialog-footer {
+  .cancel-button {
+    --yasgui-focus-ring-width: var(--gw-button-focus-ring-width);
+    --yasgui-focus-ring-style: var(--gw-button-focus-ring-style);
+    --yasgui-focus-ring-color: var(--gw-button-secondary-focus-ring-color);
+    --yasgui-focus-ring-offset: var(--gw-button-focus-ring-offset);
+  }
+
+  .ok-button,
+  .primary-button,
+  .confirm-button {
+    --yasgui-focus-ring-width: var(--gw-button-focus-ring-width);
+    --yasgui-focus-ring-style: var(--gw-button-focus-ring-style);
+    --yasgui-focus-ring-color: var(--gw-button-primary-focus-ring-color);
+    --yasgui-focus-ring-offset: var(--gw-button-focus-ring-offset);
+  }
+}
+
+/* The close tab confirmation is attached to the html body, where the component's focus ring rule does not reach and
+   its dialog removes the outline of the footer buttons. */
+confirmation-dialog .dialog .dialog-footer {
+  .cancel-button:focus-visible {
+    outline: var(--gw-button-focus-ring-width) var(--gw-button-focus-ring-style) var(--gw-button-secondary-focus-ring-color);
+    outline-offset: var(--gw-button-focus-ring-offset);
+  }
+
+  .confirm-button:focus-visible {
+    outline: var(--gw-button-focus-ring-width) var(--gw-button-focus-ring-style) var(--gw-button-primary-focus-ring-color);
+    outline-offset: var(--gw-button-focus-ring-offset);
+  }
+}
+
+/* #endregion Focus ring of the yasgui dialog footer buttons */
