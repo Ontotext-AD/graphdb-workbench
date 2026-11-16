@@ -50,10 +50,15 @@ services:
       # - DBUS_SESSION_BUS_ADDRESS=/dev/null
       - CYPRESS_baseUrl=http://workbench:${WORKBENCH_PORT}
       - NO_COLOR=true
-      # Per-shard folders: shards share the ./e2e-tests mount and each run trashes its own folders on start.
+      # Per-shard folders: shards share the ./e2e-tests mount. Not trashed on start, so a rerun keeps the
+      # first run's screenshots.
       - CYPRESS_screenshotsFolder=report/screenshots/shard-${E2E_SHARD}
       - CYPRESS_videosFolder=report/videos/shard-${E2E_SHARD}
       - CYPRESS_downloadsFolder=cypress/downloads/shard-${E2E_SHARD}
+      - CYPRESS_trashAssetsBeforeRuns=false
+      # Video only in the rerun of failed specs.
+      - CYPRESS_video=${CYPRESS_VIDEO:-false}
+      - FAILED_SPECS_FILE=report/failed-specs/shard-${E2E_SHARD}.txt
     user: "${UID}:${GID}"
     working_dir: /e2e
     volumes:

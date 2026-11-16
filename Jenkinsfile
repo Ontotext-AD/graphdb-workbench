@@ -40,140 +40,145 @@ pipeline {
             }
         }
 
-        stage('Lint') {
-            steps {
-                script {
-                    sh 'npm run lint'
-                }
-            }
-        }
-
-        stage('Validate') {
-            steps {
-                script {
-                    sh 'npm run validate'
-                }
-            }
-            post {
-                failure {
-                    archiveArtifacts allowEmptyArchive: true, artifacts: 'translation-report.json'
-                }
-            }
-        }
-
-        stage('Sonar') {
-            steps {
-                withSonarQubeEnv(SONAR_ENVIRONMENT) {
-                    script {
-                        try {
-                            if (scmUtil.isMaster()) {
-                                sh "node sonar-project.js --branch='${scmUtil.getCurrentBranch()}'"
-                            } else {
-                                // The PR checkout has no target branch ref, which Sonar needs to detect the changed lines.
-                                sh "git fetch --no-tags origin '+refs/heads/${scmUtil.getTargetBranch()}:refs/remotes/origin/${scmUtil.getTargetBranch()}'"
-                                sh "node sonar-project.js --branch='${scmUtil.getSourceBranch()}' --target-branch='${scmUtil.getTargetBranch()}' --pull-request-id='${scmUtil.getMergeRequestId()}'"
-                            }
-                        } catch (e) {
-                            echo "Sonar analysis failed. Error: ${e.getMessage()}"
+        // Only Build output is needed by these, so they run side by side.
+        stage('Checks') {
+            parallel {
+                stage('Lint') {
+                    steps {
+                        script {
+                            sh 'npm run lint'
                         }
                     }
                 }
-            }
-        }
 
-        stage('Test') {
-            steps {
-                script {
-                    sh 'npm run test'
-                }
-            }
-        }
-
-        stage('Shared-components Cypress Test') {
-            steps {
-                dir('packages/shared-components') {
-                    script {
-                        dockerCompose.buildCmd(composeFile: 'docker-compose.yaml', options: ['--force-rm'])
-
-                        def caughtError = false
-                        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                            try {
-                                dockerCompose.upCmd(
-                                    environment: getUserUidGidPair(),
-                                    composeFile: 'docker-compose.yaml',
-                                    options: ['--abort-on-container-exit', '--exit-code-from cypress']
-                                )
-                            } catch (e) {
-                                caughtError = true
-                            }
+                stage('Validate') {
+                    steps {
+                        script {
+                            sh 'npm run validate'
                         }
-
-                        if (caughtError) {
-                            echo "Tests failed — archiving Cypress video artifacts."
-                            archiveArtifacts allowEmptyArchive: true, artifacts: 'cypress/screenshots/**/*.png, cypress/videos/**/*.mp4'
-                            error("Cypress tests failed, job failed.")
+                    }
+                    post {
+                        failure {
+                            archiveArtifacts allowEmptyArchive: true, artifacts: 'translation-report.json'
                         }
-
-                        echo "Tests passed — skipping video artifacts."
-                        dockerCompose.downCmd(
-                            composeFile: 'docker-compose.yaml',
-                            options: ['--volumes', '--remove-orphans', '--rmi', 'local'],
-                            ignoreErrors: true
-                        )
                     }
                 }
-            }
-        }
 
-        stage('Workbench Cypress Test') {
-            steps {
-                script {
-                    if (!scmUtil.isMaster()) {
-                        withKsm(application: [[
-                            credentialsId: 'ksm-jenkins',
-                            secrets: [
-                                [
-                                    destination: 'file',
-                                    filePath: 'graphdb.license',
-                                    notation: 'keeper://AByA4tIDmeN7RmqnQYGY0A/file/graphdb.license'
-                                ]
-                            ]
-                        ]]) {
-                            sh 'cp graphdb.license ./e2e-tests/fixtures/'
-                            archiveArtifacts allowEmptyArchive: true, artifacts: 'graphdb.license'
-
-                            sh "ls -lh ./e2e-tests/fixtures/"
-
-                            // Round-robin over the sorted spec list. Paths are relative to the Cypress container's /e2e.
-                            def specs = sh(
-                                script: "cd e2e-tests && find e2e-legacy -type f \\( -name '*.js' -o -name '*.jsx' -o -name '*.ts' -o -name '*.tsx' \\) | sort",
-                                returnStdout: true
-                            ).trim().split('\n')
-                            def shardCount = env.E2E_SHARDS as Integer
-                            def failedShards = []
-                            def shards = [:]
-                            for (int i = 0; i < shardCount; i++) {
-                                def shard = i
-                                def shardSpecs = []
-                                for (int j = shard; j < specs.size(); j += shardCount) {
-                                    shardSpecs << specs[j]
+                stage('Sonar') {
+                    steps {
+                        withSonarQubeEnv(SONAR_ENVIRONMENT) {
+                            script {
+                                try {
+                                    if (scmUtil.isMaster()) {
+                                        sh "node sonar-project.js --branch='${scmUtil.getCurrentBranch()}'"
+                                    } else {
+                                        // The PR checkout has no target branch ref, which Sonar needs to detect the changed lines.
+                                        sh "git fetch --no-tags origin '+refs/heads/${scmUtil.getTargetBranch()}:refs/remotes/origin/${scmUtil.getTargetBranch()}'"
+                                        sh "node sonar-project.js --branch='${scmUtil.getSourceBranch()}' --target-branch='${scmUtil.getTargetBranch()}' --pull-request-id='${scmUtil.getMergeRequestId()}'"
+                                    }
+                                } catch (e) {
+                                    echo "Sonar analysis failed. Error: ${e.getMessage()}"
                                 }
-                                def specList = shardSpecs.join(',')
-                                shards["Shard ${shard}"] = {
-                                    if (!runCypressShard(shard, specList)) {
-                                        failedShards << shard
+                            }
+                        }
+                    }
+                }
+
+                stage('Test') {
+                    steps {
+                        script {
+                            sh 'npm run test'
+                        }
+                    }
+                }
+
+                stage('Shared-components Cypress Test') {
+                    steps {
+                        dir('packages/shared-components') {
+                            script {
+                                dockerCompose.buildCmd(composeFile: 'docker-compose.yaml', options: ['--force-rm'])
+
+                                def caughtError = false
+                                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                                    try {
+                                        dockerCompose.upCmd(
+                                            environment: getUserUidGidPair(),
+                                            composeFile: 'docker-compose.yaml',
+                                            options: ['--abort-on-container-exit', '--exit-code-from cypress']
+                                        )
+                                    } catch (e) {
+                                        caughtError = true
                                     }
                                 }
-                            }
-                            parallel shards
 
-                            if (failedShards) {
-                                echo "Shards ${failedShards} failed — archiving Cypress video artifacts and GraphDB diagnostics."
-                                archiveArtifacts allowEmptyArchive: true, artifacts: 'e2e-tests/report/screenshots/**/*.png, e2e-tests/report/videos/**/*.mp4, e2e-tests/cypress/logs/*.log, graphdb-diagnostics/**'
-                                error("Cypress tests failed, job failed.")
-                            }
+                                if (caughtError) {
+                                    echo "Tests failed — archiving Cypress video artifacts."
+                                    archiveArtifacts allowEmptyArchive: true, artifacts: 'cypress/screenshots/**/*.png, cypress/videos/**/*.mp4'
+                                    error("Cypress tests failed, job failed.")
+                                }
 
-                            echo "Tests passed — skipping video artifacts."
+                                echo "Tests passed — skipping video artifacts."
+                                dockerCompose.downCmd(
+                                    composeFile: 'docker-compose.yaml',
+                                    options: ['--volumes', '--remove-orphans', '--rmi', 'local'],
+                                    ignoreErrors: true
+                                )
+                            }
+                        }
+                    }
+                }
+
+                stage('Workbench Cypress Test') {
+                    steps {
+                        script {
+                            if (!scmUtil.isMaster()) {
+                                withKsm(application: [[
+                                    credentialsId: 'ksm-jenkins',
+                                    secrets: [
+                                        [
+                                            destination: 'file',
+                                            filePath: 'graphdb.license',
+                                            notation: 'keeper://AByA4tIDmeN7RmqnQYGY0A/file/graphdb.license'
+                                        ]
+                                    ]
+                                ]]) {
+                                    sh 'cp graphdb.license ./e2e-tests/fixtures/'
+                                    archiveArtifacts allowEmptyArchive: true, artifacts: 'graphdb.license'
+
+                                    sh "ls -lh ./e2e-tests/fixtures/"
+
+                                    // Round-robin over the sorted spec list. Paths are relative to the Cypress container's /e2e.
+                                    def specs = sh(
+                                        script: "cd e2e-tests && find e2e-legacy -type f \\( -name '*.js' -o -name '*.jsx' -o -name '*.ts' -o -name '*.tsx' \\) | sort",
+                                        returnStdout: true
+                                    ).trim().split('\n')
+                                    def shardCount = env.E2E_SHARDS as Integer
+                                    def failedShards = []
+                                    def shards = [:]
+                                    for (int i = 0; i < shardCount; i++) {
+                                        def shard = i
+                                        def shardSpecs = []
+                                        for (int j = shard; j < specs.size(); j += shardCount) {
+                                            shardSpecs << specs[j]
+                                        }
+                                        def specList = shardSpecs.join(',')
+                                        shards["Shard ${shard}"] = {
+                                            if (!runCypressShard(shard, specList)) {
+                                                failedShards << shard
+                                            }
+                                        }
+                                    }
+                                    parallel shards
+
+                                    if (failedShards) {
+                                        echo "Shards ${failedShards} failed — archiving Cypress video artifacts and GraphDB diagnostics."
+                                        archiveArtifacts allowEmptyArchive: true, artifacts: 'e2e-tests/report/screenshots/**/*.png, e2e-tests/report/videos/**/*.mp4, e2e-tests/cypress/logs/*.log, graphdb-diagnostics/**'
+                                        error("Cypress tests failed, job failed.")
+                                    }
+
+                                    echo "Tests passed — skipping video artifacts."
+                                }
+                            }
                         }
                     }
                 }
@@ -242,9 +247,35 @@ def runCypressShard(int shard, String specs) {
             )
         } else {
             collectGraphdbDiagnostics("graphdb-diagnostics/shard-${shard}")
+            rerunFailedSpecsWithVideo(shard)
         }
     }
     return passed
+}
+
+// Video is off in the main run. Reruns the shard's failed specs with video on, for the archived artifacts.
+// The rerun's result does not change the build result. Restarts the stopped containers of the shard.
+def rerunFailedSpecsWithVideo(int shard) {
+    def failedSpecsFile = "e2e-tests/report/failed-specs/shard-${shard}.txt"
+    if (!fileExists(failedSpecsFile)) {
+        return
+    }
+    def failedSpecs = readFile(failedSpecsFile).trim().split('\n').join(',')
+    if (!failedSpecs) {
+        return
+    }
+    echo "Shard ${shard}: rerunning failed specs with video: ${failedSpecs}"
+    withEnv(["CYPRESS_SPECS=${failedSpecs}", "CYPRESS_VIDEO=true"]) {
+        try {
+            dockerCompose.upCmd(
+                environment: getUserUidGidPair(),
+                composeFile: env.DOCKER_COMPOSE_FILE,
+                options: ["--abort-on-container-exit", "--exit-code-from cypress"]
+            )
+        } catch (e) {
+            echo "Shard ${shard}: the rerun failed too."
+        }
+    }
 }
 
 // Copies the GraphDB container output and its logs directory (including the heap dump written on

@@ -11,6 +11,8 @@
 // This function is called when a project is opened or re-opened (e.g. due to
 // the project's config changing)
 
+import { appendFileSync, mkdirSync, rmSync } from 'fs';
+import { dirname } from 'path';
 import { deleteSync } from 'del';
 import failed from 'cypress-failed-log/src/failed.js';
 import installLogsPrinter from 'cypress-terminal-report/src/installLogsPrinter.js';
@@ -33,7 +35,21 @@ export default (on, config) => {
         }
     });
 
+    // CI reruns the specs listed in FAILED_SPECS_FILE with video on.
+    const failedSpecsFile = process.env.FAILED_SPECS_FILE;
+
+    on('before:run', () => {
+        if (failedSpecsFile) {
+            mkdirSync(dirname(failedSpecsFile), {recursive: true});
+            rmSync(failedSpecsFile, {force: true});
+        }
+    });
+
     on('after:spec', (spec, results) => {
+        if (failedSpecsFile && results && (results.error || results.stats.failures > 0)) {
+            appendFileSync(failedSpecsFile, spec.relative + '\n');
+        }
+
         // Retry tracking
         if (!retryTracker.flaky) {
             retryTracker.flaky = {};
