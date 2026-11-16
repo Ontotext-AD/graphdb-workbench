@@ -6,6 +6,7 @@ import {RepositorySteps} from './repository-steps';
 import {BaseSteps} from './base-steps';
 import {EnvironmentStubs} from '../stubs/environment-stubs';
 import {LayoutSteps} from './layout-steps';
+import {ConfirmDialogSteps} from './confirm-dialog-steps';
 
 class HomeSteps extends BaseSteps {
 
@@ -156,7 +157,7 @@ class HomeSteps extends BaseSteps {
 
     static verifyQueryLink(queryName, modifiesRepoModal) {
         HomeSteps.selectSPARQLQueryToExecute(queryName);
-        modifiesRepoModal ? cy.get('.modal-body').should('be.visible') : cy.get('.modal-body').should('not.exist');
+        modifiesRepoModal ? ConfirmDialogSteps.getDialog().should('be.visible') : ConfirmDialogSteps.getDialog().should('not.exist');
         HomeSteps.visitAndWaitLoader();
     }
 

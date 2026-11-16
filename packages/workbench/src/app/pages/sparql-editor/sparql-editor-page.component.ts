@@ -39,6 +39,8 @@ import {
   SubscriptionList,
   WindowService,
   GraphConfigService,
+  GuidesService,
+  RestrictionContextService,
 } from '@ontotext/workbench-api';
 import {mapConnectorCheckResultToBeforeUpdateQueryResult} from './mappers/connector-check-result-to-before-update-query-result.mapper';
 
@@ -117,6 +119,8 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
   private readonly monitoringService = service(MonitoringService);
   private readonly eventService = service(EventService);
   private readonly graphConfigService = service(GraphConfigService);
+  private readonly guidesService = service(GuidesService);
+  private readonly restrictionContextService = service(RestrictionContextService);
 
   // ================================
   // Private variables
@@ -191,6 +195,11 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
   private isExternalClickHandlerOperationEnabled = false;
   private selectedPlugin?: string;
   private readonly boundBeforeunloadHandler = () => this.beforeunloadHandler();
+  /**
+   * The <code>clearYasguiState</code> value of an initialization deferred while the view is restricted, or
+   * <code>undefined</code> when no initialization is pending.
+   */
+  private pendingInitClearYasguiState?: boolean;
 
   // ================================
   // Public variables
@@ -328,17 +337,16 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
     } else if (queryParams.hasOwnProperty(SharedQueryParams.query)) {
       // init new tab from shared query link
       this.initTabFromSharedQuery(queryParams);
+    } else if (this.guidesService.isActive()) {
+      // The guide steps expect a new tab with the default query.
+      void this.openNewTab(undefined);
     }
-    // TODO: uncomment when GuidesService is available in the api module
-    // else if (GuidesService.isActive()) {
-    // openNewTab();
-    // }
   }
 
   private initTabFromSavedQuery(queryParams: Params) {
     const savedQueryName = queryParams[SavedQueryParams.name];
     const savedQueryOwner = queryParams[SavedQueryParams.owner];
-    const isExecuteRequested = queryParams[YasguiQueryParams.EXECUTE] === 'true';
+    const isExecuteRequested = this.isExecuteRequested(queryParams);
     this.sparqlService.getSavedQuery(savedQueryName, savedQueryOwner)
       .then((savedQueryList) => {
         const savedQuery = savedQueryList.getFirstQuery();
@@ -360,7 +368,7 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
     const queryName = queryParams[SharedQueryParams.name];
     const query = queryParams[SharedQueryParams.query];
     const queryOwner = queryParams[SharedQueryParams.owner];
-    const isExecuteRequested = queryParams[SharedQueryParams.execute] === 'true';
+    const isExecuteRequested = this.isExecuteRequested(queryParams);
     const sharedQueryModel = new SavedQuery({
       queryName: queryName,
       query: query,
@@ -443,6 +451,17 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
       queryParams,
       replaceUrl: true,
     });
+  }
+
+  /**
+   * Checks whether the URL asks for the opened query to be executed right away.
+   * The legacy views write `execute: true` as a parameter without a value (`?execute`), so it counts as a request too.
+   * @param queryParams - the query parameters of the current URL.
+   * @returns true if `execute` is `true` or has no value.
+   */
+  private isExecuteRequested(queryParams: Params): boolean {
+    const execute = queryParams[YasguiQueryParams.EXECUTE];
+    return execute === 'true' || execute === '';
   }
 
   private async autoExecuteQueryIfRequested(isRequested: boolean) {
@@ -639,11 +658,15 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
    * Initializes the SPARQL editor page.
    *
    * @param clearYasguiState if set to true, the Yasgui will reinitialize and clear tab results. Queries will remain.
-   * This should be set to true when the repository is changed, to prevent showing incorrect results, but it shouldn't
-   * be set to true when the language is changed, because the results will be correct, and the user might lose their
-   * results without a need.
+   * The active repository is then stored as the last used one. This should be set to true when the repository is
+   * changed, to prevent showing incorrect results, but it shouldn't be set to true when the language is changed,
+   * because the results will be correct, and the user might lose their results without a need.
    */
   private init(clearYasguiState: boolean) {
+    // The last used repository is the one the editor shows results for, so it changes only when the editor loads.
+    if (clearYasguiState && this.activeRepositoryReference) {
+      this.persistLastUsedRepository(this.activeRepositoryReference.id);
+    }
     // This script check is required, because of the following scenario:
     // I am in the SPARQL view;
     // Then I go to a different view and change the language;
@@ -684,6 +707,7 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
   private subscribeHandlers() {
     this.subscriptions.addAll([
       this.repositoryContextService.onSelectedRepositoryChanged((repositoryReference) => this.repositoryChangedHandler(repositoryReference), () => this.shouldAllowRepositoryChanged()),
+      this.restrictionContextService.onIsViewRestrictedChanged((isViewRestricted) => this.isViewRestrictedChangedHandler(isViewRestricted)),
       this.languageContextService.onSelectedLanguageChanged(() => this.onLanguageChangeHandler(), () => this.shouldAllowLanguageChanged(), true),
       this.eventService.addCancellationHandler(EventName.NAVIGATION_START, () => this.shouldCancelNavigationOnLocationChange()),
       this.eventService.addCancellationHandler(EventName.LOGOUT, () => this.shouldCancelLogout()),
@@ -708,12 +732,43 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
     this.activeRepositoryReference = repositoryReference;
     this.isOntopRepo = this.repositoryContextService.isActiveRepoOntopType();
     const lastUsedRepositoryId = this.sparqlStorageService.getLastUsedRepository();
-    if (lastUsedRepositoryId === this.activeRepositoryReference.id) {
-      this.init(false);
-    } else {
-      this.init(true);
-      this.persistLastUsedRepository(this.activeRepositoryReference.id);
+    const clearYasguiState = lastUsedRepositoryId !== this.activeRepositoryReference.id;
+    this.initWhenNotRestricted(clearYasguiState);
+  }
+
+  /**
+   * Initializes the page, or defers the initialization while the view is restricted, e.g. without read access to
+   * the selected repository: initializing would request its namespaces, which fails with 401 and redirects to login.
+   *
+   * @param clearYasguiState see {@link init}.
+   */
+  private initWhenNotRestricted(clearYasguiState: boolean) {
+    if (this.restrictionContextService.isViewRestricted()) {
+      this.pendingInitClearYasguiState = (this.pendingInitClearYasguiState ?? false) || clearYasguiState;
+      return;
     }
+    // An initialization deferred for a repository that is no longer selected is not needed anymore.
+    this.pendingInitClearYasguiState = undefined;
+    this.init(clearYasguiState);
+  }
+
+  /**
+   * Runs the initialization deferred while the view was restricted, once the restriction is lifted for the same
+   * repository. When a repository change lifts it, {@link repositoryChangedHandler} initializes the page.
+   *
+   * @param isViewRestricted - whether the view is restricted now.
+   */
+  private isViewRestrictedChangedHandler(isViewRestricted: boolean) {
+    if (isViewRestricted || this.pendingInitClearYasguiState === undefined) {
+      return;
+    }
+    // A repository change lifted the restriction: repositoryChangedHandler initializes the page for the new repository.
+    if (this.repositoryContextService.getSelectedRepository()?.id !== this.activeRepositoryReference?.id) {
+      return;
+    }
+    const clearYasguiState = this.pendingInitClearYasguiState;
+    this.pendingInitClearYasguiState = undefined;
+    this.init(clearYasguiState);
   }
 
   /**

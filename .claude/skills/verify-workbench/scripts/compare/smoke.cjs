@@ -21,7 +21,7 @@ const known = {};
 if (o.baseline) {
     for (const r of JSON.parse(fs.readFileSync(o.baseline, 'utf8'))) known[r.route] = new Set(r.all);
 }
-const ANGULAR_ROUTES = ['/sparql-new', '/graph-navigator'];   // packages/workbench/src/app/app.routes.ts
+const ANGULAR_ROUTES = ['/sparql', '/graph-navigator'];   // packages/workbench/src/app/app.routes.ts
 
 (async () => {
     const {browser, ctx} = await launch({viewport: o.viewport, repo: o.repo, theme: o.theme});

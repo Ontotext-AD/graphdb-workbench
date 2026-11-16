@@ -13,6 +13,10 @@ export class YasrSteps extends BaseSteps {
         return cy.get('.yasr_header');
     }
 
+    static getPluginSelectors() {
+        return YasrSteps.getYasr().find('.yasr_btnGroup');
+    }
+
     static getResponseInfo() {
         return YasrSteps.getYasr().find('.yasr_response_chip');
     }

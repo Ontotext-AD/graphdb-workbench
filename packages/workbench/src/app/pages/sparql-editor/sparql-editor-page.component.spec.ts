@@ -16,6 +16,7 @@ import {
   RepositoryContextService,
   RepositoryList,
   RepositoryStorageService,
+  RestrictionContextService,
   service,
 } from '@ontotext/workbench-api';
 import {BeforeUpdateQueryStatus} from '../../components/yasgui-component-facade/models/yasgui/before-update-query-result';
@@ -136,6 +137,70 @@ describe('SparqlEditorPageComponent', () => {
         messageLabelKey,
         parameters: [{key: 'name', value: 'my_index'}],
       });
+    });
+  });
+
+  describe('when the view is restricted', () => {
+    const repositoryContextService = service(RepositoryContextService);
+    const restrictionContextService = service(RestrictionContextService);
+    const readableRepository = new Repository({id: 'readable-repo', location: ''});
+    const restrictedRepository = new Repository({id: 'restricted-repo', location: ''});
+    let unsubscribeRestriction: () => void;
+    let getNamespaces: jest.SpyInstance;
+
+    beforeEach(async () => {
+      // Given the restriction is recalculated on a repository change before the page hears of it, as at bootstrap
+      fixture.destroy();
+      unsubscribeRestriction = repositoryContextService.onSelectedRepositoryChanged((repository) =>
+        restrictionContextService.updateIsViewRestricted(repository?.id === restrictedRepository.id));
+      repositoryContextService.updateRepositoryList(new RepositoryList([readableRepository, restrictedRepository]));
+      fixture = TestBed.createComponent(SparqlEditorPageComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+      getNamespaces = jest.spyOn(service(NamespacesService), 'getNamespaces').mockResolvedValue(new NamespaceMap({}));
+      // And the page is open on a repository the user cannot read, so it doesn't load
+      await repositoryContextService.updateSelectedRepository(restrictedRepository.toRepositoryReference());
+      await fixture.whenStable();
+    });
+
+    afterEach(async () => {
+      unsubscribeRestriction();
+      await repositoryContextService.updateSelectedRepository(undefined);
+      restrictionContextService.updateIsViewRestricted(false);
+      repositoryContextService.updateRepositoryList(new RepositoryList());
+    });
+
+    it('should load the view once when a readable repository is selected', async () => {
+      // When the user selects a repository they can read
+      await repositoryContextService.updateSelectedRepository(readableRepository.toRepositoryReference());
+      await fixture.whenStable();
+
+      // Then the view loads once
+      expect(getNamespaces).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not clear the results when the user comes back from a repository they cannot read', async () => {
+      // Given the view is loaded for a repository the user can read
+      await repositoryContextService.updateSelectedRepository(readableRepository.toRepositoryReference());
+      await fixture.whenStable();
+
+      // When the user opens a repository they cannot read and then goes back
+      await repositoryContextService.updateSelectedRepository(restrictedRepository.toRepositoryReference());
+      await fixture.whenStable();
+      await repositoryContextService.updateSelectedRepository(readableRepository.toRepositoryReference());
+      await fixture.whenStable();
+
+      // Then the editor doesn't clear the results of that repository
+      expect(component.yasguiConfig()?.clearState).toBe(false);
+    });
+
+    it('should load the view when the restriction is lifted for the selected repository', async () => {
+      // When the restriction is lifted without a repository change, e.g. the user gets read access
+      restrictionContextService.updateIsViewRestricted(false);
+      await fixture.whenStable();
+
+      // Then the view loads once
+      expect(getNamespaces).toHaveBeenCalledTimes(1);
     });
   });
 });

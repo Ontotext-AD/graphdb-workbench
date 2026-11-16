@@ -2,8 +2,7 @@ import {QueryStubs} from "../../../stubs/yasgui/query-stubs";
 import {SparqlEditorSteps} from "../../../steps/sparql-editor-steps";
 import {YasrSteps} from "../../../steps/yasgui/yasr-steps";
 import {YasqeSteps} from "../../../steps/yasgui/yasqe-steps";
-import {JsonLdModalSteps} from "../../../steps/json-ld-modal-steps";
-import {GraphsOverviewSteps} from "../../../steps/explore/graphs-overview-steps";
+import {DownloadSettingsDialogSteps} from "../../../steps/yasgui/download-settings-dialog-steps";
 
 describe('Download results', () => {
     let repositoryId;
@@ -60,13 +59,13 @@ describe('Download results', () => {
             // When I select it
             YasrSteps.selectDownloadAsOption(1);
             // The dialog for download should appear
-            JsonLdModalSteps.getJSONLDModal().should('be.visible');
+            DownloadSettingsDialogSteps.getDialog().should('be.visible');
             // Then I see the default settings
-            JsonLdModalSteps.getSelectedJSONLDModeField().should('have.value', 'http://www.w3.org/ns/json-ld#expanded');
+            DownloadSettingsDialogSteps.getModeSelect().should('contain.text', 'http://www.w3.org/ns/json-ld#expanded');
             // When I click to export
-            JsonLdModalSteps.clickExportJSONLD();
+            DownloadSettingsDialogSteps.export();
             // Then the dialog should disappear
-            JsonLdModalSteps.getJSONLDModal().should('not.exist');
+            DownloadSettingsDialogSteps.getDialog().should('not.exist');
             // And the file should have downloaded
             // TODO: verify the file exists
             // JsonLdModalSteps.verifyFileExists('query-result.jsonld');
@@ -74,12 +73,12 @@ describe('Download results', () => {
             // When I open the dialog again
             YasrSteps.selectDownloadAsOption(1);
             // And I change the JSON-LD form
-            GraphsOverviewSteps.selectJSONLDMode(0);
+            DownloadSettingsDialogSteps.selectMode(0);
             // And type in a context
-            JsonLdModalSteps.typeJSONLDFrame('https://w3c.github.io/json-ld-api/tests/compact/0007-context.jsonld');
+            DownloadSettingsDialogSteps.typeFrame('https://w3c.github.io/json-ld-api/tests/compact/0007-context.jsonld');
             // And export
-            JsonLdModalSteps.clickExportJSONLD();
-            JsonLdModalSteps.getJSONLDModal().should('not.exist');
+            DownloadSettingsDialogSteps.export();
+            DownloadSettingsDialogSteps.getDialog().should('not.exist');
             // Then the file should have downloaded
             // TODO: verify the file exists
             // JsonLdModalSteps.verifyFileExists('query-result.jsonld');
@@ -95,12 +94,12 @@ describe('Download results', () => {
             // When I select it
             YasrSteps.selectDownloadAsOption(1);
             // And I change the JSON-LD form
-            GraphsOverviewSteps.selectJSONLDMode(0);
+            DownloadSettingsDialogSteps.selectMode(0);
             // And type in a context
-            JsonLdModalSteps.typeJSONLDFrame('https://w3c.github.io/json-ld-api/tests/compact/0007-context.jsonld');
+            DownloadSettingsDialogSteps.typeFrame('https://w3c.github.io/json-ld-api/tests/compact/0007-context.jsonld');
             // And export
-            JsonLdModalSteps.clickExportJSONLD();
-            JsonLdModalSteps.getJSONLDModal().should('not.exist');
+            DownloadSettingsDialogSteps.export();
+            DownloadSettingsDialogSteps.getDialog().should('not.exist');
             // Then the file should have downloaded
             // TODO: verify the file exists
             // JsonLdModalSteps.verifyFileExists('query-result.jsonld');

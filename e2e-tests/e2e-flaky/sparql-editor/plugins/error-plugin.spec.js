@@ -36,7 +36,7 @@ describe('Error handling', () => {
         // and error message sent by server,
         ErrorPluginSteps.getErrorPluginBody().should('have.text', SHORT_ERROR_BODY);
         // and toolbar with plugins to not be visible,
-        YasrSteps.getResultHeader().should('not.be.visible');
+        YasrSteps.getPluginSelectors().should('not.be.visible');
         // and message info to not be visible,
         YasrSteps.getResponseInfo().should('not.be.visible');
         // and show full/less error message not be visible
@@ -58,13 +58,19 @@ describe('Error handling', () => {
         // and error message sent by server,
         ErrorPluginSteps.getErrorPluginBody().should('have.text', LESS_MESSAGE);
         // and toolbar with plugins to not be visible,
-        YasrSteps.getResultHeader().should('not.be.visible');
+        YasrSteps.getPluginSelectors().should('not.be.visible');
         // and message info to not be visible,
         YasrSteps.getResponseInfo().should('not.be.visible');
         ErrorPluginSteps.getShowFullErrorMessage().should('be.visible');
         ErrorPluginSteps.getShowLessErrorMessage().should('not.exist');
 
         // When click on show full message
+        // A fixed wait breaks the e2e rule "no cy.wait(ms)", because nothing in the page tells when the external
+        // ontotext-yasgui-web-component is done drawing. At query start it defers a result draw by 100 ms. When the
+        // stubbed error comes sooner, that draw runs after the error is shown and rebuilds it collapsed, so a click
+        // that lands before it is lost. Remove the wait once the component no longer redraws a shown result.
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
+        cy.wait(500);
         ErrorPluginSteps.getShowFullErrorMessage().click();
 
         // Then I expect to see full message

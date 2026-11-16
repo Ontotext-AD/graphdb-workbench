@@ -979,6 +979,14 @@ describe('User and Access', () => {
         ],
     };
 
+    // The new workbench views show the restriction block instead of the legacy no-authority panel.
+    // The selector stays in the spec on purpose: runChecks takes a map of selectors, as every other check here does.
+    const pageRestrictedChecks = {
+        '[data-test="page-restrictions"]': [
+            'be.visible',
+        ],
+    };
+
     const hasAuthChecks = {
         '.no-authority-panel .alert-warning': [
             'not.exist',
@@ -1026,7 +1034,7 @@ describe('User and Access', () => {
             path: ['SPARQL'],
             expectedTitle: 'SPARQL Query & Update',
             expectedUrl: '/sparql',
-            checks: noAuthChecks,
+            checks: pageRestrictedChecks,
         },
 
         // TTYG
@@ -1178,7 +1186,7 @@ describe('User and Access', () => {
             path: ['SPARQL'],
             expectedTitle: 'SPARQL Query & Update',
             expectedUrl: '/sparql',
-            checks: noAuthChecks,
+            checks: pageRestrictedChecks,
         },
 
         // Setup

@@ -41,7 +41,7 @@ prints the HTML report (swipe slider, side by side, AE pixel table). Hand that p
 
 - The baseline is always `compare.sh --ref <ref>`; another worktree's `dist/` or files swapped in place are no
   baseline.
-- Identical code compares at 0 AE. Live data is noise: `/monitor/system` charts ~1 % AE, `/sparql-new` ~20 px
+- Identical code compares at 0 AE. Live data is noise: `/monitor/system` charts ~1 % AE, `/sparql` ~20 px
   (caret blink). A diff on a changed page is evidence, a diff elsewhere a regression or noise: open the diff PNG
   before claiming either.
 - A/B of a dependency (styleguide …): `--ref HEAD --base-dep <pkg>=<dir or npm-pack .tgz>`, same commit on both

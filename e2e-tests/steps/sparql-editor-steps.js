@@ -1,7 +1,9 @@
 import {YasqeSteps} from "./yasgui/yasqe-steps";
 import {YasrSteps} from './yasgui/yasr-steps.js';
+import {ConfirmDialogSteps} from './confirm-dialog-steps.js';
 
 const VIEW_URL = '/sparql';
+const RUNNING_QUERY_MESSAGE = 'You have running 1 query. The query will be aborted.';
 
 export class SparqlEditorSteps {
     static visitSparqlEditorPage(urlParameters) {
@@ -35,5 +37,14 @@ export class SparqlEditorSteps {
 
     static verifyUrl() {
         cy.url().should('include', `${Cypress.config('baseUrl')}${VIEW_URL}`);
+    }
+
+    /**
+     * Checks that the confirmation dialog warns that the running query will be aborted.
+     * @returns The content of the dialog, for further checks.
+     */
+    static verifyRunningQueryConfirmation() {
+        ConfirmDialogSteps.getDialog().should('be.visible');
+        return ConfirmDialogSteps.getContent().should('contain.text', RUNNING_QUERY_MESSAGE);
     }
 }

@@ -1,5 +1,5 @@
 import {HttpService} from '../../http/http.service';
-import {SavedQueryListResponse} from './response/saved-query-response';
+import {SavedQueryListResponse, SavedQueryResponse} from './response/saved-query-response';
 import {SaveQueryRequest} from './request/save-query-request';
 
 /**
@@ -13,9 +13,10 @@ export class SparqlRestService extends HttpService {
    * Retrieves a saved SPARQL query by its name and owner.
    * @param queryName - The name of the saved query to retrieve.
    * @param owner - The owner of the saved query. Optional.
-   * @returns A promise that resolves to a {@link SavedQueryListResponse} containing the saved query or queries.
+   * @returns A promise that resolves to the saved query when it exists, or to an empty {@link SavedQueryListResponse}
+   * when it does not.
    */
-  getSavedQuery(queryName: string, owner: string): Promise<SavedQueryListResponse> {
+  getSavedQuery(queryName: string, owner: string): Promise<SavedQueryListResponse | SavedQueryResponse> {
     const params: Record<string, string> = {
       name: queryName,
     };

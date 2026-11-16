@@ -115,6 +115,24 @@ describe('SparqlService', () => {
     });
 
     describe('response mapper – field mapping', () => {
+      test('should map the saved query when the API returns it as a single object', async () => {
+        // Given the API returns the found query as an object, not as an array
+        securityContextService.updateAuthenticatedUser(new AuthenticatedUser({username: 'admin'}));
+        const raw = rawQuery({name: 'Add statements', body: 'INSERT DATA { <urn:a> <urn:b> <urn:c> }', owner: 'admin'});
+        TestUtil.mockResponse(new ResponseMock(savedQueryUrl('Add statements', 'admin')).setResponse(raw));
+
+        // When the service fetches the saved query
+        const result = await sparqlService.getSavedQuery('Add statements', 'admin');
+
+        // Then the list should hold that query
+        expect(result.getItems()).toHaveLength(1);
+        const query = result.getFirstQuery()!;
+        expect(query.queryName).toBe('Add statements');
+        expect(query.query).toBe('INSERT DATA { <urn:a> <urn:b> <urn:c> }');
+        // And the current user should be able to edit it
+        expect(query.readonly).toBe(false);
+      });
+
       test('should correctly map all fields from the raw response to SavedQuery', async () => {
         // Given a fully populated query response
         securityContextService.updateAuthenticatedUser(new AuthenticatedUser({username: 'admin'}));

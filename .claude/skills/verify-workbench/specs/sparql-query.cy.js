@@ -35,19 +35,19 @@ describe('verify: SPARQL query', () => {
         runQueryAndReadResults('02-results', 'response-info');
     });
 
-    it('runs the same SELECT in the new editor at /sparql-new', () => {
-        // Known product issue (in Jira): /sparql-new can throw "getHumanReadableSeconds is not a function"
+    it('runs the same SELECT when the editor is opened by URL with ?repositoryId=', () => {
+        // Known product issue (in Jira): the SPARQL view can throw "getHumanReadableSeconds is not a function"
         // while a query runs. Record it instead of failing; any other uncaught error still fails below.
         const appErrors = [];
         collectAppErrors(appErrors);
-        // No menu entry: the route is reached by URL only, and ?repositoryId= selects the repository.
-        cy.visit(`/sparql-new?repositoryId=${repositoryId}`);
+        // ?repositoryId= selects the repository.
+        cy.visit(`/sparql?repositoryId=${repositoryId}`);
         cy.get('ontotext-yasgui .CodeMirror').should('be.visible');
         cy.get('.active-repository').should('contain', repositoryId);
-        proof('03-sparql-new-editor');
-        runQueryAndReadResults('04-sparql-new-results', 'sparql-new-response-info');
+        proof('03-sparql-url-editor');
+        runQueryAndReadResults('04-sparql-url-results', 'sparql-url-response-info');
         cy.then(() => {
-            recordSideEffect('sparql-new-uncaught-app-errors', appErrors);
+            recordSideEffect('sparql-url-uncaught-app-errors', appErrors);
             appErrors.forEach((msg) => expect(msg).to.match(/getHumanReadableSeconds is not a function/));
         });
     });
