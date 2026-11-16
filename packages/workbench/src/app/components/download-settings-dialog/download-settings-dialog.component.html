@@ -1,4 +1,4 @@
-<div class="dialog-content">
+<div class="dialog-content" data-test="download-settings-dialog">
   <form class="export-settings-form">
     <div class="form-row">
       <label class="label-base-regular" for="jsonldMode">
@@ -13,6 +13,11 @@
       <div class="field-input">
         <p-select
           inputId="jsonldMode"
+          data-test="download-settings-mode-select"
+          [pt]="{
+            list: {'data-test': 'download-settings-mode-options'},
+            option: {'data-test': 'download-settings-mode-option'}
+          }"
           name="jsonldMode"
           [(ngModel)]="currentMode"
           [options]="JSONLDModeOptions"
@@ -34,7 +39,7 @@
             </span>
         </label>
         <div class="field-input">
-          <input pInputText id="jsonldFrame" name="jsonldFrame" type="text"
+          <input pInputText id="jsonldFrame" name="jsonldFrame" type="text" data-test="download-settings-frame-input"
                  [(ngModel)]="link"
                  [placeholder]="'components.dialog.download_settings.frame.uri_placeholder' | transloco"/>
         </div>
@@ -53,7 +58,7 @@
             </span>
         </label>
         <div class="field-input">
-          <input pInputText id="jsonldContext" name="jsonldContext" type="text"
+          <input pInputText id="jsonldContext" name="jsonldContext" type="text" data-test="download-settings-context-input"
                  [(ngModel)]="link"
                  [placeholder]="'components.dialog.download_settings.context.uri_placeholder' | transloco"/>
         </div>

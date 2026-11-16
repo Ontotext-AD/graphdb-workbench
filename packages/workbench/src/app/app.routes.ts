@@ -4,7 +4,7 @@ import {ViewRestrictionCondition} from '@ontotext/workbench-api';
 
 export const routes: WorkbenchRoute[] = [
   {
-    path: 'sparql-new',
+    path: 'sparql',
     data: {
       title: 'sparql_editor.title',
       helpInfo: 'sparql_editor.helpInfo',

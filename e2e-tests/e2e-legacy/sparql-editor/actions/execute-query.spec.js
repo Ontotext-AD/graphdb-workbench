@@ -4,7 +4,6 @@ import {QueryStubs} from "../../../stubs/yasgui/query-stubs";
 import {YasqeSteps} from "../../../steps/yasgui/yasqe-steps";
 
 describe('Execute query', () => {
-
     let repositoryId;
 
     beforeEach(() => {
@@ -23,9 +22,8 @@ describe('Execute query', () => {
     });
 
     it('Should be able to execute query from each editor tab', () => {
-        cy.intercept('POST', `/repositories/${repositoryId}`).as('query');
         YasqeSteps.executeQuery();
-        cy.wait('@query').then((interception) => {
+        cy.wait(`@${repositoryId}-stub-query`).then((interception) => {
             expect(interception.request.method).to.equal('POST');
             const headers = interception.request.headers;
             expect(headers).to.have.property('x-graphdb-local-consistency');
@@ -35,7 +33,7 @@ describe('Execute query', () => {
         YasguiSteps.openANewTab();
         YasguiSteps.getTabs().should('have.length', 2);
         YasqeSteps.executeQuery();
-        cy.wait('@query').then((interception) => {
+        cy.wait(`@${repositoryId}-stub-query`).then((interception) => {
             expect(interception.request.method).to.equal('POST');
             const headers = interception.request.headers;
             expect(headers).to.have.property('x-graphdb-local-consistency');

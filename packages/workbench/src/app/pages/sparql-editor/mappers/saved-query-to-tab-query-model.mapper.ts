@@ -9,6 +9,6 @@ import {TabQueryModel} from '../../../components/yasgui-component-facade/models/
  */
 export const mapSavedQueryToTabQueryModel: MapperFn<SavedQuery, TabQueryModel> = (data) => {
   return new TabQueryModel(
-    data.queryName, data.query, data.owner, data.isPublic, data.readonly
+    data.queryName || undefined, data.query, data.owner, data.isPublic, data.readonly
   );
 };

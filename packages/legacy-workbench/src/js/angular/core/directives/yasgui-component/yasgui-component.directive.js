@@ -1,5 +1,5 @@
 import 'angular/core/services/translation.service';
-import 'angular/sparql-editor/share-query-link.service';
+import 'angular/core/directives/yasgui-component/share-query-link.service';
 import {
     queryPayloadFromEvent,
     savedQueriesResponseMapper,

@@ -5,6 +5,7 @@ import {YasrSteps} from "../../steps/yasgui/yasr-steps";
 import {QueryStubs} from "../../stubs/yasgui/query-stubs";
 import {GraphsOverviewSteps} from "../../steps/explore/graphs-overview-steps";
 import {JsonLdModalSteps} from "../../steps/json-ld-modal-steps";
+import {DownloadSettingsDialogSteps} from "../../steps/yasgui/download-settings-dialog-steps";
 
 // The workbench requests RDF 1.2 by adding the "version" media type parameter to the Accept header.
 // The parameter must be present on every RDF media range and must precede the weight ("q"),
@@ -75,7 +76,7 @@ describe('RDF version in the Accept header', () => {
             // When I download the results as JSON-LD with the default settings
             YasrSteps.openDownloadAsDropdown();
             YasrSteps.selectDownloadAsOption(1);
-            JsonLdModalSteps.clickExportJSONLD();
+            DownloadSettingsDialogSteps.export();
 
             // Then the version should follow the JSON-LD profile
             verifyAcceptHeader('@download', JSONLD_EXPANDED_ACCEPT);

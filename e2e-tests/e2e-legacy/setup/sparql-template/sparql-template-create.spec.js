@@ -119,6 +119,10 @@ describe('SPARQL create template', () => {
         SparqlCreateUpdateSteps.verifyUrl();
         // And I expect to see a confirmation dialog.
         ModalDialogSteps.getDialog().should('be.visible');
+        // When I confirm, so the page has no unsaved changes that would block the next page load
+        ModalDialogSteps.clickOnConfirmButton();
+        // Then I expect to see the SPARQL templates catalog
+        SparqlTemplatesSteps.verifyUrl();
     });
 
     it('Should redirect to templates catalog view when repository is changed', () => {
@@ -154,5 +158,11 @@ describe('SPARQL create template', () => {
 
         // Then I expect template to not be saved and stay on sparql template create view.
         SparqlCreateUpdateSteps.verifyUrl();
+
+        // When I leave the view and confirm, so the page has no unsaved changes that would block the next page load
+        MainMenuSteps.clickOnMenu('Import');
+        ModalDialogSteps.clickOnConfirmButton();
+        // Then I expect to be navigated to the import view
+        ImportUserDataSteps.verifyUserImportUrl();
     });
 });

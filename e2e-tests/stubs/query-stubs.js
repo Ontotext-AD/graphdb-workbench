@@ -7,10 +7,11 @@ export class QueryStubs {
         cy.intercept(url, {fixture, delay: withDelay}).as(alias);
     }
 
-    static stubQueryErrorResponse(repositoryId, statusCode, errorMessage) {
+    static stubQueryErrorResponse(repositoryId, statusCode, errorMessage, withDelay = 0) {
         cy.intercept('POST', `/repositories/${repositoryId}`, {
             statusCode,
-            body: errorMessage
+            body: errorMessage,
+            delay: withDelay
         }).as('queryErrorResultStub');
     }
 }
