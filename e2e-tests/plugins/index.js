@@ -23,7 +23,14 @@ export default (on, config) => {
     // `on` is used to hook into various events Cypress emits
     // `config` is the resolved Cypress config
     on('task', {
-        failed: failed()
+        failed: failed(),
+        // Deletes all downloaded files, so a test never passes on a file from an earlier test or attempt.
+        clearDownloads: () => {
+            rmSync(config.downloadsFolder, {recursive: true, force: true});
+            // Keep the folder: the browser saves downloads into it.
+            mkdirSync(config.downloadsFolder, {recursive: true});
+            return null;
+        }
     });
 
     installLogsPrinter(on, {

@@ -29,7 +29,7 @@ describe('Graphql: export endpoint definition', () => {
         // Then I expect the endpoint definition to be exported
         cy.wait('@export-endpoint-definition').then((interception) => {
             expect(interception.response.statusCode).to.eq(200);
-            cy.readFile('cypress/downloads/swapi-planets.yaml');
+            cy.readFile(`${Cypress.config('downloadsFolder')}/swapi-planets.yaml`);
         });
     });
 });
