@@ -65,7 +65,6 @@ describe('GraphwiseReactodiaFacadeComponent', () => {
     const {ui} = (getReactodiaElement() as unknown as {config: {ui: unknown}}).config;
 
     expect(ui).toEqual({
-      actionsToolbar: {dock: 'ne'},
       nodeActions: ['group', 'remove', 'expand', 'connections', 'add-to-filter', 'annotate', 'establish-link']
     });
   });
