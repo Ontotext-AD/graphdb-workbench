@@ -10,8 +10,6 @@ services:
         -Dgraphdb.stats.default=disabled
         -Dgraphdb.foreground=
         -Dgraphdb.logger.root.level=ERROR
-    ports:
-      - '7200:7200'
     volumes:
       - ./e2e-tests/fixtures/graphdb-import:/opt/home/import-data/
       - ./e2e-tests/fixtures/graphdb.license:/opt/graphdb/home/conf/graphdb.license
@@ -52,6 +50,10 @@ services:
       # - DBUS_SESSION_BUS_ADDRESS=/dev/null
       - CYPRESS_baseUrl=http://workbench:${WORKBENCH_PORT}
       - NO_COLOR=true
+      # Per-shard folders: shards share the ./e2e-tests mount and each run trashes its own folders on start.
+      - CYPRESS_screenshotsFolder=report/screenshots/shard-${E2E_SHARD}
+      - CYPRESS_videosFolder=report/videos/shard-${E2E_SHARD}
+      - CYPRESS_downloadsFolder=cypress/downloads/shard-${E2E_SHARD}
     user: "${UID}:${GID}"
     working_dir: /e2e
     volumes:
@@ -59,6 +61,7 @@ services:
       # Uncomment this if using a graphical interface for Cypress
       # - /tmp/.X11-unix:/tmp/.X11-unix
     entrypoint: ["cypress", "run", "--config-file", "cypress-legacy.config.js"]
+    command: ["--spec", "${CYPRESS_SPECS}"]
     networks:
       - single-spa-network
 
