@@ -71,7 +71,7 @@ export class GraphsOverviewSteps {
     }
 
     static verifyFileExists(fileName) {
-        cy.readFile('cypress/downloads/' + fileName);
+        cy.readFile(`${Cypress.config('downloadsFolder')}/${fileName}`);
     }
 
     static getDownloadAllButtons() {
