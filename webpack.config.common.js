@@ -171,6 +171,10 @@ module.exports = (webpackConfigEnv, argv) => {
                       to: 'css'
                     },
                     {
+                      from: 'packages/root-config/src/styles/fonts',
+                      to: 'css/fonts'
+                    },
+                    {
                         from: 'packages/legacy-workbench/node_modules/angularjs-slider/dist/rzslider.min.css',
                         to: 'js/lib/rzslider/rzslider.min.css'
                     },
