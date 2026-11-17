@@ -167,7 +167,7 @@ const moduleDefinition = function(translations) {
                             if (!route.path) {
                                 return $q.defer().resolve();
                             }
-                            return import(`angular/${route.path}`).then((module) => {
+                            return import(`./js/angular/${route.path}`).then((module) => {
                                 $ocLazyLoad.inject(route.module)
                                     .catch((err) => {
                                         logger.info(err);
