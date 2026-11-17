@@ -1,7 +1,7 @@
 app-yasgui-component-facade {
   .yasr {
     /* Keep the specificity low (0,1,2), so Bootstrap's "a:not([href]):not([tabindex])" (0,2,1) still wins for links
-    without href (e.g. the pivot table sort icons) and they inherit the text colour. */
+    without href and they inherit the text colour. The pivot table sort icons set their own colour below. */
     a {
       color: var(--gw-link-idle-color);
 
@@ -89,6 +89,13 @@ app-yasgui-component-facade {
         .pvtFilterBox .pvtCheckContainer,
         .pvtFilterBox h4 span {
           font-size: 1rem;
+        }
+
+        /* The sort order links (↕ ↔) have no href, so they inherit the library's text colour (#333, see the link rule at
+        the top), which is almost invisible in the dark theme. Same colour as the sort icons of the results table. */
+        .pvtRowOrder,
+        .pvtColOrder {
+          color: var(--gw-datatable-sort-icon-color);
         }
 
         .yasr_fallback_info:not(:empty) {
