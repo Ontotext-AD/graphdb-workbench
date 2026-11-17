@@ -2,6 +2,7 @@ import {RepositorySelectorSteps} from '../../steps/repository-selector-steps.js'
 import {LoginSteps} from '../../steps/login-steps.js';
 import {UserAndAccessSteps} from '../../steps/setup/user-and-access-steps.js';
 import HomeSteps from '../../steps/home-steps.js';
+import {GraphNavigatorSteps} from '../../steps/graph-navigator-steps.js';
 
 describe('URL with Repository ID parameter', () => {
     let repositoryId;
@@ -37,6 +38,22 @@ describe('URL with Repository ID parameter', () => {
         // Then repositoryId parameter should be present in the URL and repository should be selected in the selector
         HomeSteps.getView().should('be.visible');
         cy.url().should('include', 'repositoryId=' + repositoryId);
+        RepositorySelectorSteps.getSelectedRepository().should('contain', repositoryId);
+    });
+
+    it('should open a page of the new Workbench with repositoryId in url after login', () => {
+        // Given security is on
+        cy.switchOnSecurity();
+        // When I open a page of the new Workbench, which loads its code only when it is opened
+        GraphNavigatorSteps.visit();
+        // Then the login page should be shown
+        LoginSteps.getLoginPage().should('be.visible');
+        // When I log in with user admin
+        LoginSteps.loginWithUser('admin', 'root');
+        // Then the page should open with only the repositoryId parameter in the URL
+        GraphNavigatorSteps.verifyUrl();
+        GraphNavigatorSteps.verifyOnlyRepositoryParam(repositoryId);
+        // And the repository should be selected in the selector
         RepositorySelectorSteps.getSelectedRepository().should('contain', repositoryId);
     });
 });
