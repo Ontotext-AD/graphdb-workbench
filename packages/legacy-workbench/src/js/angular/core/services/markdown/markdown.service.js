@@ -59,7 +59,8 @@ function MarkdownService($sce, $sanitize) {
                 : $sce.trustAsHtml($sanitize(html));
         } catch (e) {
             logger.error('Error rendering markdown:', e);
-            return $sce.trustAsHtml(trusted ? text : $sanitize(text));
+            // The raw text is not rendered by markdown-it, which escapes HTML, so it is sanitized even when trusted.
+            return $sce.trustAsHtml($sanitize(text));
         }
     };
 

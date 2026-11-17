@@ -1,0 +1,27 @@
+{
+    "thread_jdQBvbkaU6JPoO48oQaL76dC": {
+        "id": "thread_jdQBvbkaU6JPoO48oQaL76dC",
+        "name": "Template injection",
+        "messages": [
+            {
+                "id": "msg_template_injection_question",
+                "conversationId": "thread_jdQBvbkaU6JPoO48oQaL76dC",
+                "agentId": null,
+                "role": "user",
+                "message": "What is {{7*7}}?",
+                "timestamp": "1725875323",
+                "name": null
+            },
+            {
+                "id": "msg_template_injection_answer",
+                "conversationId": "thread_jdQBvbkaU6JPoO48oQaL76dC",
+                "agentId": "asst_gAPcrHQQ9ZIxD5eXWH2BNFfo",
+                "role": "assistant",
+                "message": "The answer is {{7*7}}.\n\n```sparql\nSELECT ?s WHERE { ?s rdfs:label \"{{7*7}}\" }\n```",
+                "timestamp": "1725875332",
+                "name": null
+            }
+        ],
+        "timestamp": "1725875483"
+    }
+}

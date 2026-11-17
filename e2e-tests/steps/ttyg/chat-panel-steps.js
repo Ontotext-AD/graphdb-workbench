@@ -86,6 +86,10 @@ export class ChatPanelSteps extends BaseSteps {
         return ChatPanelSteps.getCopyToClipboardElements().eq(index);
     }
 
+    static openInSparqlEditor(index = 0) {
+        ChatPanelSteps.getOpenInSparqlEditorElement(index).find(ChatPanelSteps.buildTestIdAttr('open-in-sparql-editor-btn')).click();
+    }
+
     static getCancelButton() {
         return ChatPanelSteps.getChatPanel().find('.cancel-ask-button');
     }

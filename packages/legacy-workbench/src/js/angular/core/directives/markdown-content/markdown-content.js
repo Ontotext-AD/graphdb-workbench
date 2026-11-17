@@ -1,4 +1,5 @@
 import 'angular/core/services/markdown/markdown.service';
+import {CODE_ACTION_ATTRIBUTE, CODE_BLOCK_CLASS} from 'angular/core/services/markdown/plugins/markdown-code-block';
 
 const modules = [
     'graphdb.framework.core.services.markdown-service',
@@ -10,9 +11,11 @@ const modules = [
  * @restrict E
  *
  * @description
- * The `markdownContent` directive is used to render and compile Markdown content inside AngularJS applications.
- * It dynamically compiles any AngularJS directives within the rendered Markdown content, ensuring that the
- * directives are properly recognized and executed.
+ * The `markdownContent` directive renders Markdown content inside AngularJS applications.
+ *
+ * The rendered content is never compiled, because it may come from an untrusted source (e.g. an LLM answer), and
+ * compiling it would evaluate any AngularJS expression (`{{...}}`) in it. When the content is trusted, only the code
+ * block actions added by the Markdown plugins are compiled (see {@link CODE_ACTION_ATTRIBUTE}).
  *
  * @param {string=} content The markdown content to be rendered. This can be passed dynamically from the scope.
  * @param {object=} options Optional configuration object to pass to the Markdown rendering engine, providing
@@ -26,9 +29,9 @@ angular
     .module('graphdb.framework.core.directives.markdown-content', modules)
     .directive('markdownContent', markdownContentDirective);
 
-markdownContentDirective.$inject = ['$compile', 'MarkdownService'];
+markdownContentDirective.$inject = ['$compile', '$sce', 'MarkdownService'];
 
-function markdownContentDirective($compile, MarkdownService) {
+function markdownContentDirective($compile, $sce, MarkdownService) {
     return {
         templateUrl: 'js/angular/core/templates/markdown-content/markdown-content.html',
         restrict: 'E',
@@ -39,44 +42,49 @@ function markdownContentDirective($compile, MarkdownService) {
         },
         link: function($scope, element) {
             // =========================
-            // Public variables
+            // Private variables
             // =========================
 
             /**
-             * The rendered HTML content generated from the provided Markdown.
+             * The scopes of the compiled code block actions of the current content.
              *
-             * @type {string|undefined} markdownContent
+             * @type {Object[]}
              */
-            $scope.markdownContent = undefined;
+            let codeActionScopes = [];
 
             // =========================
             // Private functions
             // =========================
 
-            const init = () => {
-                if (!$scope.content) {
-                    $scope.markdownContent = undefined;
-                    return;
-                }
-                if ($scope.trusted === 'true') {
-                    $scope.markdownContent = MarkdownService.renderMarkdown($scope.content, $scope.options);
-                    compileMarkdownAnswerContents();
-                } else {
-                    $scope.markdownContent = MarkdownService.renderMarkdown($scope.content, $scope.options, false);
-                }
+            /**
+             * Compiles the code block actions of the rendered content, see {@link CODE_ACTION_ATTRIBUTE}.
+             */
+            const compileCodeActions = () => {
+                element.find(`[${CODE_ACTION_ATTRIBUTE}]`).each((index, actionElement) => {
+                    const codeBlock = actionElement.closest(`.${CODE_BLOCK_CLASS}`);
+                    const actionScope = $scope.$new(true);
+                    // Markdown-it ends every code block with a new line, which is not part of the code.
+                    actionScope.code = codeBlock.querySelector('code').textContent.replace(/\n$/, '');
+                    codeActionScopes.push(actionScope);
+                    $compile(actionElement)(actionScope);
+                });
             };
 
-            /**
-             * Manually compiles AngularJS directives within the dynamically generated markdown HTML content.
-             * AngularJS does not automatically detect and compile directives inside HTML that is dynamically
-             * inserted, so this function ensures that the content is compiled after it is rendered.
-             */
-            const compileMarkdownAnswerContents = () => {
-                $scope.$evalAsync(() => {
-                    // Find the dynamically rendered element that needs to be compiled
-                    const markdownElement = element.find('.markdown-content');
-                    $compile(angular.element(markdownElement).contents())($scope);
-                });
+            const destroyCodeActionScopes = () => {
+                codeActionScopes.forEach((actionScope) => actionScope.$destroy());
+                codeActionScopes = [];
+            };
+
+            const init = () => {
+                const trusted = $scope.trusted === 'true';
+                const html = $scope.content
+                    ? $sce.getTrustedHtml(MarkdownService.renderMarkdown($scope.content, $scope.options, trusted))
+                    : '';
+                destroyCodeActionScopes();
+                element.find('.markdown-content').html(html);
+                if (trusted) {
+                    compileCodeActions();
+                }
             };
 
             $scope.$watch('content', (newVal, oldVal) => {

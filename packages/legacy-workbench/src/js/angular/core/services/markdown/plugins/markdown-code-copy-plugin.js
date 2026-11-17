@@ -1,6 +1,8 @@
+import {CODE_ACTION_ATTRIBUTE, wrapCodeBlock} from './markdown-code-block';
+
 const DEFAULT_MARKDOWN_CONFIGURATION = {
     buttonStyle: "position: absolute; top: 0; right: 0;",
-    buttonClass: ""
+    buttonClass: "",
 };
 
 /**
@@ -24,22 +26,16 @@ function renderCode(origRule, options) {
     return (...args) => {
         const [tokens, idx] = args;
         const token = tokens[idx];
-
-        const content = tokens[idx].content
-            .replaceAll('"', '&quot;')
-            .replaceAll("'", "&apos;");
         const origRendered = origRule(...args);
 
         if (token.type === 'fence' && origRendered.trim()) {
-            return `<div style="position: relative">
-                        ${origRendered}
-                        <copy-to-clipboard
-                            style="${options.buttonStyle}"
-                            class="${options.buttonClass}"
-                            tooltip-text="ttyg.chat_panel.btn.copy_sparql.tooltip"
-                            text-to-copy="${content}">
-                        </copy-to-clipboard>
-                    </div>`;
+            return wrapCodeBlock(origRendered, `<copy-to-clipboard
+                        ${CODE_ACTION_ATTRIBUTE}
+                        style="${options.buttonStyle}"
+                        class="${options.buttonClass}"
+                        tooltip-text="ttyg.chat_panel.btn.copy_sparql.tooltip"
+                        text-to-copy="{{code}}">
+                    </copy-to-clipboard>`);
         } else {
             return origRendered;
         }
