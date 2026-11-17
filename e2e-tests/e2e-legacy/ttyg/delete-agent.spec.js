@@ -47,4 +47,18 @@ describe('TTYG delete agent', () => {
             {name: 'Databricks-biomarkers', repositoryId: 'biomarkers', isRepositoryDeleted: false}
         ]);
     });
+
+    it('should show HTML in the agent name as text in the delete agent dialog', () => {
+        // Given an agent name contains HTML
+        TTYGStubs.stubChatsListGetNoResults();
+        TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-with-html-in-names.json');
+        TTYGViewSteps.visit();
+        TTYGViewSteps.expandAgentsSidebar();
+        // When I select the delete agent action
+        TTYGViewSteps.triggerDeleteAgentActionMenu(0);
+        // Then I expect the agent name to be displayed as text
+        ModalDialogSteps.getDialogBody().should('contain.text', '<img src="x" class="injected-html">agent-1');
+        ModalDialogSteps.getDialogBody().invoke('html').should('not.contain', '<img');
+        ModalDialogSteps.cancel();
+    });
 });

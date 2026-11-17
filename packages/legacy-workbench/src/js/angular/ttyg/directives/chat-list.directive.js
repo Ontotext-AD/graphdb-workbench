@@ -2,6 +2,7 @@ import 'angular/core/directives/inline-editable-text/inline-editable-text.direct
 import {TTYGEventName} from "../services/ttyg-context.service";
 import {getHumanReadableTimestamp} from "../services/ttyg.utils";
 import {decodeHTML} from "../../../../app";
+import {escape} from "lodash";
 
 const modules = [
     'graphdb.framework.core.directives.inline-editable-text',
@@ -63,7 +64,7 @@ function ChatListComponent(TTYGContextService, ModalService, $translate, $filter
              */
             $scope.onDeleteChat = (chat) => {
                 const title = $translate.instant('ttyg.dialog.delete.title');
-                const confirmDeleteMessage = decodeHTML($translate.instant('ttyg.dialog.delete.body', {chatName: chat.name}));
+                const confirmDeleteMessage = decodeHTML($translate.instant('ttyg.dialog.delete.body', {chatName: escape(chat.name)}));
                 ModalService.openConfirmation(title, confirmDeleteMessage, () => TTYGContextService.emit(TTYGEventName.DELETE_CHAT, chat));
             };
 

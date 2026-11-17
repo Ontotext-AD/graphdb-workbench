@@ -1,9 +1,10 @@
 import {decodeHTML} from "../../../../app";
+import {escape} from "lodash";
 import {TTYGEventName} from "../services/ttyg-context.service";
 import 'angular/ttyg/services/externalIntegrationModal.service';
 
 const modules = [
-    'graphdb.framework.ttyg.services.externalIntegrationModal'
+    'graphdb.framework.ttyg.services.externalIntegrationModal',
 ];
 
 angular
@@ -18,10 +19,9 @@ function AgentListComponent(TTYGContextService, ModalService, $translate, $uibMo
         templateUrl: 'js/angular/ttyg/templates/agent-list.html',
         scope: {
             agentList: '=',
-            agentListFilterModel: '='
+            agentListFilterModel: '=',
         },
         link: ($scope, element, attrs) => {
-
             // =========================
             // Public variables
             // =========================
@@ -86,7 +86,7 @@ function AgentListComponent(TTYGContextService, ModalService, $translate, $uibMo
              */
             $scope.onDeleteAgent = (agent) => {
                 const title = $translate.instant('ttyg.agent.delete_agent_modal.title');
-                const confirmDeleteMessage = decodeHTML($translate.instant('ttyg.agent.delete_agent_modal.body', {agentName: agent.name}));
+                const confirmDeleteMessage = decodeHTML($translate.instant('ttyg.agent.delete_agent_modal.body', {agentName: escape(agent.name)}));
                 ModalService.openConfirmation(title, confirmDeleteMessage, () => TTYGContextService.emit(TTYGEventName.DELETE_AGENT, agent));
             };
 
@@ -152,6 +152,6 @@ function AgentListComponent(TTYGContextService, ModalService, $translate, $uibMo
                 updateSelectedAgentsFilter();
             }
             initialize();
-        }
+        },
     };
 }

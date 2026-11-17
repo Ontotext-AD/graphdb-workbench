@@ -3,7 +3,7 @@ import 'angular/core/directives/editable-content/editable-content';
 import {TTYGEventName} from "../services/ttyg-context.service";
 import {CHAT_MESSAGE_ROLE, ChatMessageModel} from "../../models/ttyg/chat-message";
 import {ChatItemModel} from "../../models/ttyg/chat-item";
-import {cloneDeep} from "lodash";
+import {cloneDeep, escape} from "lodash";
 import {decodeHTML} from "../../../../app";
 
 const modules = [
@@ -161,13 +161,13 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             };
 
             /**
-             * Finds out if agent with such id exists and returns its name or a default message for deleted agent.
+             * Finds out if agent with such id exists and returns its HTML-escaped name or a default message for deleted agent.
              * @param {string} agentId
-             * @return {string}
+             * @returns {string} HTML safe to render through the `trustAsHtml` filter.
              */
             $scope.getAgentName = (agentId) => {
               const agent = TTYGContextService.getAgent(agentId);
-              return agent ? agent.name : decodeHTML($translate.instant('ttyg.chat_panel.deleted_agent'));
+              return agent ? escape(agent.name) : decodeHTML($translate.instant('ttyg.chat_panel.deleted_agent'));
             };
 
             // =========================

@@ -13,6 +13,7 @@ import * as stringUtils from "../../utils/string-utils";
 import {DateUtils} from "../../utils/date-utils";
 import {filesToImportResource, toImportResource} from "../../rest/mappers/import-mapper";
 import {decodeHTML} from "../../../../app";
+import {escape} from "lodash";
 import {FilePrefixRegistry} from "../services/file-prefix-registry";
 import {SortingType} from "../../models/import/sorting-type";
 import {ImportResourceStatus} from "../../models/import/import-resource-status";
@@ -364,7 +365,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
          * @param {string[]} names - The names of the resources to be removed.
          */
         const removeEntry = (names = []) => {
-            const namesString = `<br/>${names.join('<br/>')}`;
+            const namesString = `<br/>${names.map((name) => escape(name)).join('<br/>')}`;
             const message = decodeHTML($translate.instant('import.remove.confirm.msg', {name: namesString}));
             ModalService.openConfirmation(
                 $translate.instant('common.confirm'),
@@ -918,7 +919,7 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
     };
 
     const openDuplicatedFilesConfirmDialog = (duplicatedFiles, uniqueFiles) => {
-        const existingFilenames = duplicatedFiles.map((file) => file.name).join('<br/>');
+        const existingFilenames = duplicatedFiles.map((file) => escape(file.name)).join('<br/>');
         const modalInstance = $uibModal.open({
             templateUrl: 'js/angular/import/templates/file-override-confirmation.html',
             controller: 'FileOverrideConfirmationController',
