@@ -228,6 +228,8 @@ export class ChartData {
                 show: false,
                 text: '',
                 left: 'center',
+                // ECharts 6 moved the default title down, onto the legend
+                top: 0,
                 textStyle: {
                     overflow: 'breakAll',
                     rich: {
@@ -270,6 +272,9 @@ export class ChartData {
             grid: {
                 containLabel: true,
                 left: 40,
+                // The ECharts 5 defaults, which ECharts 6 changed
+                top: 60,
+                bottom: 70,
             },
             xAxis: {
                 type: 'time',
