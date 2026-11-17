@@ -29,9 +29,10 @@ export class TTYGStubs extends Stubs {
      * Loads the specified <code>fixture</code> and updates the chatId in the fixture with the actual ID passed in the endpoint call.
      *
      * @param {number} delay - Optional delay in milliseconds before responding with the fixture.
+     * @param {string} fixture - Optional fixture with the chats, keyed by chat ID.
      */
-    static stubChatGet(delay = 0) {
-        cy.fixture('/ttyg/chats/get-chat.json').then((body) => {
+    static stubChatGet(delay = 0, fixture = '/ttyg/chats/get-chat.json') {
+        cy.fixture(fixture).then((body) => {
             cy.intercept({
                 method: 'GET',
                 url: '/rest/chat/conversations/*'

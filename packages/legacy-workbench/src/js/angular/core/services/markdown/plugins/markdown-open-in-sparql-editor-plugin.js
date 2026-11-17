@@ -1,6 +1,8 @@
+import {CODE_ACTION_ATTRIBUTE, wrapCodeBlock} from './markdown-code-block';
+
 const DEFAULT_MARKDOWN_CONFIGURATION = {
     buttonStyle: "position: absolute; top: 0; right: 0;",
-    buttonClass: ""
+    buttonClass: "",
 };
 
 /**
@@ -30,23 +32,17 @@ function renderCode(origRule, options) {
     return (...args) => {
         const [tokens, idx] = args;
         const token = tokens[idx];
-
-        const content = tokens[idx].content
-            .replaceAll('"', '&quot;')
-            .replaceAll("'", "&apos;");
         const origRendered = origRule(...args);
 
         if (token.type === 'fence' && token.info === 'sparql' && origRendered.trim()) {
-            return `<div style="position: relative">
-                        ${origRendered}
-                        <open-in-sparql-editor
-                            style="${options.buttonStyle}"
-                            class="${options.buttonClass}"
-                            execute-query="${options.executeQuery}"
-                            repository-id="${options.repositoryId}"
-                            query="${content}">
-                        </open-in-sparql-editor>
-                    </div>`;
+            return wrapCodeBlock(origRendered, `<open-in-sparql-editor
+                        ${CODE_ACTION_ATTRIBUTE}
+                        style="${options.buttonStyle}"
+                        class="${options.buttonClass}"
+                        execute-query="${options.executeQuery}"
+                        repository-id="${options.repositoryId}"
+                        query="{{code}}">
+                    </open-in-sparql-editor>`);
         } else {
             return origRendered;
         }
