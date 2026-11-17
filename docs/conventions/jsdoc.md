@@ -32,7 +32,7 @@ JSDoc is reference text, not prose. A reader skims the first line and stops.
   Everything after it is optional and must earn its place.
 - Budgets, excluding tags: **8 lines** for a class or interface, **5 lines** for
   a method, field or function. Over budget means the text is no longer API
-  documentation — move it to an ADR or a `CONTEXT.md` and link to it:
+  documentation — move it to an ADR or a `GLOSSARY.md` and link to it:
   `See ADR-0001 for why the namespace is frozen.`
 - A one-line delegating method with a self-describing name gets a one-line
   description plus its tags, and nothing else.
