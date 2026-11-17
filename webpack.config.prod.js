@@ -12,7 +12,7 @@ module.exports = (env, argv) => merge(commonConfig(env, argv), {
         maxEntrypointSize: 990000,
         maxAssetSize: 990000,
         assetFilter: function(assetFilename) {
-            return !assetFilename.endsWith('swagger-ui.js');
+            return !assetFilename.endsWith('swagger-ui-bundle.js');
         }
     },
     output: {

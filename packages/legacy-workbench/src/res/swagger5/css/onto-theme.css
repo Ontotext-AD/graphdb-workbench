@@ -1,3 +1,8 @@
+html, body {
+    /* Same scrollbar colors as the workbench page; WebApiCtrl syncs the --gw-* variables on theme change. */
+    scrollbar-color: var(--gw-virtualscroller-loader-mask-color) var(--gw-virtualscroller-loader-mask-background);
+}
+
 body {
     font-family: var(--main-font);
     font-weight: var(--main-font-weight);
@@ -13,6 +18,7 @@ code, pre, kbd, samp, textarea {
 
 .swagger-ui .info .title {
     font-size: 20px;
+    line-height: 1;
     font-family: var(--main-font);
     color: var(--gw-body-color);
 }
@@ -116,10 +122,6 @@ code, pre, kbd, samp, textarea {
     display: none !important;
 }
 
-.swagger-ui .topbar {
-    display: none;
-}
-
 .swagger-ui .info .title small {
     display: none;
 }
@@ -197,4 +199,6 @@ code, pre, kbd, samp, textarea {
 
 .swagger-ui .expand-methods svg, .swagger-ui .expand-operation svg {
     fill: var(--gw-body-color);
+    /* Swagger UI paints the arrow path with currentColor. */
+    color: var(--gw-body-color);
 }
