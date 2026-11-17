@@ -259,6 +259,21 @@ describe('TTYG chat list', () => {
         // Then I expect the chat to be removed from the chat list
         TTYGViewSteps.getChatFromGroup(0, 2).should('not.exist');
     });
+
+    it('should show HTML in the chat name as text in the delete chat dialog', () => {
+        // Given a chat name contains HTML
+        TTYGStubs.stubChatsListGet('/ttyg/chats/get-chat-list-with-html-in-name.json');
+        TTYGStubs.stubChatGet();
+        TTYGStubs.stubAgentListGet();
+        TTYGViewSteps.visit();
+        cy.wait('@get-chat-list');
+        // When I select the delete action from the chat action menu
+        TTYGViewSteps.triggerDeleteChatActionMenu(1, 0);
+        // Then I expect the chat name to be displayed as text
+        ModalDialogSteps.getDialogBody().should('contain.text', '<img src="x" class="injected-html">Test chat 4');
+        ModalDialogSteps.getDialogBody().invoke('html').should('not.contain', '<img');
+        ModalDialogSteps.clickOnCancelButton();
+    });
 });
 
 /**

@@ -115,6 +115,20 @@ describe('Ttyg ChatPanel', () => {
         ChatPanelSteps.getAgentInfoMessage(1).contains('Agent changed to Databricks-biomarkers');
     });
 
+    it('should show HTML in the agent name as text in the agent changed info message', () => {
+        // Given an agent name contains HTML
+        TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-with-html-in-names.json');
+        TTYGViewSteps.visit();
+        cy.wait('@get-agent-list');
+
+        // When I select a chat that has answers using different agents
+        TTYGViewSteps.selectChat(0, 1);
+
+        // Then I expect the agent name to be displayed as text
+        ChatPanelSteps.getAgentInfoMessage(0).should('contain.text', '<img src="x" class="injected-html">agent-2');
+        ChatPanelSteps.getAgentInfoMessage(0).invoke('html').should('not.contain', '<img');
+    });
+
     it('Should select last used agent when change the selected chat', () => {
         // Then I expect the last used agent to be selected.
         TTYGViewSteps.getAgentsMenuToggleButton().contains('agent-1');

@@ -2,6 +2,7 @@ import {ImportSettingsDialogSteps} from "../../steps/import/import-settings-dial
 import {ImportUserDataSteps} from "../../steps/import/import-user-data-steps";
 import {FileOverwriteDialogSteps} from "../../steps/import/file-overwrite-dialog-steps";
 import {HeaderSteps} from '../../steps/header-steps.js';
+import {ModalDialogSteps} from '../../steps/modal-dialog-steps.js';
 
 const bnodes = `_:node0 <http://purl.org/dc/elements/1.1/title> "A new book" ;
                     \t<http://purl.org/dc/elements/1.1/creator> "A.N.Other" .`;
@@ -14,12 +15,15 @@ const jsonld = JSON.stringify({
     "ab:email": "richard491@hotmail.com"
 });
 
+const htmlFileName = '<img src="x" class="injected-html">bnodes.ttl';
+
 describe('Import user data: File upload', () => {
     let repositoryId;
     const testFiles = [
         'bnodes.ttl',
         'jsonld.jsonld',
-        'invalid-format.json'
+        'invalid-format.json',
+        htmlFileName
     ];
 
     beforeEach(() => {
@@ -219,6 +223,37 @@ describe('Import user data: File upload', () => {
         // Then The file should be overridden
         ImportUserDataSteps.getResources().should('have.length', 1);
         ImportUserDataSteps.checkImportedResourceByIndex(0, 'bnodes.ttl');
+    });
+
+    it('should show HTML in the duplicated file name as text in the file override confirmation dialog', () => {
+        // Given I have uploaded a file which name contains HTML
+        const file = ImportUserDataSteps.createFile(htmlFileName, bnodes);
+        ImportUserDataSteps.selectFile(file);
+        ImportSettingsDialogSteps.getDialog().should('be.visible');
+        ImportSettingsDialogSteps.import();
+        ImportUserDataSteps.getResources().should('have.length', 1);
+        // When I upload a file with the same name
+        ImportUserDataSteps.selectFile(file);
+        // Then I expect the file name to be displayed as text in the file override confirmation dialog
+        FileOverwriteDialogSteps.getDialog().should('be.visible');
+        FileOverwriteDialogSteps.getDialogBody().should('contain.text', htmlFileName);
+        FileOverwriteDialogSteps.getDialogBody().invoke('html').should('not.contain', '<img');
+        FileOverwriteDialogSteps.cancel();
+    });
+
+    it('should show HTML in the file name as text in the remove file dialog', () => {
+        // Given I have uploaded a file which name contains HTML
+        const file = ImportUserDataSteps.createFile(htmlFileName, bnodes);
+        ImportUserDataSteps.selectFile(file);
+        ImportSettingsDialogSteps.getDialog().should('be.visible');
+        ImportSettingsDialogSteps.import();
+        ImportUserDataSteps.getResources().should('have.length', 1);
+        // When I remove the file
+        ImportUserDataSteps.deleteUploadedFile(0);
+        // Then I expect the file name to be displayed as text in the remove file dialog
+        ModalDialogSteps.getDialogBody().should('contain.text', htmlFileName);
+        ModalDialogSteps.getDialogBody().invoke('html').should('not.contain', '<img');
+        ModalDialogSteps.clickOnCancelButton();
     });
 
     it('Should be able to upload file with same name and preserve the existing file', () => {
