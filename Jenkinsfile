@@ -129,7 +129,7 @@ pipeline {
                     }
                 }
 
-                stage('Workbench Cypress Test') {
+                stage('Workbench e2e setup') {
                     steps {
                         script {
                             if (!scmUtil.isMaster()) {
@@ -163,13 +163,14 @@ pipeline {
                                             shardSpecs << specs[j]
                                         }
                                         def specList = shardSpecs.join(',')
-                                        shards["Shard ${shard}"] = {
+                                        def stageName = "Workbench e2e ${shard + 1}/${shardCount}"
+                                        shards[stageName] = {
                                             // A stage per shard, so each shard shows its own status and time.
-                                            stage("Shard ${shard}") {
+                                            stage(stageName) {
                                                 if (!runCypressShard(shard, specList)) {
                                                     failedShards << shard
                                                     // Thrown, not caught, so Stage View shows the shard as failed.
-                                                    error("Shard ${shard} failed")
+                                                    error("${stageName} failed")
                                                 }
                                             }
                                         }
@@ -184,17 +185,22 @@ pipeline {
                                         }
                                     }
 
-                                    // One result table and one retry summary for all shards, as in an unsharded run.
-                                    sh(script: 'cd e2e-tests && node scripts/print-summary.js', returnStatus: true)
+                                    stage('Workbench e2e report') {
+                                        // One result table and one retry summary for all shards, as in an unsharded run.
+                                        // Made before the rerun, which adds its own results, and printed last to end the log.
+                                        def summary = sh(script: 'cd e2e-tests && node scripts/print-summary.js || true', returnStdout: true)
 
-                                    if (failedShards) {
-                                        rerunFailedSpecsWithVideo(failedShards)
-                                        echo "Shards ${failedShards} failed — archiving Cypress artifacts and GraphDB diagnostics."
-                                        archiveArtifacts allowEmptyArchive: true, artifacts: 'e2e-tests/report/screenshots/**/*.png, e2e-tests/report/videos/**/*.mp4, e2e-tests/logs/cypress-logs/**/*.txt, graphdb-diagnostics/**'
-                                        error("Cypress tests failed, job failed.")
+                                        if (failedShards) {
+                                            rerunFailedSpecsWithVideo(failedShards)
+                                            echo "Tests failed — archiving Cypress artifacts and GraphDB diagnostics."
+                                            archiveArtifacts allowEmptyArchive: true, artifacts: 'e2e-tests/report/screenshots/**/*.png, e2e-tests/report/videos/**/*.mp4, e2e-tests/logs/cypress-logs/**/*.txt, graphdb-diagnostics/**'
+                                            echo summary
+                                            error("Cypress tests failed, job failed.")
+                                        }
+
+                                        echo "Tests passed — skipping video artifacts."
+                                        echo summary
                                     }
-
-                                    echo "Tests passed — skipping video artifacts."
                                 }
                             }
                         }
