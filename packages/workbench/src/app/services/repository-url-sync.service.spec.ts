@@ -1,5 +1,6 @@
+import {signal, WritableSignal} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, Navigation, Router} from '@angular/router';
 import {
   AuthenticationService,
   AuthorizationService,
@@ -37,6 +38,7 @@ describe('RepositoryUrlSyncService', () => {
   let mockGetLocationQueryParams: jest.SpyInstance;
   let mockIsLoggedIn: jest.Mock;
   let mockHasFreeAccess: jest.Mock;
+  let currentNavigation: WritableSignal<Navigation | null>;
 
   const REPO_ID_PARAM = 'repositoryId';
 
@@ -54,6 +56,7 @@ describe('RepositoryUrlSyncService', () => {
     mockUpdateSelectedRepository = jest.fn().mockResolvedValue(undefined);
     mockIsLoggedIn = jest.fn().mockReturnValue(false);
     mockHasFreeAccess = jest.fn().mockReturnValue(false);
+    currentNavigation = signal<Navigation | null>(null);
 
     mockService.mockImplementation((serviceClass: unknown) => {
       if (serviceClass === RepositoryContextService) {
@@ -81,7 +84,7 @@ describe('RepositoryUrlSyncService', () => {
       providers: [
         RepositoryUrlSyncService,
         ConfirmationService,
-        {provide: Router, useValue: {navigate: mockNavigate}},
+        {provide: Router, useValue: {navigate: mockNavigate, currentNavigation}},
         {provide: ActivatedRoute, useValue: {}},
         {provide: ConfirmationProviderService, useValue: {confirm: mockConfirm, confirmOnly: mockConfirmOnly}},
         {provide: TranslocoService, useValue: {translate: (key: string) => key}},
@@ -391,6 +394,20 @@ describe('RepositoryUrlSyncService', () => {
         syncService.onRepositoryChanged('newRepo');
 
         expect(mockNavigate).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('while another navigation is in progress', () => {
+      it('should not write the repo id to the URL', () => {
+        // Given a navigation is in progress and the URL has no repo id
+        currentNavigation.set({id: 1} as Navigation);
+        setUrlParam(null);
+
+        // When the active repository changes
+        syncService.onRepositoryChanged('newRepo');
+
+        // Then the URL is not changed, so the navigation in progress is not cancelled
+        expect(mockNavigate).not.toHaveBeenCalled();
       });
     });
   });

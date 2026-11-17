@@ -151,6 +151,11 @@ export class RepositoryUrlSyncService {
   }
 
   private writeRepositoryIdToUrl(repositoryId: string): void {
+    // A navigation started now would cancel the one in progress, e.g. the redirect after a login while the target page
+    // is still loading. The page it ends on writes the repository ID itself, see syncRepositoryIdWithUrl().
+    if (this.router.currentNavigation()) {
+      return;
+    }
     const currentParams = Object.fromEntries(new URLSearchParams(WindowService.getLocationQueryParams()));
     void this.router.navigate([getCurrentRoute()], {
       queryParams: { ...currentParams, [REPOSITORY_ID_PARAM]: repositoryId },
