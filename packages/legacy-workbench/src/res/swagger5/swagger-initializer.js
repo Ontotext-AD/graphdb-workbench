@@ -30,12 +30,11 @@ window.onload = function() {
         requestInterceptor: requestInterceptor,
         presets: [
             SwaggerUIBundle.presets.apis,
-            SwaggerUIStandalonePreset,
         ],
         plugins: [
             SwaggerUIBundle.plugins.DownloadUrl,
         ],
-        layout: "StandaloneLayout",
+        layout: "BaseLayout",
     });
 
     //</editor-fold>
@@ -51,11 +50,10 @@ window.onload = function() {
         requestInterceptor: requestInterceptor,
         presets: [
             SwaggerUIBundle.presets.apis,
-            SwaggerUIStandalonePreset,
         ],
         plugins: [
             SwaggerUIBundle.plugins.DownloadUrl,
         ],
-        layout: "StandaloneLayout",
+        layout: "BaseLayout",
     });
 };

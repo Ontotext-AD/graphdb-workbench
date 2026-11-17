@@ -208,6 +208,12 @@ module.exports = (webpackConfigEnv, argv) => {
                         transform: replaceVersion
                     },
                     {
+                        // Our index.html, index.css and swagger-initializer.js live in src/res/swagger5.
+                        context: 'packages/legacy-workbench/node_modules/swagger-ui-dist',
+                        from: '{swagger-ui-bundle.js*,swagger-ui.css*,LICENSE,NOTICE,favicon-*.png}',
+                        to: 'res/swagger5'
+                    },
+                    {
                         from: 'packages/legacy-workbench/src/pages',
                         to: 'pages',
                         transform: replaceVersion

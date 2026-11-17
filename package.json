@@ -118,5 +118,8 @@
         "graphdb-workbench-plugins": "^1.0.5",
         "graphwise-reactodia": "^0.0.1-TR22",
         "import-map-overrides": "^6.1.0"
+    },
+    "scarfSettings": {
+        "enabled": false
     }
 }

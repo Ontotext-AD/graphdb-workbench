@@ -74,7 +74,8 @@
         "ng-tags-input": "^3.2.0",
         "oclazyload": "^1.1.0",
         "ontotext-graphql-playground-component": "^0.0.9",
-        "single-spa-angularjs": "^4.3.1"
+        "single-spa-angularjs": "^4.3.1",
+        "swagger-ui-dist": "5.34.1"
     },
     "resolutions": {
         "minimist": "^1.2.5"
