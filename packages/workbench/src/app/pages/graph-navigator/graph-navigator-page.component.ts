@@ -2,8 +2,6 @@ import {Component, inject, OnDestroy, OnInit, signal} from '@angular/core';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {saveAs} from 'file-saver';
 import {
-  EventName,
-  EventService,
   GraphExploreLink,
   GraphExploreService,
   GraphNavigatorContextService,
@@ -11,6 +9,7 @@ import {
   GraphNavigatorSettings,
   GraphNavigatorSettingsError,
   GraphNavigatorSettingsUploadError,
+  GraphNavigatorStorageService,
   LanguageContextService,
   OntoToastrService,
   RepositoryContextService,
@@ -33,10 +32,10 @@ import {GraphNavigatorQueryParams} from '../../models/graph-navigator/graph-navi
 import {ConfirmationProviderService} from '../../services/dialog/confirmation-provider.service';
 
 /**
- * The query params that seed the canvas. They are removed from the URL when the repository is switched and
- * the diagram is cleared. All others are kept.
+ * The query params that seed the canvas, instead of the persisted diagram. They are removed from the URL when the
+ * repository is switched and the diagram is cleared. All others are kept.
  */
-const PARAMS_TO_REMOVE: string[] = [GraphNavigatorQueryParams.URI, GraphNavigatorQueryParams.QUERY];
+const SEED_PARAMS: string[] = [GraphNavigatorQueryParams.URI, GraphNavigatorQueryParams.QUERY];
 
 /**
  * Page that hosts the Graph Navigator. It owns the context subscriptions (repository, language and
@@ -65,8 +64,8 @@ export class GraphNavigatorPageComponent implements OnInit, OnDestroy {
   private readonly graphExploreService = service(GraphExploreService);
   private readonly graphNavigatorService = service(GraphNavigatorService);
   private readonly graphNavigatorContextService = service(GraphNavigatorContextService);
+  private readonly graphNavigatorStorageService = service(GraphNavigatorStorageService);
   private readonly toastrService = service(OntoToastrService);
-  private readonly eventService = service(EventService);
   private readonly runtimeConfigurationContextService = service(RuntimeConfigurationContextService);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly confirmationProviderService = inject(ConfirmationProviderService);
@@ -83,6 +82,11 @@ export class GraphNavigatorPageComponent implements OnInit, OnDestroy {
   readonly loading = signal(false);
   readonly settings = signal<GraphNavigatorSettings | undefined>(undefined);
   readonly uploadErrors = signal<GraphNavigatorSettingsError[]>([]);
+  /**
+   * Whether it is decided what to do with the persisted diagram of the selected repository. The diagram is rendered
+   * only then, since it restores the persisted diagram on mount.
+   */
+  readonly isDiagramReady = signal(false);
   protected readonly ViewPermissions = ViewPermissions;
 
   ngOnInit(): void {
@@ -95,7 +99,6 @@ export class GraphNavigatorPageComponent implements OnInit, OnDestroy {
     this.subscriptions.addAll([
       this.subscribeToRepositoryChanged(),
       this.subscribeToLanguageChanged(),
-      this.subscribeToNavigationStart(),
       this.subscribeToThemeChanged()
     ]);
   }
@@ -109,16 +112,6 @@ export class GraphNavigatorPageComponent implements OnInit, OnDestroy {
       if (language) {
         this.language.set(language);
       }
-    });
-  }
-
-  /**
-   * Tells the `graphwise-reactodia` web component to drop its persisted diagram state whenever a
-   * navigation to another view is made, so a stale diagram is not restored on the next visit to the page.
-   */
-  private subscribeToNavigationStart() {
-    return this.eventService.subscribe(EventName.NAVIGATION_START, () => {
-      WindowService.getWindow().dispatchEvent(new CustomEvent(CLEAR_DIAGRAM_STORAGE_EVENT));
     });
   }
 
@@ -142,9 +135,11 @@ export class GraphNavigatorPageComponent implements OnInit, OnDestroy {
       this.graphNavigatorContextService.updateSettings(undefined);
       this.graphNavigatorContextService.updateAutocompleteWarned(false);
       this.uploadErrors.set([]);
+      this.isDiagramReady.set(false);
       this.currentRepository.set(repositoryId);
       if (repositoryId) {
         this.loadSettings(repositoryId);
+        this.resolveStoredDiagram(repositoryId);
       }
     }, () => this.repositoryBeforeChangeHandler());
   }
@@ -169,7 +164,7 @@ export class GraphNavigatorPageComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Removes the query params in {@link PARAMS_TO_REMOVE} from the URL before the repository is switched, while
+   * Removes the query params in {@link SEED_PARAMS} from the URL before the repository is switched, while
    * the URL still holds the current repository.
    *
    * @returns The Promise of the navigation. It resolves to `false` when there is nothing to remove, because
@@ -177,7 +172,7 @@ export class GraphNavigatorPageComponent implements OnInit, OnDestroy {
    */
   private clearSeedQueryParams(): Promise<boolean> {
     const queryParams: Params = {...this.activatedRoute.snapshot.queryParams};
-    PARAMS_TO_REMOVE.forEach((param) => delete queryParams[param]);
+    SEED_PARAMS.forEach((param) => delete queryParams[param]);
     return this.router.navigate([], {relativeTo: this.activatedRoute, queryParams, replaceUrl: true});
   }
 
@@ -188,7 +183,9 @@ export class GraphNavigatorPageComponent implements OnInit, OnDestroy {
   private clearDiagram(): void {
     this.seedIris.set([]);
     this.seedGraph.set([]);
+    // the event drops the pending saves of a mounted diagram; the direct removal also covers an unmounted one
     this.dispatchClearDiagramEvent();
+    this.graphNavigatorStorageService.removeDiagram();
   }
 
   /**
@@ -252,6 +249,76 @@ export class GraphNavigatorPageComponent implements OnInit, OnDestroy {
     const message = translate(messageKey);
     this.logger.error(message, error);
     this.toastrService.error(message);
+  }
+
+  /**
+   * Asks the user whether to discard a persisted diagram of another repository, or keep it and show it with the data
+   * of the selected repository. A seed replaces the diagram, so the diagram is removed then, without a question: it
+   * must not be restored when the seed turns out empty, or before the seed is saved.
+   *
+   * @param repositoryId The selected repository.
+   */
+  private resolveStoredDiagram(repositoryId: string): void {
+    if (this.hasSeedParams()) {
+      this.graphNavigatorStorageService.removeDiagram();
+      this.renderDiagram(repositoryId);
+      return;
+    }
+    const storedRepositoryId = this.graphNavigatorStorageService.getDiagramRepository();
+    if (!this.graphNavigatorStorageService.hasDiagram() || !storedRepositoryId || storedRepositoryId === repositoryId) {
+      this.renderDiagram(repositoryId);
+      return;
+    }
+    // dismissing the dialog (Esc or the close button) rejects it, which keeps the diagram, so it is not lost by accident
+    this.confirmationProviderService.confirm({
+      header: translate('graph_navigator.confirmation.diagram_of_another_repository.title'),
+      message: translate('graph_navigator.confirmation.diagram_of_another_repository.message', {repositoryId: storedRepositoryId}),
+      acceptButton: {label: translate('graph_navigator.confirmation.diagram_of_another_repository.discard'), type: 'danger'},
+      rejectButton: {label: translate('graph_navigator.confirmation.diagram_of_another_repository.keep')},
+      acceptHandler: () => this.discardStoredDiagram(repositoryId),
+      rejectHandler: () => this.keepStoredDiagram(repositoryId)
+    });
+  }
+
+  /**
+   * Removes the persisted diagram and renders an empty diagram, unless the repository has changed since the question
+   * was asked.
+   *
+   * @param repositoryId The repository the question was asked for.
+   */
+  private discardStoredDiagram(repositoryId: string): void {
+    if (repositoryId === this.currentRepository()) {
+      this.graphNavigatorStorageService.removeDiagram();
+      this.renderDiagram(repositoryId);
+    }
+  }
+
+  /**
+   * Renders the persisted diagram for the selected repository, unless the repository has changed since the question
+   * was asked.
+   *
+   * @param repositoryId The repository the question was asked for.
+   */
+  private keepStoredDiagram(repositoryId: string): void {
+    if (repositoryId === this.currentRepository()) {
+      this.renderDiagram(repositoryId);
+    }
+  }
+
+  /**
+   * Renders the diagram for the repository. From then on the web component saves the diagram of this repository, so
+   * the repository is recorded with it.
+   *
+   * @param repositoryId The selected repository.
+   */
+  private renderDiagram(repositoryId: string): void {
+    this.graphNavigatorStorageService.setDiagramRepository(repositoryId);
+    this.isDiagramReady.set(true);
+  }
+
+  private hasSeedParams(): boolean {
+    const queryParams = this.activatedRoute.snapshot.queryParams;
+    return SEED_PARAMS.some((param) => !!queryParams[param]);
   }
 
   private loadSettings(repositoryId: string): void {

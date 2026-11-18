@@ -21,6 +21,20 @@ const CONSTRUCT_TARGET_LABEL = 'Metric';
 // The graph-navigator settings endpoint requires this repository.
 const SYSTEM_REPOSITORY_ID = 'SystemRepository';
 
+/**
+ * Switches the repository on the SPARQL view and returns to the Graph Navigator view via the navigation bar.
+ *
+ * @param {string} repositoryId The repository to switch to.
+ */
+function switchRepositoryOnAnotherViewAndReturn(repositoryId) {
+    MainMenuSteps.clickOnSparqlMenu();
+    GraphNavigatorSteps.getComponent().should('not.exist');
+    YasqeSteps.getEditor().should('be.visible');
+    RepositorySelectorSteps.selectRepository(repositoryId);
+    RepositorySelectorSteps.getSelectedRepository().should('contain', repositoryId);
+    MainMenuSteps.clickOnGraphNavigator();
+}
+
 describe('Graph Navigator', () => {
     let repositoryId;
 
@@ -124,7 +138,7 @@ describe('Graph Navigator', () => {
         GraphNavigatorSteps.getElement(SEED_RESOURCE_LABEL).should('exist');
     });
 
-    it('should keep the diagram on refresh but clear it when navigating away and back', () => {
+    it('should keep the diagram on refresh and when navigating away and back', () => {
         // Given the Graph Navigator view is opened with a start resource that gets seeded on the canvas.
         GraphNavigatorSteps.visit(SEED_RESOURCE_ENCODED);
         GraphNavigatorSteps.getElements().should('have.length', 1);
@@ -150,9 +164,18 @@ describe('Graph Navigator', () => {
         // And I return to the Graph Navigator view via the navigation bar.
         MainMenuSteps.clickOnGraphNavigator();
 
-        // Then I expect the canvas to be cleared, because leaving the view drops the persisted diagram state.
+        // Then I expect the diagram to be restored, because it is persisted for the repository it was drawn in.
         GraphNavigatorSteps.getWorkspace().should('exist');
-        GraphNavigatorSteps.getElements().should('not.exist');
+        GraphNavigatorSteps.getElements().should('have.length', 1);
+        GraphNavigatorSteps.getElement(SEED_RESOURCE_LABEL).should('exist');
+
+        // When I refresh the page, which now has no start resource to seed the canvas with.
+        cy.reload();
+
+        // Then I expect the diagram to be restored from the persisted state.
+        GraphNavigatorSteps.getWorkspace().should('exist');
+        GraphNavigatorSteps.getElements().should('have.length', 1);
+        GraphNavigatorSteps.getElement(SEED_RESOURCE_LABEL).should('exist');
     });
 
     describe('Settings', () => {
@@ -380,9 +403,10 @@ describe('Graph Navigator', () => {
             // When I switch to another repository.
             RepositorySelectorSteps.selectRepository(secondRepositoryId);
 
-            // Then I expect a confirmation that warns the diagram will be cleared.
+            // Then I expect a confirmation that warns the diagram will be cleared, and that it can be exported first.
             GraphNavigatorSteps.getConfirmDialog().should('be.visible')
-                .and('contain', 'The diagram will be cleared.');
+                .and('contain', 'The diagram will be cleared.')
+                .and('contain', 'Export to JSON');
 
             // When I cancel.
             GraphNavigatorSteps.cancelDialog();
@@ -409,6 +433,55 @@ describe('Graph Navigator', () => {
             GraphNavigatorSteps.getWorkspace().should('exist');
             GraphNavigatorSteps.getElements().should('not.exist');
             GraphNavigatorSteps.verifyOnlyRepositoryParam(secondRepositoryId);
+        });
+
+        it('should ask what to do with the diagram when the repository is switched on another view', () => {
+            // Given the Graph Navigator view is opened with a start resource that gets seeded on the canvas.
+            GraphNavigatorSteps.visit(SEED_RESOURCE_ENCODED);
+            GraphNavigatorSteps.getElements().should('have.length', 1);
+
+            // When I switch to another repository on another view and return to the Graph Navigator view.
+            switchRepositoryOnAnotherViewAndReturn(secondRepositoryId);
+
+            // Then I expect to be asked about the diagram, which was drawn in the first repository.
+            GraphNavigatorSteps.getConfirmDialog().should('be.visible')
+                .and('contain', 'Diagram of another repository')
+                .and('contain', repositoryId);
+            // And I expect the diagram not to be shown until I answer.
+            GraphNavigatorSteps.getComponent().should('not.exist');
+
+            // When I close the dialog with Escape.
+            GraphNavigatorSteps.typeEscapeKey();
+
+            // Then I expect the diagram to be kept and shown with the data of the selected repository.
+            GraphNavigatorSteps.getWorkspace().should('exist');
+            GraphNavigatorSteps.getElements().should('have.length', 1);
+
+            // When I switch back to the first repository on another view and return.
+            switchRepositoryOnAnotherViewAndReturn(repositoryId);
+
+            // Then I expect to be asked again, because the kept diagram now belongs to the second repository.
+            GraphNavigatorSteps.getConfirmDialog().should('be.visible').and('contain', secondRepositoryId);
+
+            // When I keep the diagram.
+            GraphNavigatorSteps.keepDiagramOfAnotherRepository();
+
+            // Then I expect it to be shown with the data of the selected repository.
+            GraphNavigatorSteps.getWorkspace().should('exist');
+            GraphNavigatorSteps.getElements().should('have.length', 1);
+
+            // When I switch to the second repository on another view and return.
+            switchRepositoryOnAnotherViewAndReturn(secondRepositoryId);
+
+            // Then I expect to be asked again, because the kept diagram now belongs to the first repository.
+            GraphNavigatorSteps.getConfirmDialog().should('be.visible').and('contain', repositoryId);
+
+            // When I discard the diagram.
+            GraphNavigatorSteps.discardDiagramOfAnotherRepository();
+
+            // Then I expect the canvas to be empty.
+            GraphNavigatorSteps.getWorkspace().should('exist');
+            GraphNavigatorSteps.getElements().should('not.exist');
         });
 
         it('should warn that autocomplete is off once per repository selection', () => {
