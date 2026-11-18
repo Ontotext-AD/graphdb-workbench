@@ -60,7 +60,7 @@ describe('Expand results over owl:sameAs', () => {
         // Then I expect that "sameAs" element to be enabled by default
         YasqeSteps.getActionButton(5).should('have.class', 'icon-same-as-on');
         // and the tooltip of element describes that "sameAs" element is enabled.
-        YasqeSteps.getActionButtonTooltip(4).should('have.attr', 'yasgui-data-tooltip', 'Expand results over owl:sameAs: ON');
+        YasqeSteps.getActionButtonTooltip(5).should('have.attr', 'yasgui-data-tooltip', 'Expand results over owl:sameAs: ON');
 
         // When I open a new Tab.
         YasguiSteps.openANewTab();
@@ -68,7 +68,7 @@ describe('Expand results over owl:sameAs', () => {
         // Then I expect that "sameAs" element to be enabled in the new tab.
         YasqeSteps.getActionButton(5).should('have.class', 'icon-same-as-on');
         // and the tooltip of element describes that "sameAs" element is enabled.
-        YasqeSteps.getActionButtonTooltip(4).should('have.attr', 'yasgui-data-tooltip', 'Expand results over owl:sameAs: ON');
+        YasqeSteps.getActionButtonTooltip(5).should('have.attr', 'yasgui-data-tooltip', 'Expand results over owl:sameAs: ON');
     });
 
     it('should not be enabled when infer is true and sameAs is false in user settings',() => {
@@ -81,7 +81,7 @@ describe('Expand results over owl:sameAs', () => {
         // Then I expect that "sameAs" element to be disabled by default
         YasqeSteps.getActionButton(5).should('have.class', 'icon-same-as-off');
         // and the tooltip of element describes that "sameAs" element is disabled.
-        YasqeSteps.getActionButtonTooltip(4).should('have.attr', 'yasgui-data-tooltip', 'Expand results over owl:sameAs: OFF');
+        YasqeSteps.getActionButtonTooltip(5).should('have.attr', 'yasgui-data-tooltip', 'Expand results over owl:sameAs: OFF');
 
         // When I open a new Tab.
         YasguiSteps.openANewTab();
@@ -89,7 +89,7 @@ describe('Expand results over owl:sameAs', () => {
         // Then I expect that "sameAs" element to be disabled in the new tab.
         YasqeSteps.getActionButton(5).should('have.class', 'icon-same-as-off');
         // and the tooltip of element describes that "sameAs" element is disabled.
-        YasqeSteps.getActionButtonTooltip(4).should('have.attr', 'yasgui-data-tooltip', 'Expand results over owl:sameAs: OFF');
+        YasqeSteps.getActionButtonTooltip(5).should('have.attr', 'yasgui-data-tooltip', 'Expand results over owl:sameAs: OFF');
     });
 
     it('should not be enabled when infer is false and sameAs is true in user settings', () => {
@@ -100,7 +100,7 @@ describe('Expand results over owl:sameAs', () => {
         YasguiSteps.getYasgui().should('be.visible');
 
         // Then I expect that "sameAs" element to be disabled by default
-        YasqeSteps.getActionButtonTooltip(4).should('have.attr', 'yasgui-data-tooltip', 'Requires \'Include Inferred\'!');
+        YasqeSteps.getActionButtonTooltip(5).should('have.attr', 'yasgui-data-tooltip', 'Requires \'Include Inferred\'!');
         // and the tooltip of element describes that "infer" is required.
         YasqeSteps.getActionButton(5).should('have.class', 'icon-same-as-off');
 
@@ -110,7 +110,7 @@ describe('Expand results over owl:sameAs', () => {
         // Then I expect that "sameAs" element to be disabled in the new tab,
         YasqeSteps.getActionButton(5).should('have.class', 'icon-same-as-off');
         // and the tooltip of element describes that "infer" is required.
-        YasqeSteps.getActionButtonTooltip(4).should('have.attr', 'yasgui-data-tooltip', 'Requires \'Include Inferred\'!');
+        YasqeSteps.getActionButtonTooltip(5).should('have.attr', 'yasgui-data-tooltip', 'Requires \'Include Inferred\'!');
     });
 
     it('should not be enabled when infer is false and sameAs is false in user settings', () => {
@@ -123,7 +123,7 @@ describe('Expand results over owl:sameAs', () => {
         // Then I expect that "sameAs" element to be disabled by default,
         YasqeSteps.getActionButton(5).should('have.class', 'icon-same-as-off');
         // and the tooltip of element describes that "infer" is required.
-        YasqeSteps.getActionButtonTooltip(4).should('have.attr', 'yasgui-data-tooltip', 'Requires \'Include Inferred\'!');
+        YasqeSteps.getActionButtonTooltip(5).should('have.attr', 'yasgui-data-tooltip', 'Requires \'Include Inferred\'!');
 
         // When I open a new Tab.
         YasguiSteps.openANewTab();
@@ -131,6 +131,6 @@ describe('Expand results over owl:sameAs', () => {
         // Then I expect that "sameAs" element to be disabled in the new tab,
         YasqeSteps.getActionButton(5).should('have.class', 'icon-same-as-off');
         // and the tooltip of element describes that "infer" is required.
-        YasqeSteps.getActionButtonTooltip(4).should('have.attr', 'yasgui-data-tooltip', 'Requires \'Include Inferred\'!');
+        YasqeSteps.getActionButtonTooltip(5).should('have.attr', 'yasgui-data-tooltip', 'Requires \'Include Inferred\'!');
     });
 });
