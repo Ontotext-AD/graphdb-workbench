@@ -66,7 +66,7 @@ describe('Include inferred statements', () => {
         // Then I expect that "infer" element to be enabled by default,
         YasqeSteps.getActionButton(4).should('have.class', 'icon-inferred-on');
         // and the tooltip of element describes that "infer" functionality is enabled.
-        YasqeSteps.getActionButtonTooltip(3).should('have.attr', 'yasgui-data-tooltip', 'Include inferred data in results: ON');
+        YasqeSteps.getActionButtonTooltip(4).should('have.attr', 'yasgui-data-tooltip', 'Include inferred data in results: ON');
 
         // When I open a new Tab.
         YasguiSteps.openANewTab();
@@ -74,7 +74,7 @@ describe('Include inferred statements', () => {
         // Then I expect that inferred element to be enabled in the new tab,
         YasqeSteps.getActionButton(4).should('have.class', 'icon-inferred-on');
         // and the tooltip of element describes that "infer" element is enabled.
-        YasqeSteps.getActionButtonTooltip(3).should('have.attr', 'yasgui-data-tooltip', 'Include inferred data in results: ON');
+        YasqeSteps.getActionButtonTooltip(4).should('have.attr', 'yasgui-data-tooltip', 'Include inferred data in results: ON');
     });
 
     it('should not be enabled when user settings is set to false.', () => {
@@ -87,7 +87,7 @@ describe('Include inferred statements', () => {
         // Then I expect that "infer" element to be disabled by default,
         YasqeSteps.getActionButton(4).should('have.class', 'icon-inferred-off');
         // and the tooltip of element describes that "infer" element is disabled.
-        YasqeSteps.getActionButtonTooltip(3).should('have.attr', 'yasgui-data-tooltip', 'Include inferred data in results: OFF');
+        YasqeSteps.getActionButtonTooltip(4).should('have.attr', 'yasgui-data-tooltip', 'Include inferred data in results: OFF');
 
         // When I open a new Tab.
         YasguiSteps.openANewTab();
@@ -95,6 +95,6 @@ describe('Include inferred statements', () => {
         // Then I expect that inferred element to be disabled in the new tab,
         YasqeSteps.getActionButton(4).should('have.class', 'icon-inferred-off');
         // and the tooltip of element describes that "infer" element is disabled.
-        YasqeSteps.getActionButtonTooltip(3).should('have.attr', 'yasgui-data-tooltip', 'Include inferred data in results: OFF');
+        YasqeSteps.getActionButtonTooltip(4).should('have.attr', 'yasgui-data-tooltip', 'Include inferred data in results: OFF');
     });
 });

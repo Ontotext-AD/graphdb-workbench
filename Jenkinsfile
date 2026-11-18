@@ -162,7 +162,7 @@ pipeline {
                             if (caughtError) {
                                 echo "Tests failed — archiving Cypress video artifacts and GraphDB diagnostics."
                                 collectGraphdbDiagnostics()
-                                archiveArtifacts allowEmptyArchive: true, artifacts: 'e2e-tests/report/screenshots/**/*.png, e2e-tests/report/videos/**/*.mp4, e2e-tests/cypress/logs/*.log, graphdb-diagnostics/**'
+                                archiveArtifacts allowEmptyArchive: true, artifacts: 'e2e-tests/report/screenshots/**/*.png, e2e-tests/report/videos/**/*.mp4, e2e-tests/logs/**, graphdb-diagnostics/**'
                                 error("Cypress tests failed, job failed.")
                             }
 

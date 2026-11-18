@@ -205,12 +205,8 @@ export class YasqeSteps {
         return YasqeSteps.getEditor().find('.yasqe_buttons');
     }
 
-    static getActionButtonsTooltips() {
-        return YasqeSteps.getActionsToolbar().find('yasgui-tooltip');
-    }
-
-    static getActionButtonTooltip(index) {
-        return YasqeSteps.getActionButtonsTooltips().eq(index);
+    static getActionButtonTooltip(buttonIndex) {
+        return YasqeSteps.getActionButton(buttonIndex).closest('yasgui-tooltip');
     }
 
     static getActionButtons() {

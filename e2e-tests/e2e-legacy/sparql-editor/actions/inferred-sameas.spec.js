@@ -36,14 +36,14 @@ describe('Expand results over owl:sameAs', () => {
         SparqlEditorSteps.visitSparqlEditorPage();
 
         // Then I expect inferred button to be on.
-        YasqeSteps.getActionButtonTooltip(3).should('have.attr', 'yasgui-data-tooltip', 'Include inferred data in results: ON');
+        YasqeSteps.getActionButtonTooltip(4).should('have.attr', 'yasgui-data-tooltip', 'Include inferred data in results: ON');
         YasqeSteps.getActionButton(4).should('have.class', 'icon-inferred-on');
 
         // When I click on inferred button
         YasqeSteps.getActionButton(4).click({force: true});
 
         // Then I expect inferred button to not be toggled.
-        YasqeSteps.getActionButtonTooltip(3).should('have.attr', 'yasgui-data-tooltip', 'Include inferred data in results: ON');
+        YasqeSteps.getActionButtonTooltip(4).should('have.attr', 'yasgui-data-tooltip', 'Include inferred data in results: ON');
         YasqeSteps.getActionButton(4).should('have.class', 'icon-inferred-on');
     });
 });
