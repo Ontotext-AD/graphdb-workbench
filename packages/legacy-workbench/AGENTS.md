@@ -1,6 +1,6 @@
 # AGENTS.md — packages/legacy-workbench
 
-The **legacy AngularJS 1.3.20 micro-frontend** that still renders most GraphDB Workbench views (security & users, repositories, SPARQL/YASGUI, Explore/graph views, Import, connectors, cluster management, backup-and-restore, GraphQL playground, TTYG, similarity, autocomplete, JDBC, namespaces, …). Registered with single-spa as `@ontotext/legacy-workbench`.
+The **legacy AngularJS 1.3.21-onto micro-frontend** that still renders most GraphDB Workbench views (security & users, repositories, SPARQL/YASGUI, Explore/graph views, Import, connectors, cluster management, backup-and-restore, GraphQL playground, TTYG, similarity, autocomplete, JDBC, namespaces, …). Registered with single-spa as `@ontotext/legacy-workbench`.
 
 > Part of the `graphdb-workbench` monorepo. Cross-cutting rules live in the [root AGENTS.md](../../AGENTS.md) and [docs/conventions/](../../docs/conventions/). This file covers only what is specific to this package. Relevant deep dives: [plugin system](../../docs/reference/plugin-system.md), [i18n](../../docs/conventions/i18n.md).
 >
@@ -8,7 +8,7 @@ The **legacy AngularJS 1.3.20 micro-frontend** that still renders most GraphDB W
 
 ## Stack & build
 
-- **AngularJS 1.3.20** (npm `angular`, pinned with an `overrides` entry so every AngularJS plugin shares it), with jQuery, D3 v7, ECharts, and lodash as hard global deps.
+- **AngularJS 1.3.21-onto**, the Ontotext fork of 1.3.x (npm `angular` as an alias of `@ontotext/angular`, pinned with an `overrides` entry so every AngularJS plugin shares it), with jQuery, D3 v7, ECharts, and lodash as hard global deps.
 - **single-spa** via a local fork `src/single-spa-angularjs.js`. `src/app.js` (the webpack entry) builds the lifecycles; `mount` runs `startWorkbench()` → loads translations + `rest/info/version`, then `angular.bootstrap(...'graphdb.workbench')`. Route modules are lazy-loaded with **oclazyload** (`$ocLazyLoad.inject`).
 - **NO local build/test/start script.** Built from the **repo-root webpack** (`webpack.config.common.js`: entry `legacyWorkbench: ./packages/legacy-workbench/src/app.js`, a `plugin.js` glob, and per-module `CopyPlugin` entries for `pages/`, `templates/`, `css/`, `i18n/`, …). Served by `root-config` via the import map (`legacy-routes-provider.ts`).
 - **LESS, not SCSS** — compiled locally with `less-watch-compiler`.
@@ -72,6 +72,6 @@ A **typical module folder** contains: `plugin.js` (route + menu registration), `
 
 - **Do not modernize** — match surrounding code; don't "fix" quotes/indent/JSDoc or convert to modern Angular.
 - **`package.json` `name` is `"graphdb-workbench"`** (a legacy holdover); the import-map/single-spa name is `@ontotext/legacy-workbench`.
-- **jQuery is a global** (`$`), used app-wide including bootstrap data fetches in `app.js`. AngularJS 1.3.20 lacks 1.5+ APIs (components, `<`-bindings); digest is manually kicked via shared events.
+- **jQuery is a global** (`$`), used app-wide including bootstrap data fetches in `app.js`. AngularJS 1.3 lacks 1.5+ APIs (components, `<`-bindings); digest is manually kicked via shared events.
 - **No standalone build** — bundled and served only via the repo-root webpack + `root-config`. A new module `templates/` dir may need a matching `CopyPlugin` entry in `webpack.config.common.js`, or its HTML won't reach the browser. New published static folders may need a Spring Security entry.
 - `$locationProvider.html5Mode(true)` is on, with special OAuth-implicit route handling in `app.js`.
