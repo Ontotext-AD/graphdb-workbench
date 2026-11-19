@@ -1,0 +1,67 @@
+/*
+ * The workbench fonts for the REST API iframe. The workbench page declares them in
+ * root-config/src/vendor/fonts.css, which does not reach this document; the files are served from css/fonts.
+ */
+
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-display: swap;
+    font-weight: 300;
+    src: url('../../../css/fonts/inter-latin-300-normal.woff2') format('woff2'),
+    url('../../../css/fonts/inter-latin-300-normal.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-display: swap;
+    font-weight: 400;
+    src: url('../../../css/fonts/inter-latin-400-normal.woff2') format('woff2'),
+    url('../../../css/fonts/inter-latin-400-normal.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-display: swap;
+    font-weight: 500;
+    src: url('../../../css/fonts/inter-latin-500-normal.woff2') format('woff2'),
+    url('../../../css/fonts/inter-latin-500-normal.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-display: swap;
+    font-weight: 600;
+    src: url('../../../css/fonts/inter-latin-600-normal.woff2') format('woff2'),
+    url('../../../css/fonts/inter-latin-600-normal.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-display: swap;
+    font-weight: 700;
+    src: url('../../../css/fonts/inter-latin-700-normal.woff2') format('woff2'),
+    url('../../../css/fonts/inter-latin-700-normal.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'JetBrains Mono';
+    font-style: normal;
+    font-display: swap;
+    font-weight: 400;
+    src: url('../../../css/fonts/jetbrains-mono-v12-vietnamese_latin-ext_latin_greek_cyrillic-ext_cyrillic-regular.woff2') format('woff2'),
+    url('../../../css/fonts/jetbrains-mono-v12-vietnamese_latin-ext_latin_greek_cyrillic-ext_cyrillic-regular.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'JetBrains Mono';
+    font-style: normal;
+    font-display: swap;
+    font-weight: 600;
+    src: url('../../../css/fonts/jetbrains-mono-v12-vietnamese_latin-ext_latin_greek_cyrillic-ext_cyrillic-600.woff2') format('woff2'),
+    url('../../../css/fonts/jetbrains-mono-v12-vietnamese_latin-ext_latin_greek_cyrillic-ext_cyrillic-600.woff') format('woff');
+}

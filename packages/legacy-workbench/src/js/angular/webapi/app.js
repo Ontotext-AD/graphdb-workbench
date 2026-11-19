@@ -1,5 +1,5 @@
 import 'angular/core/services';
-import {RuntimeConfigurationContextService, service, getBasePath} from '@ontotext/workbench-api';
+import {RuntimeConfigurationContextService, service, getBasePath, ThemeMode} from '@ontotext/workbench-api';
 
 angular
     .module('graphdb.framework.webapi', [])
@@ -33,7 +33,7 @@ function WebApiCtrl($scope) {
         return iframe.contentDocument || iframe.contentWindow?.document;
     };
 
-    const syncStyles = () => {
+    const syncStyles = (themeMode) => {
         try {
             const iframeDoc = getIframeDocument();
             if (!iframeDoc?.documentElement) {
@@ -42,6 +42,8 @@ function WebApiCtrl($scope) {
 
             const rootStyles = getComputedStyle(document.documentElement);
             const iframeRoot = iframeDoc.documentElement;
+            // Swagger UI switches to its own dark theme with this class on <html>.
+            iframeRoot.classList.toggle('dark-mode', themeMode === ThemeMode.dark);
 
             for (const prop of rootStyles) {
                 if (!prop.startsWith('--gw-')) {

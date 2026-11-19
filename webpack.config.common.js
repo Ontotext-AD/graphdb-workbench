@@ -14,6 +14,17 @@ const fs = require('fs');
 // This function must be used as the transform parameter of the plugin to replace the version.
 const replaceVersion = (content) => content.toString().replace(/\[AIV]{version}\[\/AIV]/g, PACKAGE.version);
 
+// Swagger UI sets the generic "sans-serif" and "monospace" fonts on dozens of selectors. Point them at the workbench
+// fonts instead; the REST API page loads the font files and syncs the --gw-* variables into its iframe.
+const useWorkbenchFontsInSwaggerUi = (content, absoluteFrom) => {
+    if (!absoluteFrom.endsWith('swagger-ui.css')) {
+        return content;
+    }
+    return content.toString()
+        .replace(/font-family:sans-serif/g, 'font-family:var(--gw-font-family-body,sans-serif)')
+        .replace(/font-family:(monospace,monospace|Consolas,monaco,monospace|monospace)/g, 'font-family:var(--gw-font-family-code,monospace)');
+};
+
 // Load the languages JSON file as a string for injection
 const languagesConfig = JSON.stringify(
     JSON.parse(fs.readFileSync(path.resolve(__dirname, 'packages/legacy-workbench/src/i18n/languages.json'), 'utf8'))
@@ -211,7 +222,8 @@ module.exports = (webpackConfigEnv, argv) => {
                         // Our index.html, index.css and swagger-initializer.js live in src/res/swagger5.
                         context: 'packages/legacy-workbench/node_modules/swagger-ui-dist',
                         from: '{swagger-ui-bundle.js*,swagger-ui.css*,LICENSE,NOTICE,favicon-*.png}',
-                        to: 'res/swagger5'
+                        to: 'res/swagger5',
+                        transform: useWorkbenchFontsInSwaggerUi
                     },
                     {
                         from: 'packages/legacy-workbench/src/pages',

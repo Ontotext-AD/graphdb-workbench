@@ -1,32 +1,47 @@
+/*
+ * Workbench adjustments on top of Swagger UI's own light and dark themes.
+ * WebApiCtrl toggles Swagger UI's "dark-mode" class and syncs the --gw-* variables on theme change.
+ * Colors come from the design system's --gw-swagger-* and input tokens, which change with the theme, so one rule
+ * serves both themes. Each color rule also lists the "html.dark-mode" selector: Swagger UI's dark theme rules carry
+ * that qualifier, and only the same specificity, later in the cascade, overrides them.
+ * Whatever is not listed here keeps Swagger UI's own colors.
+ */
+
+/* The "html" qualifier matches the specificity of Swagger UI's own "html.dark-mode .swagger-ui" rule. */
+html.dark-mode .swagger-ui {
+    /* Show the workbench page background, as in the light theme, instead of Swagger UI's dark panel. */
+    background: transparent;
+}
+
 html, body {
-    /* Same scrollbar colors as the workbench page; WebApiCtrl syncs the --gw-* variables on theme change. */
+    /* Same scrollbar colors as the workbench page. */
     scrollbar-color: var(--gw-virtualscroller-loader-mask-color) var(--gw-virtualscroller-loader-mask-background);
 }
 
+/* TYPOGRAPHY: the workbench fonts (see fonts.css), at the workbench's lighter weights instead of Swagger UI's bold. */
+
 body {
-    font-family: var(--main-font);
-    font-weight: var(--main-font-weight);
+    font-family: var(--gw-font-family-body);
 }
 
-code, pre, kbd, samp, textarea {
-    font-family: var(--mono-font);
+.swagger-ui .info .title,
+.swagger-ui .opblock-tag {
+    font-weight: 500;
 }
 
-.swagger-ui .info {
-    margin: 0 0 20px;
-}
-
-.swagger-ui .info .title {
+.swagger-ui .opblock-tag {
     font-size: 20px;
-    line-height: 1;
-    font-family: var(--main-font);
-    color: var(--gw-body-color);
 }
 
-.swagger-section {
-    background-color: var(--gw-body-background);
-    color: var(--gw-body-color);
+.swagger-ui .opblock .opblock-summary-path {
+    font-weight: 400;
 }
+
+.swagger-ui .opblock .opblock-summary-method {
+    font-weight: 600;
+}
+
+/* LAYOUT */
 
 .swagger-ui .wrapper {
     margin: 0;
@@ -35,81 +50,25 @@ code, pre, kbd, samp, textarea {
     display: contents;
 }
 
-.swagger-ui .opblock-tag small {
-    font-size: 1em;
-    padding: 0;
-    color: var(--gw-body-color) !important;
-}
-
-.swagger-ui .opblock-tag small p {
-    color: var(--gw-secondary-base) !important;
-}
-
-.swagger-ui .opblock-tag > a::after {
-    content: ': ';
-    color: #000000;
-}
-
-.swagger-ui .opblock-tag .info__externaldocs:hover a,
-.swagger-ui .opblock-tag .info__externaldocs a {
-    text-decoration: underline !important;
-}
-
-.swagger-ui a.info__extdocs.link {
-    text-decoration: underline !important;
-    font-size: 100%;
+.swagger-ui .info {
+    margin: 0 0 20px;
 }
 
 .swagger-ui .info hgroup.main {
     margin: 0;
 }
 
-.opblock-tag-section .opblock-tag > a.nostyle:link,
-.opblock-tag-section .opblock-tag > a.nostyle:visited {
-    text-decoration: none;
-}
-
-.swagger-ui .opblock-tag a span {
-    color: var(--gw-body-color);
-}
-
-.swagger-ui .opblock-tag {
-    border-bottom: 1px solid rgba(59, 65, 81, 0.1);
-}
-
-.swagger-ui .opblock-tag-section.is-open .opblock-tag {
-    border-bottom: none;
-}
-
-.swagger-ui .opblock-tag-section.is-open {
-    border-bottom: 1px solid rgba(59, 65, 81, 0.1);
-}
-
-.swagger-ui .opblock-tag,
-.swagger-ui .opblock-tag-section {
-    transition: border-color 0.3s ease;
+.swagger-ui .info .title {
+    font-size: 20px;
+    line-height: 1;
 }
 
 .swagger-ui .renderedMarkdown p {
     margin: 0.3em;
 }
 
-.swagger-section .swagger-ui-wrap h3, p, a {
-    color: var(--gw-secondary-base) !important;
-    padding: 2px !important;
-}
-
-.swagger-section .opblock-summary-path {
-    font-size: 1.1em !important;
-    font-family: unset !important;
-}
-
-.swagger-ui .expand-operation {
-    filter: opacity(0.5);
-}
-
-.swagger-section .swagger-ui-wrap .code {
-    font-family: var(--mono-font);
+.swagger-ui .opblock-summary-path {
+    font-size: 1.1em;
 }
 
 /* HIDE SOME ELEMENTS */
@@ -126,79 +85,141 @@ code, pre, kbd, samp, textarea {
     display: none;
 }
 
-.swagger-ui .url, .info>div {
+.swagger-ui .url, .swagger-ui .info > div {
     display: none;
 }
 
 /* COLORS */
 
-.swagger-ui .opblock.opblock-get {
-    background-color: #E7F0F7;
-    border: 1px solid #C3D9EC;
+.swagger-ui .info .title, html.dark-mode .swagger-ui .info .title,
+.swagger-ui .opblock-tag, html.dark-mode .swagger-ui .opblock-tag,
+.swagger-ui .opblock .opblock-summary-path, html.dark-mode .swagger-ui .opblock .opblock-summary-path,
+.swagger-ui .parameter__name, html.dark-mode .swagger-ui .parameter__name,
+.swagger-ui .response-col_status, html.dark-mode .swagger-ui .response-col_status,
+.swagger-ui table thead tr td, html.dark-mode .swagger-ui table thead tr td,
+.swagger-ui table thead tr th, html.dark-mode .swagger-ui table thead tr th {
+    color: var(--gw-swagger-color);
 }
 
-.swagger-ui .opblock.opblock-get .opblock-summary {
-    border-color: #0F6AB4;
+.swagger-ui .opblock .opblock-summary-description, html.dark-mode .swagger-ui .opblock .opblock-summary-description {
+    /* The muted help color is hard to read on the method backgrounds. */
+    color: var(--gw-swagger-color);
 }
 
-.swagger-ui .opblock.opblock-get .opblock-summary-method {
-    background: #0F6AB4;
+.swagger-ui .opblock-tag small, html.dark-mode .swagger-ui .opblock-tag small,
+.swagger-ui .parameter__type, html.dark-mode .swagger-ui .parameter__type,
+.swagger-ui .parameter__in, html.dark-mode .swagger-ui .parameter__in {
+    color: var(--gw-swagger-help-color);
 }
 
-.swagger-ui .opblock.opblock-patch {
-    background: #FCE9E3;
-    border: 1px solid #F5D5C3;
+.swagger-ui .opblock-tag, html.dark-mode .swagger-ui .opblock-tag {
+    border-bottom-color: var(--gw-swagger-border-color);
 }
 
-.swagger-ui .opblock.opblock-patch .opblock-summary-method {
-    border-color: #D38042;
-    background-color: #D38042;
+.swagger-ui .opblock .opblock-section-header, html.dark-mode .swagger-ui .opblock .opblock-section-header {
+    background: var(--gw-swagger-resp-background);
+    border-color: var(--gw-swagger-border-color);
+    box-shadow: none;
 }
 
-.swagger-ui .opblock.opblock-post {
-    background: #E7f6EC;
-    border: 1px solid #C3E8d1;
+.swagger-ui .opblock .opblock-section-header h4, html.dark-mode .swagger-ui .opblock .opblock-section-header h4 {
+    color: var(--gw-swagger-heading-color);
 }
 
-.swagger-ui .opblock.opblock-post .opblock-summary-method {
-    background-color: #10A54A;
+.swagger-ui .opblock.opblock-get, html.dark-mode .swagger-ui .opblock.opblock-get,
+.swagger-ui .opblock.opblock-get .opblock-summary, html.dark-mode .swagger-ui .opblock.opblock-get .opblock-summary {
+    border-color: var(--gw-swagger-border-color);
 }
 
-.swagger-ui .opblock.opblock-delete {
-    background: #F5E8E8;
-    border: 1px solid #E8C6C7;
+.swagger-ui .opblock.opblock-get, html.dark-mode .swagger-ui .opblock.opblock-get {
+    background: var(--gw-swagger-get-background);
 }
 
-.swagger-ui .opblock.opblock-delete .opblock-summary-method {
-    background-color: #A41E22;
+.swagger-ui .opblock.opblock-get .opblock-summary-method, html.dark-mode .swagger-ui .opblock.opblock-get .opblock-summary-method {
+    /* No --gw-swagger-* token for the method badge; the info color matches the block. */
+    background: var(--gw-info-600);
 }
 
-.swagger-ui .opblock.opblock-put {
-    background: #F9F2E9;
-    border: 1px solid #F0E0CA;
+.swagger-ui .opblock.opblock-post, html.dark-mode .swagger-ui .opblock.opblock-post,
+.swagger-ui .opblock.opblock-post .opblock-summary, html.dark-mode .swagger-ui .opblock.opblock-post .opblock-summary {
+    border-color: var(--gw-swagger-border-color);
 }
 
-.swagger-ui .opblock.opblock-put .opblock-summary-method {
-    background-color: #C5862B;
+.swagger-ui .opblock.opblock-post, html.dark-mode .swagger-ui .opblock.opblock-post {
+    background: var(--gw-swagger-post-background);
 }
 
-.opblock-summary-path a {
-    color: #000000 !important;
+.swagger-ui .opblock.opblock-post .opblock-summary-method, html.dark-mode .swagger-ui .opblock.opblock-post .opblock-summary-method {
+    /* No --gw-swagger-* token for the method badge; the success color matches the block. */
+    background: var(--gw-success-600);
 }
 
-.swagger-section .swagger-ui-wrap pre code>span {
-    color: #000000 !important;
+.swagger-ui .opblock.opblock-put, html.dark-mode .swagger-ui .opblock.opblock-put,
+.swagger-ui .opblock.opblock-put .opblock-summary, html.dark-mode .swagger-ui .opblock.opblock-put .opblock-summary {
+    border-color: var(--gw-swagger-border-color);
 }
 
-.swagger-section .swagger-ui-wrap pre {
-    background-color: #FCF6DB !important;
-    color: #000000 !important;
-    border: 1px solid #E5E0C6 !important;
-    padding: 10px !important;
+.swagger-ui .opblock.opblock-put, html.dark-mode .swagger-ui .opblock.opblock-put {
+    background: var(--gw-swagger-put-background);
 }
 
-.swagger-ui .expand-methods svg, .swagger-ui .expand-operation svg {
-    fill: var(--gw-body-color);
-    /* Swagger UI paints the arrow path with currentColor. */
-    color: var(--gw-body-color);
+.swagger-ui .opblock.opblock-put .opblock-summary-method, html.dark-mode .swagger-ui .opblock.opblock-put .opblock-summary-method {
+    /* No --gw-swagger-* token for the method badge; the warning color matches the block. */
+    background: var(--gw-warning-600);
+}
+
+.swagger-ui .opblock.opblock-delete, html.dark-mode .swagger-ui .opblock.opblock-delete,
+.swagger-ui .opblock.opblock-delete .opblock-summary, html.dark-mode .swagger-ui .opblock.opblock-delete .opblock-summary {
+    border-color: var(--gw-swagger-border-color);
+}
+
+.swagger-ui .opblock.opblock-delete, html.dark-mode .swagger-ui .opblock.opblock-delete {
+    background: var(--gw-swagger-delete-background);
+}
+
+.swagger-ui .opblock.opblock-delete .opblock-summary-method, html.dark-mode .swagger-ui .opblock.opblock-delete .opblock-summary-method {
+    /* No --gw-swagger-* token for the method badge; the danger color matches the block. */
+    background: var(--gw-danger-600);
+}
+
+.swagger-ui .opblock.opblock-patch, html.dark-mode .swagger-ui .opblock.opblock-patch,
+.swagger-ui .opblock.opblock-patch .opblock-summary, html.dark-mode .swagger-ui .opblock.opblock-patch .opblock-summary {
+    border-color: var(--gw-swagger-border-color);
+}
+
+.swagger-ui .opblock.opblock-patch, html.dark-mode .swagger-ui .opblock.opblock-patch {
+    /* The design system has no PATCH token yet; the fallback follows the other method tokens (a -200 color). */
+    background: var(--gw-swagger-patch-background, var(--gw-accent-200));
+}
+
+.swagger-ui .opblock.opblock-patch .opblock-summary-method, html.dark-mode .swagger-ui .opblock.opblock-patch .opblock-summary-method {
+    background: var(--gw-accent-600);
+}
+
+.swagger-ui input[type=email], html.dark-mode .swagger-ui input[type=email],
+.swagger-ui input[type=file], html.dark-mode .swagger-ui input[type=file],
+.swagger-ui input[type=password], html.dark-mode .swagger-ui input[type=password],
+.swagger-ui input[type=search], html.dark-mode .swagger-ui input[type=search],
+.swagger-ui input[type=text], html.dark-mode .swagger-ui input[type=text] {
+    background: var(--gw-inputtext-background);
+    border-color: var(--gw-inputtext-border-color);
+    color: var(--gw-inputtext-color);
+}
+
+.swagger-ui select, html.dark-mode .swagger-ui select {
+    background-color: var(--gw-inputtext-background);
+    border-color: var(--gw-inputtext-border-color);
+    color: var(--gw-inputtext-color);
+}
+
+.swagger-ui textarea, html.dark-mode .swagger-ui textarea {
+    background: var(--gw-textarea-background);
+    color: var(--gw-textarea-color);
+}
+
+.swagger-ui input[disabled], html.dark-mode .swagger-ui input[disabled],
+.swagger-ui select[disabled], html.dark-mode .swagger-ui select[disabled],
+.swagger-ui textarea[disabled], html.dark-mode .swagger-ui textarea[disabled] {
+    background: var(--gw-textarea-disabled-background);
+    color: var(--gw-textarea-disabled-color);
 }
