@@ -48,16 +48,17 @@ import {
   LanguageService,
   LanguageContextService,
   HttpErrorResponse,
-  TranslationBundle,
   AutocompleteService,
   MonitoringService,
   ThemeService,
   RuntimeConfigurationContextService, SubscriptionList,
   JsonldExportSettings,
   RdfVersionUtil,
+  TranslationUtil,
 } from '@ontotext/workbench-api';
 import {YasguiComponent} from './models/yasgui-component';
 import {FileUtils} from '../../utils/file-utils';
+import {TranslationBundles} from '../../models/translation-bundles';
 import {YasrPluginName} from './models/yasr/yasr-plugin-name';
 import {DownloadAsModel} from '../../models/download/download-as-model';
 import {mapAutocompleteSearchResultToYasguiModel} from './mappers/autocomplete-result-to-yasgui-model.mapper';
@@ -518,7 +519,6 @@ export class YasguiComponentFacadeComponent implements OnInit, OnDestroy {
 
     const selectedRepository = this.repositoryContextService.getSelectedRepository();
     const isVirtualRepository = !!selectedRepository?.isOntop();
-    // FIXME: This doesn't seem to do the same as in the legacy.
     const i18n = await this.getI18n();
 
     const runtimeConfig: Partial<OntotextYasguiConfig> = {
@@ -680,7 +680,10 @@ export class YasguiComponentFacadeComponent implements OnInit, OnDestroy {
     }
   }
 
-  private async getI18n(): Promise<Record<string, TranslationBundle>> {
+  /**
+   * Loads the bundles of all supported languages, flattened, because Yasgui looks up only top-level keys.
+   */
+  private async getI18n(): Promise<TranslationBundles> {
     const supportedLanguages = this.languageService.getSupportedLanguages();
 
     const results = await Promise.allSettled(
@@ -689,10 +692,10 @@ export class YasguiComponentFacadeComponent implements OnInit, OnDestroy {
       )
     );
 
-    const i18n: Record<string, TranslationBundle> = {};
+    const i18n: TranslationBundles = {};
     for (const result of results) {
       if (result.status === 'fulfilled') {
-        i18n[result.value.lang] = result.value.bundle;
+        i18n[result.value.lang] = TranslationUtil.flatten(result.value.bundle);
       }
     }
     return i18n;

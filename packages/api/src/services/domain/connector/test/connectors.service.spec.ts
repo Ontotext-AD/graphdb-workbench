@@ -1,8 +1,7 @@
 import {ConnectorsService} from '../connectors.service';
-import {BeforeUpdateQueryResult, BeforeUpdateQueryResultStatus, ConnectorBuildStatus, ConnectorCommand} from '../../../../models/connector';
+import {ConnectorBuildStatus, ConnectorCheckResult, ConnectorCommand} from '../../../../models/connector';
 import {TestUtil} from '../../../utils/test/test-util';
 import {ResponseMock} from '../../../http/test/response-mock';
-import {UnknownConnectorCommandError} from '../error/unknown-connector-command-error';
 import {ConnectorResponse} from '../response/connector-response';
 import {Rdf4jRepositoryService} from '../../rdf4j/rdf4j-repository.service';
 import {SparqlResultsResponse} from '../../../../models/sparql';
@@ -22,7 +21,7 @@ describe('ConnectorsService', () => {
   });
 
   describe('checkConnector', () => {
-    test('should return SUCCESS result with no message when response has no command', async () => {
+    test('should return a result without a command when the query is not a connector command', async () => {
       // Given a response with no command field
       const response: ConnectorResponse = {
         command: '',
@@ -38,16 +37,13 @@ describe('ConnectorsService', () => {
       // When the service checks the connector
       const result = await connectorsService.checkConnector();
 
-      // Then it should return a BeforeUpdateQueryResult with SUCCESS status and no message label
-      expect(result).toBeInstanceOf(BeforeUpdateQueryResult);
-      expect(result.status).toBe(BeforeUpdateQueryResultStatus.SUCCESS);
-      expect(result.command).toBe('');
-      expect(result.messageLabelKey).toBeUndefined();
-      expect(result.iri).toBe('https://example.org/connector');
+      // Then the result has no command
+      expect(result).toBeInstanceOf(ConnectorCheckResult);
+      expect(result.command).toBeUndefined();
     });
 
-    test('should return ERROR result with inactive plugin message when connector has no support', async () => {
-      // Given a response with a command but no support
+    test('should keep the connector data of a connector command', async () => {
+      // Given a response with a CREATE command for a connector whose plugin is not active
       const response: ConnectorResponse = {
         command: ConnectorCommand.CREATE,
         hasSupport: false,
@@ -62,91 +58,40 @@ describe('ConnectorsService', () => {
       // When the service checks the connector
       const result = await connectorsService.checkConnector();
 
-      // Then it should return a BeforeUpdateQueryResult with ERROR status and inactive plugin message
-      expect(result).toBeInstanceOf(BeforeUpdateQueryResult);
-      expect(result.status).toBe(BeforeUpdateQueryResultStatus.ERROR);
-      expect(result.command).toBe(ConnectorCommand.CREATE);
-      expect(result.messageLabelKey).toBe('query.editor.inactive.plugin.warning.msg');
-      expect(result.parameters).toEqual([{connectorName: 'lucene'}, {pluginName: 'lucene-plugin'}]);
-      expect(result.iri).toBe('https://example.org/connector');
-    });
-
-    test('should return SUCCESS result with created.connector message for CREATE command', async () => {
-      // Given a response with a CREATE command and support
-      const response: ConnectorResponse = {
+      // Then the result holds the command and the connector data
+      expect(result).toEqual(new ConnectorCheckResult({
         command: ConnectorCommand.CREATE,
-        hasSupport: true,
-        connectorName: 'lucene',
+        hasSupport: false,
+        connectorType: 'lucene',
         pluginName: 'lucene-plugin',
         name: 'my-connector',
         iri: 'https://example.org/connector',
-        order: 1,
-      };
-      TestUtil.mockResponse(new ResponseMock(CONNECTORS_CHECK_ENDPOINT).setResponse(response));
-
-      // When the service checks the connector
-      const result = await connectorsService.checkConnector();
-
-      // Then it should return a BeforeUpdateQueryResult with SUCCESS status and created connector message
-      expect(result).toBeInstanceOf(BeforeUpdateQueryResult);
-      expect(result.status).toBe(BeforeUpdateQueryResultStatus.SUCCESS);
-      expect(result.command).toBe(ConnectorCommand.CREATE);
-      expect(result.messageLabelKey).toBe('created.connector');
-      expect(result.parameters).toEqual([{name: 'my-connector'}]);
-      expect(result.iri).toBe('https://example.org/connector');
+      }));
     });
 
-    test('should return SUCCESS result with repaired connector message for REPAIR command', async () => {
-      // Given a response with a REPAIR command and support
-      const response: ConnectorResponse = {
-        command: ConnectorCommand.REPAIR,
-        hasSupport: true,
-        connectorName: 'lucene',
-        pluginName: 'lucene-plugin',
-        name: 'my-connector',
-        iri: 'https://example.org/connector',
-        order: 1,
-      };
-      TestUtil.mockResponse(new ResponseMock(CONNECTORS_CHECK_ENDPOINT).setResponse(response));
+    test.each([ConnectorCommand.CREATE, ConnectorCommand.REPAIR, ConnectorCommand.DROP])(
+      'should return the %s command',
+      async (command) => {
+        // Given a response with a known command
+        const response: ConnectorResponse = {
+          command,
+          hasSupport: true,
+          connectorName: 'lucene',
+          pluginName: 'lucene-plugin',
+          name: 'my-connector',
+          iri: 'https://example.org/connector',
+          order: 1,
+        };
+        TestUtil.mockResponse(new ResponseMock(CONNECTORS_CHECK_ENDPOINT).setResponse(response));
 
-      // When the service checks the connector
-      const result = await connectorsService.checkConnector();
+        // When the service checks the connector
+        const result = await connectorsService.checkConnector();
 
-      // Then it should return a BeforeUpdateQueryResult with SUCCESS status and repaired connector message
-      expect(result).toBeInstanceOf(BeforeUpdateQueryResult);
-      expect(result.status).toBe(BeforeUpdateQueryResultStatus.SUCCESS);
-      expect(result.command).toBe(ConnectorCommand.REPAIR);
-      expect(result.messageLabelKey).toBe('query.editor.repaired.connector');
-      expect(result.parameters).toEqual([{name: 'my-connector'}]);
-      expect(result.iri).toBe('https://example.org/connector');
-    });
+        // Then the result has the same command
+        expect(result.command).toBe(command);
+      });
 
-    test('should return SUCCESS result with delete success message for DROP command', async () => {
-      // Given a response with a DROP command and support
-      const response: ConnectorResponse = {
-        command: ConnectorCommand.DROP,
-        hasSupport: true,
-        connectorName: 'lucene',
-        pluginName: 'lucene-plugin',
-        name: 'my-connector',
-        iri: 'https://example.org/connector',
-        order: 1,
-      };
-      TestUtil.mockResponse(new ResponseMock(CONNECTORS_CHECK_ENDPOINT).setResponse(response));
-
-      // When the service checks the connector
-      const result = await connectorsService.checkConnector();
-
-      // Then it should return a BeforeUpdateQueryResult with SUCCESS status and delete success message
-      expect(result).toBeInstanceOf(BeforeUpdateQueryResult);
-      expect(result.status).toBe(BeforeUpdateQueryResultStatus.SUCCESS);
-      expect(result.command).toBe(ConnectorCommand.DROP);
-      expect(result.messageLabelKey).toBe('externalsync.delete.success.msg');
-      expect(result.parameters).toEqual([{name: 'my-connector'}]);
-      expect(result.iri).toBe('https://example.org/connector');
-    });
-
-    test('should throw UnknownConnectorCommandError for an unrecognised command', async () => {
+    test('should throw for an unrecognised command', async () => {
       // Given a response with an unknown command and support
       const response: ConnectorResponse = {
         command: 'unsupported-command',
@@ -159,9 +104,8 @@ describe('ConnectorsService', () => {
       };
       TestUtil.mockResponse(new ResponseMock(CONNECTORS_CHECK_ENDPOINT).setResponse(response));
 
-      // When the service checks the connector, then it should throw an UnknownConnectorCommandError
-      await expect(connectorsService.checkConnector()).rejects.toThrow(UnknownConnectorCommandError);
-      await expect(connectorsService.checkConnector()).rejects.toThrow('Unknown connector command: unsupported-command');
+      // When the service checks the connector, then it should throw
+      await expect(connectorsService.checkConnector()).rejects.toThrow('Invalid enum value \'unsupported-command\'');
     });
 
     test('should pass the query string to the REST endpoint when provided', async () => {
@@ -185,43 +129,6 @@ describe('ConnectorsService', () => {
       const capturedRequest = TestUtil.getRequest(CONNECTORS_CHECK_ENDPOINT);
       expect(capturedRequest).toBeDefined();
       expect(capturedRequest?.body).toBe(sparqlQuery);
-    });
-
-    test('should always set the name on the result regardless of command', async () => {
-      // Given responses with different commands but the same name
-      const name = 'my-special-connector';
-      const responses: ConnectorResponse[] = [
-        {command: '', hasSupport: true, connectorName: 'c', pluginName: 'p', name, iri: 'x', order: 1},
-        {command: ConnectorCommand.CREATE, hasSupport: true, connectorName: 'c', pluginName: 'p', name, iri: 'x', order: 1},
-        {command: ConnectorCommand.REPAIR, hasSupport: true, connectorName: 'c', pluginName: 'p', name, iri: 'x', order: 1},
-      ];
-
-      for (const response of responses) {
-        TestUtil.mockResponse(new ResponseMock(CONNECTORS_CHECK_ENDPOINT).setResponse(response));
-        const result = await connectorsService.checkConnector();
-        expect(result.name).toBe(name);
-      }
-    });
-
-    test('should always set the iri on the result regardless of command', async () => {
-      // Given responses with different commands but the same iri
-      const iri = 'http://example.org/my-unique-connector';
-      const responses: ConnectorResponse[] = [
-        {command: '', hasSupport: true, connectorName: 'c', pluginName: 'p', name: 'n', iri, order: 1},
-        {command: ConnectorCommand.CREATE, hasSupport: true, connectorName: 'c', pluginName: 'p', name: 'n', iri, order: 1},
-        {command: ConnectorCommand.REPAIR, hasSupport: true, connectorName: 'c', pluginName: 'p', name: 'n', iri, order: 1},
-        {command: ConnectorCommand.DROP, hasSupport: true, connectorName: 'c', pluginName: 'p', name: 'n', iri, order: 1},
-      ];
-
-      for (const response of responses) {
-        TestUtil.mockResponse(new ResponseMock(CONNECTORS_CHECK_ENDPOINT).setResponse(response));
-
-        // When the service checks the connector
-        const result = await connectorsService.checkConnector();
-
-        // Then the iri should always be set on the result
-        expect(result.iri).toBe(iri);
-      }
     });
   });
 

@@ -3,7 +3,7 @@ import {service} from '../../../providers';
 import {ConnectorsRestService} from './connectors-rest.service';
 import {mapConnectorResponseToModel} from './mapper/connector-response-to-model.mapper';
 import {mapConnectorBuildStatusResponseToModel} from './mapper/connector-build-status-response-to-model.mapper';
-import {BeforeUpdateQueryResult, ConnectorBuildStatus} from '../../../models/connector';
+import {ConnectorCheckResult, ConnectorBuildStatus} from '../../../models/connector';
 import {Rdf4jRepositoryService} from '../rdf4j/rdf4j-repository.service';
 
 /**
@@ -19,7 +19,7 @@ export class ConnectorsService implements Service {
    * connector is enabled in general.
    * @returns Promise resolving with the connector status.
    */
-  async checkConnector(query?: string): Promise<BeforeUpdateQueryResult> {
+  async checkConnector(query?: string): Promise<ConnectorCheckResult> {
     const response = await this.connectorsRestService.checkConnector(query);
     return mapConnectorResponseToModel(response);
   }

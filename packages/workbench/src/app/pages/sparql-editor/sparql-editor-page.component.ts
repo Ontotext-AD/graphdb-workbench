@@ -15,7 +15,7 @@ import {VIEW_SPARQL_EDITOR} from '../../components/yasgui-component-facade/model
 import {Yasgui} from '../../components/yasgui-component-facade/models/yasgui/yasgui';
 import {
   AuthenticatedUser,
-  BeforeUpdateQueryResult,
+  ConnectorCheckResult,
   ConnectorsService,
   EventName,
   EventService,
@@ -40,6 +40,7 @@ import {
   WindowService,
   GraphConfigService,
 } from '@ontotext/workbench-api';
+import {mapConnectorCheckResultToBeforeUpdateQueryResult} from './mappers/connector-check-result-to-before-update-query-result.mapper';
 
 import {
   GraphExploreEvent,
@@ -540,7 +541,8 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
   private async getBeforeUpdateQueryHandler(query: string, tabId: string) {
     try {
       const result = await this.connectorsService.checkConnector(query);
-      return this.showConnectorOperationProgressDialog(result, tabId);
+      this.showConnectorOperationProgressDialog(result, tabId);
+      return mapConnectorCheckResultToBeforeUpdateQueryResult(result);
     } catch (error) {
       // For some reason we couldn't check if this is a connector update, so just catch the exception,
       // to not stop the execution of query.
@@ -549,7 +551,7 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  private showConnectorOperationProgressDialog(result: BeforeUpdateQueryResult, tabId?: string) {
+  private showConnectorOperationProgressDialog(result: ConnectorCheckResult, tabId?: string): void {
     if (result.command === ConnectorCommand.CREATE) {
       const dialogRef = this.createConnectorProgressDialog(
         this.translocoService.translate('sparql_editor.connector_progress.action.creating'),
@@ -565,7 +567,6 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
       );
       this.tabIdToConnectorProgressModalMapping.set(tabId!, dialogRef);
     }
-    return result;
   }
 
   private createConnectorProgressDialog(actionName: string, iri: string, connectorName: string): DynamicDialogRef {

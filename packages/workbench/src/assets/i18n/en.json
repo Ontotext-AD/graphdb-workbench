@@ -244,6 +244,12 @@
         "queries_updates": "{{sparql_editor.confirmation.running_queries_warning.queries_updates}}<div>Are you sure that you want to change the selected repository?</div>"
       }
     },
+    "connector": {
+      "created": "Created connector {{name}}",
+      "repaired": "Repaired connector {{name}}.",
+      "deleted": "Deleted connector {{name}}",
+      "plugin_inactive": "No support for {{connectorType}}, {{connectorType}} connectors are not supported because the plugin {{pluginName}} is not active."
+    },
     "connector_progress": {
       "action": {
         "creating": "Creating",
