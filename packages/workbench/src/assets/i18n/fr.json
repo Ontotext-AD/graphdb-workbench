@@ -244,6 +244,12 @@
         "queries_updates": "{{sparql_editor.confirmation.running_queries_warning.queries_updates}}<div>Êtes-vous sûr de vouloir changer le dépôt sélectionné ?</div>"
       }
     },
+    "connector": {
+      "created": "Connecteur créé {{name}}",
+      "repaired": "Réparé le connecteur {{name}}.",
+      "deleted": "Suppression du connecteur {{name}}",
+      "plugin_inactive": "Aucun support pour {{connectorType}}, les connecteurs {{connectorType}} ne sont pas pris en charge car le plugin {{pluginName}} n'est pas actif."
+    },
     "connector_progress": {
       "action": {
         "creating": "Création",

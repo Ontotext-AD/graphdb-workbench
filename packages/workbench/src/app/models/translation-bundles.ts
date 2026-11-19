@@ -1,8 +1,8 @@
-import type {TranslationBundle} from '@ontotext/workbench-api';
+import {FlatTranslationBundle} from '@ontotext/workbench-api';
 
 /**
- * A collection of translation bundles, where each key is a language code (e.g., 'en', 'fr') and the value is a
- * TranslationBundle for that language.
+ * A collection of flat translation bundles, where each key is a language code (e.g., 'en', 'fr') and the value is the
+ * {@link FlatTranslationBundle} for that language.
  * Example:
  * {
  *   en: {
@@ -18,5 +18,4 @@ import type {TranslationBundle} from '@ontotext/workbench-api';
  *   }
  * }
  */
-export type TranslationBundles = Record<string, TranslationBundle>;
-
+export type TranslationBundles = Record<string, FlatTranslationBundle>;

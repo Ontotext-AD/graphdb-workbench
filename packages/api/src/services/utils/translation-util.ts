@@ -1,8 +1,8 @@
-import {TranslationBundle} from '../../models/language';
+import {FlatTranslationBundle, TranslationBundle} from '../../models/language';
 import {HtmlUtil} from './html-util';
 
 /**
- * Resolves translations from a {@link TranslationBundle} and fills in their `{{name}}` placeholders.
+ * Resolves translations from a {@link TranslationBundle}, fills in their `{{name}}` placeholders and flattens bundles.
  */
 export class TranslationUtil {
   /**
@@ -47,5 +47,30 @@ export class TranslationUtil {
    */
   static replaceAll(translation: string, key: string, value: string): string {
     return translation.split(`{{${key}}}`).join(value);
+  }
+
+  /**
+   * Turns a bundle with grouped keys into a bundle with only top-level keys, e.g.
+   * `{sparql_editor: {title: 'SPARQL'}}` becomes `{'sparql_editor.title': 'SPARQL'}`.
+   * Keys without a message are left out.
+   *
+   * @param bundle - The bundle to flatten.
+   * @returns The flat bundle.
+   */
+  static flatten(bundle: TranslationBundle): FlatTranslationBundle {
+    const flatBundle: FlatTranslationBundle = {};
+    TranslationUtil.addFlatMessages(bundle, '', flatBundle);
+    return flatBundle;
+  }
+
+  private static addFlatMessages(bundle: TranslationBundle, keyPrefix: string, flatBundle: FlatTranslationBundle): void {
+    for (const [key, value] of Object.entries(bundle)) {
+      const fullKey = keyPrefix + key;
+      if (typeof value === 'string') {
+        flatBundle[fullKey] = value;
+      } else if (value) {
+        TranslationUtil.addFlatMessages(value, `${fullKey}.`, flatBundle);
+      }
+    }
   }
 }

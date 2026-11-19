@@ -9,7 +9,8 @@ import {Prefixes} from '../../../../models/prefixes';
 import {TranslationBundles} from '../../../../models/translation-bundles';
 import {OutputHandlers} from '../output-handlers';
 import {Yasgui} from './yasgui';
-import {BeforeUpdateQueryResult, HttpHeaders} from '@ontotext/workbench-api';
+import {HttpHeaders} from '@ontotext/workbench-api';
+import {BeforeUpdateQueryResult} from './before-update-query-result';
 import {PluginConfigurations} from '../yasr/geo-plugin/plugin-configurations';
 import {KeyboardShortcutConfiguration} from './keyboard-shortcut-configuration';
 

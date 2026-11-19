@@ -217,4 +217,66 @@ describe('TranslationUtil', () => {
       expect(result).toBe('Value: first');
     });
   });
+
+  describe('flatten', () => {
+    test('should turn nested groups into top-level dotted keys', () => {
+      // GIVEN: I have a bundle with keys grouped by feature.
+      const bundle = {
+        language: 'en',
+        sparql_editor: {
+          language: undefined,
+          connector: {
+            language: undefined,
+            created: 'Created connector {{name}}',
+          },
+          title: 'SPARQL Query & Update',
+        },
+      };
+
+      // WHEN: I flatten the bundle.
+      const result = TranslationUtil.flatten(bundle);
+      // THEN: I expect every message to be reachable by its full key path.
+      expect(result).toEqual({
+        language: 'en',
+        'sparql_editor.connector.created': 'Created connector {{name}}',
+        'sparql_editor.title': 'SPARQL Query & Update',
+      });
+    });
+
+    test('should keep top-level messages under their own key', () => {
+      // GIVEN: I have a bundle with a message at the top level.
+      const bundle = {
+        language: 'en',
+        'created.connector': 'Created connector {{name}}',
+      };
+
+      // WHEN: I flatten the bundle.
+      const result = TranslationUtil.flatten(bundle);
+      // THEN: I expect the message to keep its key.
+      expect(result).toEqual({
+        language: 'en',
+        'created.connector': 'Created connector {{name}}',
+      });
+    });
+
+    test('should leave out keys without a message', () => {
+      // GIVEN: I have a bundle with a key that has no message.
+      const bundle = {
+        language: 'en',
+        common: {
+          language: undefined,
+          ok: 'OK',
+          cancel: undefined,
+        },
+      };
+
+      // WHEN: I flatten the bundle.
+      const result = TranslationUtil.flatten(bundle);
+      // THEN: I expect only the keys with a message to be kept.
+      expect(result).toEqual({
+        language: 'en',
+        'common.ok': 'OK',
+      });
+    });
+  });
 });
