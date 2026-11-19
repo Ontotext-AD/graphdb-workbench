@@ -34,9 +34,4 @@ describe('Cluster legend', () => {
         // TODO: this doesn't work and says that it's not hidden and it exists although it's clearly not visible on the screen.
         // ClusterPageSteps.getLegend().should('be.hidden');
     });
-
-    // TEMP (GDB-15768): fails on purpose to check the CI report of failed shards. Remove before merge.
-    it('TEMP: fails on purpose in stage 2/3', () => {
-        expect('stage 2/3', 'deliberate failure').to.equal('passing');
-    });
 });

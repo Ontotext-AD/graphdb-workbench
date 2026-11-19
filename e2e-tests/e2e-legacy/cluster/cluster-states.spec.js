@@ -114,9 +114,4 @@ describe('Cluster states', () => {
             .invoke('attr', 'stroke')
             .should('eq', 'var(--gw-foreground-on-surface-primary)');
     });
-
-    // TEMP (GDB-15768): fails on purpose to check the CI report of failed shards. Remove before merge.
-    it('TEMP: fails on purpose in stage 3/3', () => {
-        expect('stage 3/3', 'deliberate failure').to.equal('passing');
-    });
 });
