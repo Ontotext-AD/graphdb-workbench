@@ -58,7 +58,7 @@ services:
       # Video only in the rerun of failed specs, which takes no screenshots: the first run has them.
       - CYPRESS_video=${CYPRESS_VIDEO:-false}
       - CYPRESS_screenshotOnRunFailure=${CYPRESS_SCREENSHOTS:-true}
-      # Per-shard files merged by scripts/print-summary.js and the Jenkinsfile.
+      # Per-shard files merged by scripts/print-retry-summary.js and the Jenkinsfile.
       - FAILED_SPECS_FILE=report/failed-specs/shard-${E2E_SHARD}.txt
       - RETRIES_FILE=report/retries/shard-${E2E_SHARD}.json
     user: "${UID}:${GID}"

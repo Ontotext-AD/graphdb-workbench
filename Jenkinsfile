@@ -186,9 +186,13 @@ pipeline {
                                     }
 
                                     stage('Workbench e2e report') {
-                                        // One result table and one retry summary for all shards, as in an unsharded run.
-                                        // Made before the rerun, which adds its own results, and printed last to end the log.
-                                        def summary = sh(script: 'cd e2e-tests && node scripts/print-summary.js || true', returnStdout: true)
+                                        // The JUnit results of all shards as one Test Result page. Before the rerun,
+                                        // which adds its own results.
+                                        junit allowEmptyResults: true, testResults: 'e2e-tests/cypress/results/*.xml'
+
+                                        // One retry summary for all shards, as in an unsharded run. Made before the rerun,
+                                        // which adds its own retries, and printed last to end the log.
+                                        def summary = sh(script: 'cd e2e-tests && node scripts/print-retry-summary.js || true', returnStdout: true)
 
                                         if (failedShards) {
                                             rerunFailedSpecsWithVideo(failedShards)

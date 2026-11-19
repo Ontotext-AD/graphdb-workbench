@@ -98,7 +98,7 @@ export default (on, config) => {
     on('after:run', () => {
         const { flaky = {}, broken = {} } = retryTracker;
 
-        // CI merges the retry summaries of all shards (scripts/print-summary.js).
+        // CI merges the retry summaries of all shards (scripts/print-retry-summary.js).
         const retriesFile = process.env.RETRIES_FILE;
         if (retriesFile) {
             mkdirSync(dirname(retriesFile), {recursive: true});
