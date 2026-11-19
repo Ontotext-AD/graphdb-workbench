@@ -5,7 +5,7 @@
  * but deliberately overrides or disables certain stylistic rules.
  *
  * Why:
- * - The legacy workbench codebase (AngularJS 1.3.21-onto, jQuery, D3, etc.) predates the current coding standards.
+ * - The legacy workbench codebase (AngularJS 1.3.22-onto, jQuery, D3, etc.) predates the current coding standards.
  * - Enforcing strict style rules (quotes, indent, max-len, etc.) would produce thousands of lint errors,
  *   blocking development without providing immediate value.
  * - Therefore, these rules are explicitly turned off here to allow incremental maintenance.
