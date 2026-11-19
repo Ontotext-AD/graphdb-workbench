@@ -487,8 +487,7 @@ describe('User and Access', () => {
 
             // Fails for unknown reason only in CI
             it('Can create user with different auth combinations', () => {
-                cy.wait('@getRepositories');
-                cy.wait('@getRepositories');
+                RepositorySelectorSteps.getRepositorySelection().should('contain', repositoryId1);
                 UserAndAccessSteps.getUsersCatalogContainer().should('be.visible');
                 // WHEN I create a user with read + GraphQL for repository #2
                 createUser(graphqlUser, PASSWORD, ROLE_USER, {read: true, graphql: true, repoName: repositoryId2});
@@ -538,16 +537,14 @@ describe('User and Access', () => {
 
         context('Menu navigation based on permissions', () => {
             it('Should have access to 5 pages when have graphql only rights', () => {
-                cy.wait('@getRepositories');
-                cy.wait('@getRepositories');
+                RepositorySelectorSteps.getRepositorySelection().should('contain', repositoryId1);
                 // WHEN I create a user with read + GraphQL for repository #2
                 createUser(graphqlUser, PASSWORD, ROLE_USER, {readWrite: true, graphql: true, repoName: repositoryId1});
                 //enable security
                 UserAndAccessSteps.toggleSecurity();
                 //login new user
                 LoginSteps.loginWithUser(graphqlUser, PASSWORD);
-                cy.wait('@getRepositories');
-                cy.wait('@getRepositories');
+                RepositorySelectorSteps.getRepositorySelection().should('contain', repositoryId1);
                 RepositorySelectorSteps.verifyRepositoryInUrl(repositoryId1);
 
                 MENU_ITEMS_WITHOUT_GRAPHQL.forEach(({path, testId, expectedUrl, checks, expectedTitle}) => {
@@ -561,16 +558,14 @@ describe('User and Access', () => {
             });
 
             it('Should not have access endpoints management when have read graphql only rights', () => {
-                cy.wait('@getRepositories');
-                cy.wait('@getRepositories');
+                RepositorySelectorSteps.getRepositorySelection().should('contain', repositoryId1);
                 // WHEN I create a user with read + GraphQL for repository #2
                 createUser(graphqlUser, PASSWORD, ROLE_USER, {read: true, graphql: true, repoName: repositoryId1});
                 //enable security
                 UserAndAccessSteps.toggleSecurity();
                 //login new user
                 LoginSteps.loginWithUser(graphqlUser, PASSWORD);
-                cy.wait('@getRepositories');
-                cy.wait('@getRepositories');
+                RepositorySelectorSteps.getRepositorySelection().should('contain', repositoryId1);
                 RepositorySelectorSteps.verifyRepositoryInUrl(repositoryId1);
                 // RepositorySelectorSteps.selectRepository(repositoryId1);
 
@@ -584,16 +579,14 @@ describe('User and Access', () => {
             });
 
             it('Should have all access to endpoints management when have REPO_MANAGER role', () => {
-                cy.wait('@getRepositories');
-                cy.wait('@getRepositories');
+                RepositorySelectorSteps.getRepositorySelection().should('contain', repositoryId1);
                 createUser(graphqlUser, PASSWORD, ROLE_REPO_MANAGER);
                 //enable security
                 UserAndAccessSteps.toggleSecurity();
                 HomeSteps.visitAndWaitLoader();
                 //login new user
                 LoginSteps.loginWithUser(graphqlUser, PASSWORD);
-                cy.wait('@getRepositories');
-                cy.wait('@getRepositories');
+                RepositorySelectorSteps.getRepositorySelection().should('contain', repositoryId1);
                 RepositorySelectorSteps.verifyRepositoryInUrl(repositoryId1);
                 GRAPHQL_REPO_MANAGER_MENU_ITEMS.forEach(({path, testId, expectedUrl, checks, expectedTitle}) => {
                     navigateMenuPath(path, testId, expectedUrl, expectedTitle);
@@ -605,14 +598,12 @@ describe('User and Access', () => {
             });
 
             it('Can have Free Access and GraphQL working together', () => {
-                cy.wait('@getRepositories');
-                cy.wait('@getRepositories');
+                RepositorySelectorSteps.getRepositorySelection().should('contain', repositoryId1);
                 //enable security
                 UserAndAccessSteps.toggleSecurity();
                 //login with the admin
                 LoginSteps.loginWithUser('admin', DEFAULT_ADMIN_PASSWORD);
-                cy.wait('@getRepositories');
-                cy.wait('@getRepositories');
+                RepositorySelectorSteps.getRepositorySelection().should('contain', repositoryId1);
                 // The Free Access toggle should be OFF
                 UserAndAccessSteps.getFreeAccessSwitchInput().should('not.be.checked');
                 // When I toggle Free Access ON
