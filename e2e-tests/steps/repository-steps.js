@@ -294,6 +294,22 @@ export class RepositorySteps extends BaseSteps {
         return RepositorySteps.getRepositoryCreateForm().find('#ruleset');
     }
 
+    /**
+     * Selects a ruleset in the repository form by its name in the dropdown.
+     * @param {string} rulesetName the ruleset name, e.g. 'OWL-Horst (Optimized)'
+     */
+    static selectRuleset(rulesetName) {
+        return RepositorySteps.getRepositoryRulesetMenu().select(rulesetName);
+    }
+
+    /**
+     * Verifies which ruleset is selected in the repository form.
+     * @param {string} rulesetName the expected ruleset name, e.g. 'OWL-Horst (Optimized)'
+     */
+    static verifySelectedRuleset(rulesetName) {
+        return RepositorySteps.getRepositoryRulesetMenu().find('option:selected').should('have.text', rulesetName);
+    }
+
     static getAdditionalPropertiesTextArea() {
         return RepositorySteps.getRepositoryCreateForm().find('#additionalProperties');
     }
