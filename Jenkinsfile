@@ -193,7 +193,7 @@ pipeline {
                                         if (failedShards) {
                                             rerunFailedSpecsWithVideo(failedShards)
                                             echo "Tests failed — archiving Cypress artifacts and GraphDB diagnostics."
-                                            archiveArtifacts allowEmptyArchive: true, artifacts: 'e2e-tests/report/screenshots/**/*.png, e2e-tests/report/videos/**/*.mp4, e2e-tests/logs/cypress-logs/**/*.txt, graphdb-diagnostics/**'
+                                            archiveArtifacts allowEmptyArchive: true, artifacts: 'e2e-tests/report/screenshots/**/*.png, e2e-tests/report/videos/**/*.mp4, e2e-tests/logs/**, graphdb-diagnostics/**'
                                             echo summary
                                             error("Cypress tests failed, job failed.")
                                         }
