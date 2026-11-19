@@ -56,6 +56,14 @@ export class MainMenuSteps {
         MainMenuSteps.getMenuButton(menuName).realClick();
     }
 
+    /**
+     * The link of the menu item with the given test id, when it is the current page. The navbar marks it when it has
+     * handled the end of a navigation, which also closes any opened submenu.
+     */
+    static getCurrentPageLink(testId) {
+        return MainMenuSteps.getMainMenu().getByTestId(testId).getByTestId('navbar-current-page');
+    }
+
     static getSubmenuFor(menuName) {
         return MainMenuSteps.getMainMenu().contains('.menu-element', menuName).find('.sub-menu');
     }
