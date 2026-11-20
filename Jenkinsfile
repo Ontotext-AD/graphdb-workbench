@@ -252,24 +252,17 @@ def runCypressShard(int shard, String specs) {
         )
 
         try {
-            catchError(buildResult: 'FAILURE', stageResult: 'FAILURE', catchInterruptions: false) {
-                try {
-                    dockerCompose.upCmd(
-                        environment: getUserUidGidPair(),
-                        composeFile: env.DOCKER_COMPOSE_FILE,
-                        options: ["--abort-on-container-exit", "--exit-code-from cypress"]
-                    )
-                } catch (e) {
-                    if (isAborted(e)) {
-                        throw e
-                    }
-                    passed = false
-                }
+            dockerCompose.upCmd(
+                environment: getUserUidGidPair(),
+                composeFile: env.DOCKER_COMPOSE_FILE,
+                options: ["--abort-on-container-exit", "--exit-code-from cypress"]
+            )
+        } catch (e) {
+            if (isAborted(e)) {
+                throw e
             }
-
-            if (!passed) {
-                collectGraphdbDiagnostics("graphdb-diagnostics/shard-${shard}")
-            }
+            passed = false
+            collectGraphdbDiagnostics("graphdb-diagnostics/shard-${shard}")
         } finally {
             composeDown()
         }
