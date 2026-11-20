@@ -7,6 +7,7 @@ How the packages are built and assembled by webpack into the single `dist/` fold
 - [Build steps](#build-steps): package builds, then the root webpack build.
 - [Root webpack build](#root-webpack-build): entry points, `index.html`, plugins, translations, copied packages.
 - [Production vs. development](#production-vs-development): hashing, `publicPath`, the dev server.
+- [SBOM](#sbom): `dist/sbom.cdx.json` and the checks that fail the build.
 
 ## Build steps
 
@@ -15,9 +16,9 @@ How the packages are built and assembled by webpack into the single `dist/` fold
 1. `scripts/build.sh` builds each package with its own toolchain: `packages/api`, `packages/shared-components`
    (Stencil) and `packages/workbench` (Angular). Each writes to its own `dist/`.
 2. `postbuild` runs `webpack --config=webpack.config.prod.js`, which bundles `root-config` and `legacy-workbench`
-   and assembles everything into the root `dist/`.
+   and assembles everything into the root `dist/`, then `npm run sbom` writes `dist/sbom.cdx.json` (see [SBOM](#sbom)).
 
-`npm run build-dev` does the same with `webpack.config.dev.js`.
+`npm run build-dev` does the same with `webpack.config.dev.js`, without the SBOM.
 
 ## Root webpack build
 
@@ -57,3 +58,19 @@ configuration (see [CI](ci.md#important)).
 ---
 
 See also: [Developers Guide](../developers-guide.md)
+
+## SBOM
+
+`scripts/build-sbom.js` writes `dist/sbom.cdx.json`, the CycloneDX 1.6 SBOM of the Workbench. GraphDB ships it in
+`dist/lib/workbench/` and merges it into its own SBOM.
+
+- **npm packages:** `cyclonedx-npm --omit dev` in the root and in each package with its own lockfile, merged by purl.
+  An npm alias is listed under its real name: `angular` is `@ontotext/angular`, with the upstream AngularJS in
+  `pedigree.ancestors`.
+- **Libraries outside npm:** the hand-written SBOMs in `MERGED_SBOMS`, such as `sbom/vendored-libraries.cdx.json` for
+  the libraries copied into `packages/legacy-workbench/src/js/lib/`. Update it when one of them changes.
+
+The build fails when the SBOM is not valid CycloneDX 1.6, a component has no name, version or purl, `@ontotext/angular`
+is missing or the upstream `angular` is listed, or cyclonedx-npm lists a package that every lockfile marks as dev.
+
+`license-checker.json` is separate: it feeds `THIRD_PARTY_LICENSES.pdf`.
