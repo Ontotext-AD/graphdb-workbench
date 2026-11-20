@@ -180,7 +180,7 @@ pipeline {
                                     try {
                                         parallel shards
                                     } catch (e) {
-                                        if (!failedShards) {
+                                        if (isAborted(e) || !failedShards) {
                                             throw e
                                         }
                                     }
@@ -241,8 +241,8 @@ def workspaceCleanup() {
 }
 
 // Runs one shard of the Workbench e2e specs on its own compose project (GraphDB, workbench, Cypress),
-// so shards never share server state. Returns false if the tests failed; the containers are then kept
-// and their diagnostics collected.
+// so shards never share server state. Returns false if the tests failed; their GraphDB diagnostics are
+// then collected. The containers are always removed, also on an abort, which is rethrown.
 def runCypressShard(int shard, String specs) {
     def passed = true
     withEnv(["COMPOSE_PROJECT_NAME=${composeProjectName(shard as String)}", "E2E_SHARD=${shard}", "CYPRESS_SPECS=${specs}"]) {
@@ -251,26 +251,27 @@ def runCypressShard(int shard, String specs) {
             options: ["--force-rm"]
         )
 
-        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-            try {
-                dockerCompose.upCmd(
-                    environment: getUserUidGidPair(),
-                    composeFile: env.DOCKER_COMPOSE_FILE,
-                    options: ["--abort-on-container-exit", "--exit-code-from cypress"]
-                )
-            } catch (e) {
-                passed = false
+        try {
+            catchError(buildResult: 'FAILURE', stageResult: 'FAILURE', catchInterruptions: false) {
+                try {
+                    dockerCompose.upCmd(
+                        environment: getUserUidGidPair(),
+                        composeFile: env.DOCKER_COMPOSE_FILE,
+                        options: ["--abort-on-container-exit", "--exit-code-from cypress"]
+                    )
+                } catch (e) {
+                    if (isAborted(e)) {
+                        throw e
+                    }
+                    passed = false
+                }
             }
-        }
 
-        if (passed) {
-            dockerCompose.downCmd(
-                composeFile: env.DOCKER_COMPOSE_FILE,
-                options: ['--volumes', '--remove-orphans', '--rmi', 'local'],
-                ignoreErrors: true
-            )
-        } else {
-            collectGraphdbDiagnostics("graphdb-diagnostics/shard-${shard}")
+            if (!passed) {
+                collectGraphdbDiagnostics("graphdb-diagnostics/shard-${shard}")
+            }
+        } finally {
+            composeDown()
         }
     }
     return passed
@@ -307,19 +308,34 @@ def rerunFailedSpecsWithVideo(List failedShards) {
                 options: ["--abort-on-container-exit", "--exit-code-from cypress"]
             )
         } catch (e) {
+            if (isAborted(e)) {
+                throw e
+            }
             echo "The rerun failed too."
+        } finally {
+            composeDown()
         }
-        dockerCompose.downCmd(
-            composeFile: env.DOCKER_COMPOSE_FILE,
-            options: ['--volumes', '--remove-orphans', '--rmi', 'local'],
-            ignoreErrors: true
-        )
     }
 }
 
+// Removes the containers, volumes and images of the compose project from COMPOSE_PROJECT_NAME.
+def composeDown() {
+    dockerCompose.downCmd(
+        composeFile: env.DOCKER_COMPOSE_FILE,
+        options: ['--volumes', '--remove-orphans', '--rmi', 'local'],
+        ignoreErrors: true
+    )
+}
+
+// True if the build was aborted, e.g. by a newer push.
+def isAborted(e) {
+    return e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException
+}
+
 // Copies the GraphDB container output and its logs directory (including the heap dump written on
-// OutOfMemoryError) into the workspace. The containers are only stopped after a failed run, so both
-// `logs` and `cp` still work. Every step is best effort, so a missing file never masks the test failure.
+// OutOfMemoryError) into the workspace. Runs after a failed run, before the containers are removed: they are
+// only stopped, so both `logs` and `cp` still work. Every step is best effort, so a missing file never masks
+// the test failure.
 // Uses the compose project from COMPOSE_PROJECT_NAME.
 def collectGraphdbDiagnostics(String outDir) {
     sh """
