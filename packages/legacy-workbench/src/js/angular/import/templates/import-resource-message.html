@@ -46,6 +46,11 @@
         <small>{{toTitleCase(resource.importResource.status)}}...</small>
     </span>
     <span class="text-secondary import-status-loader"
+          ng-if="resource.isClusterReplicating">
+        <em class="ri-reset-left-line loader"></em>
+        <small>{{'import.import_resource_tree.status_label.cluster_replicating' | translate}}...</small>
+    </span>
+    <span class="text-secondary import-status-loader"
           ng-if="resource.importResource.status === ImportResourceStatus.UPLOADING || resource.importResource.status === ImportResourceStatus.UPLOADED">
         <em class="ri-reset-left-line loader"></em>
         <small>{{resource.importResource.message ? resource.importResource.message : (toTitleCase(resource.importResource.status) + '...')}}</small>

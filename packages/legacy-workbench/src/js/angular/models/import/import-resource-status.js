@@ -33,5 +33,9 @@ export const ImportResourceStatus = {
     /**
      * The rdf resources in this status are interrupted or are marked for interruption.
      */
-    'INTERRUPTING': 'INTERRUPTING'
+    'INTERRUPTING': 'INTERRUPTING',
+    /**
+     * Cluster only. The import is committed and is being replicated to the followers. It can't be interrupted or removed.
+     */
+    'CLUSTER_REPLICATING': 'FOLLOWER_COMMIT'
 };

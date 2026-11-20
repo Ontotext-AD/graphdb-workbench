@@ -1,0 +1,24 @@
+[
+    {
+        "name": "importing-file.ttl",
+        "status": "IMPORTING",
+        "message": "",
+        "context": "",
+        "type": "file",
+        "format": "text/turtle",
+        "lastModified": 1763539200000,
+        "imported": 0,
+        "size": "1 KB"
+    },
+    {
+        "name": "imported-file.ttl",
+        "status": "DONE",
+        "message": "Imported successfully in < 1s.",
+        "context": "",
+        "type": "file",
+        "format": "text/turtle",
+        "lastModified": 1763539200000,
+        "imported": 1763539260000,
+        "size": "1 KB"
+    }
+]

@@ -40,6 +40,28 @@ export class ImportResourceTreeElement {
          */
         this.canResetStatus = false;
         /**
+         * @type {boolean}
+         */
+        this.isClusterReplicating = false;
+        /**
+         * @type {boolean}
+         */
+        this.canAbortImport = false;
+        /**
+         * @type {boolean}
+         */
+        this.canRemove = true;
+        /**
+         * The translation key of the Abort button's tooltip.
+         * @type {string}
+         */
+        this.abortTooltipKey = '';
+        /**
+         * The translation key of the Remove button's tooltip.
+         * @type {string}
+         */
+        this.removeTooltipKey = '';
+        /**
          * @type {string}
          */
         this.name = '';

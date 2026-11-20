@@ -1478,6 +1478,7 @@
     "operations.label": "operations",
     "query.abort.request": "Query was requested to abort and will be terminated on the first I/O operation",
     "update.requested": "Update was requested to abort and will be terminated if possible",
+    "update.cluster_replicating": "Update cannot be aborted while being replicated to the cluster",
     "click.to.abort.query": "Click to abort query",
     "click.to.abort.update": "Click to abort update",
     "stop.was.requested": "Stop has been requested",
@@ -2287,12 +2288,17 @@
                 "IMPORTED": "Imported",
                 "NOT_IMPORTED": "Not imported"
             },
+            "status_label": {
+                "cluster_replicating": "Replicating"
+            },
             "action": {
                 "interrupt_import": "Interrupt import",
+                "abort_cluster_replicating": "Import cannot be interrupted while being replicated to the cluster",
                 "abort": "Abort",
                 "select": "Select {{name}}",
                 "import": "Import {{name}}",
                 "remove": "Remove {{name}}",
+                "remove_cluster_replicating": "Import cannot be removed while being replicated to the cluster",
                 "reset_status": "Reset status of {{name}}"
             },
             "select_all_displayed": "Select all displayed resources",

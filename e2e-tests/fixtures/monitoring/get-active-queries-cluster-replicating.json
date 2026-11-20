@@ -1,0 +1,15 @@
+[
+    {
+        "trackId": "42",
+        "trackAlias": "",
+        "username": "admin",
+        "node": "http://localhost:7200/repositories/cluster-repository#42",
+        "isRequestedToStop": false,
+        "sparqlString": "INSERT DATA { <urn:a> <urn:b> <urn:c> }",
+        "state": "FOLLOWER_COMMIT",
+        "type": "UPDATE",
+        "numberOfOperations": 3,
+        "msSinceCreated": 1200,
+        "humanLifetime": "1s"
+    }
+]
