@@ -8,6 +8,7 @@ import Table from 'cli-table3';
 
 const RESULTS_DIR = 'cypress/results';
 const RETRIES_DIR = 'report/retries';
+const FAILED_SPECS_DIR = 'report/failed-specs';
 
 const attribute = (xml, name) => {
     const match = xml.match(new RegExp(`\\s${name}="([^"]*)"`));
@@ -17,6 +18,8 @@ const attribute = (xml, name) => {
 const readFiles = (dir, extension) => existsSync(dir)
     ? readdirSync(dir).filter((file) => file.endsWith(extension)).map((file) => readFileSync(join(dir, file), 'utf8'))
     : [];
+
+const specName = (path) => path.replace(/^e2e-legacy\//, '');
 
 // mocha-junit-reporter writes one file per spec: the root <testsuites> has the totals, the first <testsuite> the spec
 // and its start time.
@@ -29,7 +32,7 @@ const specs = readFiles(RESULTS_DIR, '.xml').map((xml) => {
     const time = Number(attribute(root, 'time') || 0);
     const start = new Date(attribute(firstSuite, 'timestamp')).getTime();
     return {
-        spec: (attribute(firstSuite, 'file') || '?').replace(/^e2e-legacy\//, ''),
+        spec: specName(attribute(firstSuite, 'file') || '?'),
         tests,
         passing: tests - failing - skipped,
         failing,
@@ -39,6 +42,12 @@ const specs = readFiles(RESULTS_DIR, '.xml').map((xml) => {
         end: start + time * 1000
     };
 }).sort((a, b) => a.spec.localeCompare(b.spec));
+
+// A spec that crashed before mocha ended wrote no JUnit file, but is in its shard's failed specs list.
+const crashedSpecs = [...new Set(readFiles(FAILED_SPECS_DIR, '.txt')
+    .flatMap((list) => list.split('\n').filter(Boolean).map(specName)))]
+    .filter((spec) => !specs.some((result) => result.spec === spec))
+    .sort();
 
 const formatTime = (seconds) => {
     const total = Math.round(seconds);
@@ -65,8 +74,11 @@ const table = new Table({
 });
 specs.forEach((spec) => table.push([spec.failing ? '✖' : '✔', spec.spec,
     formatTime(spec.time), spec.tests, spec.passing, spec.failing || '-', spec.skipped || '-']));
-const failedSpecs = specs.filter((spec) => spec.failing).length;
-table.push([failedSpecs ? '✖' : '✔', failedSpecs ? `${failedSpecs} of ${specs.length} specs failed` : `All ${specs.length} specs passed`,
+crashedSpecs.forEach((spec) => table.push(['✖', `${spec} (crashed, no results)`, '-', '-', '-', '-', '-']));
+const allSpecs = specs.length + crashedSpecs.length;
+const failedSpecs = specs.filter((spec) => spec.failing).length + crashedSpecs.length;
+const crashedNote = crashedSpecs.length ? ` (${crashedSpecs.length} crashed)` : '';
+table.push([failedSpecs ? '✖' : '✔', failedSpecs ? `${failedSpecs} of ${allSpecs} specs failed${crashedNote}` : `All ${allSpecs} specs passed`,
     formatTime(totals.time), totals.tests, totals.passing, totals.failing || '-', totals.skipped || '-']);
 
 console.log('\n==============================   Run Summary (all shards)   ==============================\n');
