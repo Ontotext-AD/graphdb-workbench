@@ -44,7 +44,7 @@ describe('Initial state of the import view with a selected repository', () => {
         ImportSteps.getUploadRdfFilesButton().should('be.visible');
         ImportSteps.getUploadFromUrlButton().should('be.visible');
         ImportSteps.getUploadTextSnippetButton().should('be.visible');
-        ImportUserDataSteps.getFileSizeLimitationWarningMessage().should('be.visible');
+        ImportUserDataSteps.getFileSizeLimitationInfoMessage().should('be.visible');
         ImportUserDataSteps.getHelpMessage().should('not.exist');
         ImportUserDataSteps.getResourcesTable().should('be.visible');
     };

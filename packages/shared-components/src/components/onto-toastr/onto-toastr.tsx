@@ -11,10 +11,10 @@ import {sanitizeHTML} from '../../utils/html-utils';
 import {TranslationService} from '../../services/translation.service';
 
 const toastTypeToIconMap = {
-  [ToastType.INFO]: 'ri-information-2-fill',
+  [ToastType.INFO]: 'ri-information-2-line',
   [ToastType.SUCCESS]: 'ri-checkbox-circle-line',
-  [ToastType.WARNING]: 'ri-message-line',
-  [ToastType.ERROR]: 'ri-alert-line',
+  [ToastType.WARNING]: 'ri-alert-line',
+  [ToastType.ERROR]: 'ri-close-circle-line',
 };
 
 /**

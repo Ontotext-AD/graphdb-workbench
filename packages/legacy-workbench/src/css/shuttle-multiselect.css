@@ -45,12 +45,11 @@
 }
 
 .shuttle-multiselect .shuttle-panel-toolbar .selected-items-message:before {
-    font-family: 'icomoon', sans-serif !important;
+    font-family: 'remixicon', sans-serif !important;
     font-size: 1.5em;
     line-height: 1;
     margin-right: 0.5em;
-    /* the (i) icon */
-    content: "\e924";
+    content: "\f448"; /* ri-information-2-line */
     color: #0000008F;
 }
 
