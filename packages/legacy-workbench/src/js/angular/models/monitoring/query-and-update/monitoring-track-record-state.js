@@ -32,6 +32,11 @@ export const MonitoringTrackRecordState = {
     'IN_TESTING': 'IN_TESTING',
 
     /**
+     * Cluster only. The transaction is committed and is being replicated to the followers. It can't be aborted.
+     */
+    'CLUSTER_REPLICATING': 'FOLLOWER_COMMIT',
+
+    /**
      * final state
      */
     'CLOSED': 'CLOSED'

@@ -215,6 +215,29 @@ class ImportSteps {
         return this.getResourceByName(name).find('.import-resource-action-remove-btn');
     }
 
+    static getResourceAbortButton(name) {
+        return this.getResourceByName(name).getByTestId('import-resource-abort-btn');
+    }
+
+    static abortImport(name) {
+        this.getResourceAbortButton(name).click();
+    }
+
+    static removeResource(name) {
+        this.getResourceRemoveButton(name).click();
+        ModalDialogSteps.clickOnConfirmButton();
+    }
+
+    // A real hover, because Cypress refuses to trigger events on a disabled button.
+    static hoverResourceAbortButton(name) {
+        this.getResourceAbortButton(name).realHover();
+    }
+
+    // A real hover, because Cypress refuses to trigger events on a disabled button.
+    static hoverResourceRemoveButton(name) {
+        this.getResourceRemoveButton(name).realHover();
+    }
+
     static getResourceResetButton(name) {
         return this.getResourceByName(name).find('.import-resource-action-reset-btn');
     }

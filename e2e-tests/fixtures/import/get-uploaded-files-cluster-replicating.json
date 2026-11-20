@@ -1,0 +1,13 @@
+[
+    {
+        "name": "replicating-file.ttl",
+        "status": "FOLLOWER_COMMIT",
+        "message": "",
+        "context": "",
+        "type": "file",
+        "format": "text/turtle",
+        "lastModified": 1763539200000,
+        "imported": 0,
+        "size": "1 KB"
+    }
+]

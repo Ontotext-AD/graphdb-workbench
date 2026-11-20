@@ -201,9 +201,9 @@
                     </button>
                     <button ng-if="canRemoveResource && resource.importResource.status !== ImportResourceStatus.UPLOADING && resource.importResource.status !== ImportResourceStatus.UPLOADED && resource.importResource.status !== ImportResourceStatus.UPLOAD_ERROR"
                             class="btn btn-link-only-icons btn-sm tertiary import-resource-action-remove-btn"
-                            ng-disabled="hasSelection"
+                            ng-disabled="hasSelection || !resource.canRemove"
                             ng-click="removeResource(resource)"
-                            gdb-tooltip="{{'import.remove.btn' | translate}}"
+                            gdb-tooltip="{{resource.removeTooltipKey | translate}}"
                             aria-label="{{'import.import_resource_tree.action.remove' | translate: {name: resource.path || resource.name} }}">
                         <em class="ri-delete-bin-6-line" aria-hidden="true"></em>
                     </button>
@@ -217,10 +217,11 @@
                         <span class="icon-import" aria-hidden="true"></span>
                     </button>
                     <button class="btn btn-sm"
+                            data-test="import-resource-abort-btn"
                             ng-click="stopImport(resource)"
-                            ng-disabled="resource.importResource.status === ImportResourceStatus.INTERRUPTING"
+                            ng-disabled="!resource.canAbortImport"
                             ng-if="resource.hasOngoingImport"
-                            gdb-tooltip="{{'import.import_resource_tree.action.interrupt_import' | translate}}">
+                            gdb-tooltip="{{resource.abortTooltipKey | translate}}">
                         <span class="ri-close-line"></span>
                         {{'import.import_resource_tree.action.abort' | translate}}
                     </button>

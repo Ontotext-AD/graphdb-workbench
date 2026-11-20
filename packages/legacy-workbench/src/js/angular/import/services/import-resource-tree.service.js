@@ -154,6 +154,11 @@ export class ImportResourceTreeService {
             importResourceElement.isImportable = ImportResourceTreeService.isImportable(importResourceElement.importResource);
             importResourceElement.hasOngoingImport = ImportResourceTreeService.hasOngoingImport(importResourceElement.importResource);
             importResourceElement.canResetStatus = ImportResourceTreeService.canResetStatus(importResourceElement.importResource);
+            importResourceElement.isClusterReplicating = ImportResourceTreeService.isClusterReplicating(importResourceElement.importResource);
+            importResourceElement.canAbortImport = ImportResourceTreeService.canAbortImport(importResourceElement.importResource);
+            importResourceElement.canRemove = !importResourceElement.isClusterReplicating;
+            importResourceElement.abortTooltipKey = importResourceElement.isClusterReplicating ? 'import.import_resource_tree.action.abort_cluster_replicating' : 'import.import_resource_tree.action.interrupt_import';
+            importResourceElement.removeTooltipKey = importResourceElement.isClusterReplicating ? 'import.import_resource_tree.action.remove_cluster_replicating' : 'import.remove.btn';
             importResourceElement.hasStatusInfo = importResourceElement.importResource.status === 'DONE' || importResourceElement.importResource.status === 'ERROR';
             importResourceElement.isEditable = importResourceElement.importResource.isText();
             ImportResourceTreeService.setupShortenedMessage(importResourceElement);
@@ -210,11 +215,19 @@ export class ImportResourceTreeService {
     }
 
     static isImportable(importResource) {
-        return importResource.status !== ImportResourceStatus.IMPORTING && importResource.status !== ImportResourceStatus.UPLOADING && importResource.status !== ImportResourceStatus.PENDING && importResource.status !== ImportResourceStatus.INTERRUPTING && importResource.status !== ImportResourceStatus.UPLOADING && importResource.status !== ImportResourceStatus.UPLOADED && importResource.status !== ImportResourceStatus.UPLOAD_ERROR;
+        return importResource.status !== ImportResourceStatus.IMPORTING && importResource.status !== ImportResourceStatus.UPLOADING && importResource.status !== ImportResourceStatus.PENDING && importResource.status !== ImportResourceStatus.INTERRUPTING && importResource.status !== ImportResourceStatus.UPLOADING && importResource.status !== ImportResourceStatus.UPLOADED && importResource.status !== ImportResourceStatus.UPLOAD_ERROR && !ImportResourceTreeService.isClusterReplicating(importResource);
     }
 
     static hasOngoingImport(importResource) {
-        return importResource.status === ImportResourceStatus.IMPORTING || importResource.status === ImportResourceStatus.UPLOADING || importResource.status === ImportResourceStatus.PENDING || importResource.status === ImportResourceStatus.INTERRUPTING;
+        return importResource.status === ImportResourceStatus.IMPORTING || importResource.status === ImportResourceStatus.UPLOADING || importResource.status === ImportResourceStatus.PENDING || importResource.status === ImportResourceStatus.INTERRUPTING || ImportResourceTreeService.isClusterReplicating(importResource);
+    }
+
+    static canAbortImport(importResource) {
+        return importResource.status !== ImportResourceStatus.INTERRUPTING && !ImportResourceTreeService.isClusterReplicating(importResource);
+    }
+
+    static isClusterReplicating(importResource) {
+        return importResource.status === ImportResourceStatus.CLUSTER_REPLICATING;
     }
 
     static canResetStatus(importResource) {
