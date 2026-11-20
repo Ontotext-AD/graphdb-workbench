@@ -34,7 +34,7 @@ describe('Download guide resource guide steps', () => {
 
         cy.wait('@resource-download').then((interception) => {
             expect(interception.response.statusCode).to.eq(200);
-            cy.readFile(`cypress/downloads/${resourceFile}`);
+            cy.readFile(`${Cypress.config('downloadsFolder')}/${resourceFile}`);
         });
 
         GuideDialogSteps.clickOnNextButton();
@@ -42,11 +42,13 @@ describe('Download guide resource guide steps', () => {
         GuideDialogSteps.assertDialogWithTitleIsVisible('Download guide resource - with repositoryId');
         GuideDialogSteps.assertDialogWithContentIsVisible('This guide requires a file to be downloaded.');
         GuideDialogSteps.assertDialogWithContentIsVisible(`Please download ${resourceFile}.`);
+        // The first step downloaded the same file
+        cy.task('clearDownloads');
         GuideSteps.downloadResource(guideRepositoryId);
 
         cy.wait('@resource-download').then((interception) => {
             expect(interception.response.statusCode).to.eq(200);
-            cy.readFile(`cypress/downloads/${resourceFile}`);
+            cy.readFile(`${Cypress.config('downloadsFolder')}/${resourceFile}`);
         });
 
         GuideDialogSteps.clickOnCloseButton();

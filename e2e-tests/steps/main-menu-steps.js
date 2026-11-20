@@ -56,6 +56,10 @@ export class MainMenuSteps {
         MainMenuSteps.getMenuButton(menuName).realClick();
     }
 
+    static getCurrentPageLink(testId) {
+        return MainMenuSteps.getMainMenu().getByTestId(testId).getByTestId('navbar-current-page');
+    }
+
     static getSubmenuFor(menuName) {
         return MainMenuSteps.getMainMenu().contains('.menu-element', menuName).find('.sub-menu');
     }

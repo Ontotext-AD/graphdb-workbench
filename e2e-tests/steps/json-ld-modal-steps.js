@@ -36,6 +36,6 @@ export class JsonLdModalSteps {
     }
 
     static verifyFileExists(fileName) {
-        cy.readFile('cypress/downloads/' + fileName);
+        cy.readFile(`${Cypress.config('downloadsFolder')}/${fileName}`);
     }
 }

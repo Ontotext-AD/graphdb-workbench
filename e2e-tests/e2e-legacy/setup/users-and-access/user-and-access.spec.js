@@ -487,8 +487,7 @@ describe('User and Access', () => {
 
             // Fails for unknown reason only in CI
             it('Can create user with different auth combinations', () => {
-                cy.wait('@getRepositories');
-                cy.wait('@getRepositories');
+                RepositorySelectorSteps.getRepositorySelection().should('contain', repositoryId1);
                 UserAndAccessSteps.getUsersCatalogContainer().should('be.visible');
                 // WHEN I create a user with read + GraphQL for repository #2
                 createUser(graphqlUser, PASSWORD, ROLE_USER, {read: true, graphql: true, repoName: repositoryId2});
@@ -538,78 +537,73 @@ describe('User and Access', () => {
 
         context('Menu navigation based on permissions', () => {
             it('Should have access to 5 pages when have graphql only rights', () => {
-                cy.wait('@getRepositories');
-                cy.wait('@getRepositories');
+                RepositorySelectorSteps.getRepositorySelection().should('contain', repositoryId1);
                 // WHEN I create a user with read + GraphQL for repository #2
                 createUser(graphqlUser, PASSWORD, ROLE_USER, {readWrite: true, graphql: true, repoName: repositoryId1});
                 //enable security
                 UserAndAccessSteps.toggleSecurity();
                 //login new user
                 LoginSteps.loginWithUser(graphqlUser, PASSWORD);
-                cy.wait('@getRepositories');
-                cy.wait('@getRepositories');
+                RepositorySelectorSteps.getRepositorySelection().should('contain', repositoryId1);
+                RepositorySelectorSteps.verifyRepositoryInUrl(repositoryId1);
 
-                MENU_ITEMS_WITHOUT_GRAPHQL.forEach(({path, expectedUrl, checks, expectedTitle}) => {
-                    navigateMenuPath(path, expectedUrl, expectedTitle);
+                MENU_ITEMS_WITHOUT_GRAPHQL.forEach(({path, testId, expectedUrl, checks, expectedTitle}) => {
+                    navigateMenuPath(path, testId, expectedUrl, expectedTitle);
 
                     if (checks) {
                         runChecks(checks);
                     }
-                    navigateMenuPath(['Import'], '/import', 'Import');
+                    navigateMenuPath(['Import'], 'menu-import', '/import', 'Import');
                 });
             });
 
             it('Should not have access endpoints management when have read graphql only rights', () => {
-                cy.wait('@getRepositories');
-                cy.wait('@getRepositories');
+                RepositorySelectorSteps.getRepositorySelection().should('contain', repositoryId1);
                 // WHEN I create a user with read + GraphQL for repository #2
                 createUser(graphqlUser, PASSWORD, ROLE_USER, {read: true, graphql: true, repoName: repositoryId1});
                 //enable security
                 UserAndAccessSteps.toggleSecurity();
                 //login new user
                 LoginSteps.loginWithUser(graphqlUser, PASSWORD);
-                cy.wait('@getRepositories');
-                cy.wait('@getRepositories');
+                RepositorySelectorSteps.getRepositorySelection().should('contain', repositoryId1);
+                RepositorySelectorSteps.verifyRepositoryInUrl(repositoryId1);
                 // RepositorySelectorSteps.selectRepository(repositoryId1);
 
-                GRAPHQL_READ_MENU_ITEMS.forEach(({path, expectedUrl, checks, expectedTitle}) => {
-                    navigateMenuPath(path, expectedUrl, expectedTitle);
+                GRAPHQL_READ_MENU_ITEMS.forEach(({path, testId, expectedUrl, checks, expectedTitle}) => {
+                    navigateMenuPath(path, testId, expectedUrl, expectedTitle);
                     if (checks) {
                         runChecks(checks);
                     }
-                    navigateMenuPath(['Import'], '/import', 'Import');
+                    navigateMenuPath(['Import'], 'menu-import', '/import', 'Import');
                 });
             });
 
             it('Should have all access to endpoints management when have REPO_MANAGER role', () => {
-                cy.wait('@getRepositories');
-                cy.wait('@getRepositories');
+                RepositorySelectorSteps.getRepositorySelection().should('contain', repositoryId1);
                 createUser(graphqlUser, PASSWORD, ROLE_REPO_MANAGER);
                 //enable security
                 UserAndAccessSteps.toggleSecurity();
                 HomeSteps.visitAndWaitLoader();
                 //login new user
                 LoginSteps.loginWithUser(graphqlUser, PASSWORD);
-                cy.wait('@getRepositories');
-                cy.wait('@getRepositories');
-                GRAPHQL_REPO_MANAGER_MENU_ITEMS.forEach(({path, expectedUrl, checks, expectedTitle}) => {
-                    navigateMenuPath(path, expectedUrl, expectedTitle);
+                RepositorySelectorSteps.getRepositorySelection().should('contain', repositoryId1);
+                RepositorySelectorSteps.verifyRepositoryInUrl(repositoryId1);
+                GRAPHQL_REPO_MANAGER_MENU_ITEMS.forEach(({path, testId, expectedUrl, checks, expectedTitle}) => {
+                    navigateMenuPath(path, testId, expectedUrl, expectedTitle);
                     if (checks) {
                         runChecks(checks);
                     }
-                    navigateMenuPath(['Import'], '/import', 'Import');
+                    navigateMenuPath(['Import'], 'menu-import', '/import', 'Import');
                 });
             });
 
             it('Can have Free Access and GraphQL working together', () => {
-                cy.wait('@getRepositories');
-                cy.wait('@getRepositories');
+                RepositorySelectorSteps.getRepositorySelection().should('contain', repositoryId1);
                 //enable security
                 UserAndAccessSteps.toggleSecurity();
                 //login with the admin
                 LoginSteps.loginWithUser('admin', DEFAULT_ADMIN_PASSWORD);
-                cy.wait('@getRepositories');
-                cy.wait('@getRepositories');
+                RepositorySelectorSteps.getRepositorySelection().should('contain', repositoryId1);
                 // The Free Access toggle should be OFF
                 UserAndAccessSteps.getFreeAccessSwitchInput().should('not.be.checked');
                 // When I toggle Free Access ON
@@ -632,13 +626,14 @@ describe('User and Access', () => {
                 HomeSteps.visit();
                 //  I change the repository to this with GraphQL only rights
                 RepositorySelectorSteps.selectRepository(repositoryId3);
+                RepositorySelectorSteps.verifyRepositoryInUrl(repositoryId3);
                 // Then I should have GraphQL only rights
-                FREE_ACCESS_MENU_ITEMS_WITHOUT_GRAPHQL.forEach(({path, expectedUrl, checks, expectedTitle}) => {
-                    navigateMenuPath(path, expectedUrl, expectedTitle);
+                FREE_ACCESS_MENU_ITEMS_WITHOUT_GRAPHQL.forEach(({path, testId, expectedUrl, checks, expectedTitle}) => {
+                    navigateMenuPath(path, testId, expectedUrl, expectedTitle);
                     if (checks) {
                         runChecks(checks);
                     }
-                    navigateMenuPath(['Import'], '/import', 'Import');
+                    navigateMenuPath(['Import'], 'menu-import', '/import', 'Import');
                 });
             });
         });
@@ -918,7 +913,7 @@ describe('User and Access', () => {
         UserAndAccessSteps.validateMaintainAccessForRepo(repo, {disabled: maintain});
     }
 
-    function navigateMenuPath(pathArray, expectedUrl, expectedTitle) {
+    function navigateMenuPath(pathArray, testId, expectedUrl, expectedTitle) {
         // The layout rebuilds the navbar model when the previous navigation finishes loading, which closes any opened
         // submenu, so wait for it before opening a menu group.
         LayoutSteps.getLayout().should('not.have.class', 'loading');
@@ -941,6 +936,9 @@ describe('User and Access', () => {
         if (expectedUrl) {
             cy.url().should('include', expectedUrl);
         }
+        // The navbar closes any opened submenu when it handles the end of this navigation, which can happen after the
+        // page is shown, so wait for it before the next menu click.
+        MainMenuSteps.getCurrentPageLink(testId).should('exist');
     }
 
     function runChecks(checks = {}) {
@@ -989,6 +987,7 @@ describe('User and Access', () => {
         // Import
         {
             path: ['Import'],
+            testId: 'menu-import',
             expectedUrl: '/import',
             checks: noAuthChecks,
         },
@@ -996,26 +995,31 @@ describe('User and Access', () => {
         // Explore
         {
             path: ['Explore', 'Graphs overview'],
+            testId: 'sub-menu-graph-overview',
             expectedUrl: '/graphs',
             checks: noAuthChecks,
         },
         {
             path: ['Explore', 'Class hierarchy'],
+            testId: 'menu-class-hierarchy',
             expectedUrl: '/hierarchy',
             checks: noAuthChecks,
         },
         {
             path: ['Explore', 'Class relationships'],
+            testId: 'sub-menu-class-relationships',
             expectedUrl: '/relationships',
             checks: noAuthChecks,
         },
         {
             path: ['Explore', 'Visual graph'],
+            testId: 'sub-menu-visual-graph',
             expectedUrl: '/graphs-visualizations',
             checks: noAuthChecks,
         },
         {
             path: ['Explore', 'Similarity'],
+            testId: 'sub-menu-similarity',
             expectedTitle: 'Similarity indexes',
             expectedUrl: '/similarity',
             checks: noAuthChecks,
@@ -1024,6 +1028,7 @@ describe('User and Access', () => {
         // SPARQL
         {
             path: ['SPARQL'],
+            testId: 'menu-sparql',
             expectedTitle: 'SPARQL Query & Update',
             expectedUrl: '/sparql',
             checks: noAuthChecks,
@@ -1032,6 +1037,7 @@ describe('User and Access', () => {
         // TTYG
         {
             path: ['Talk to Your Graph'],
+            testId: 'menu-ttyg',
             expectedUrl: '/ttyg',
             checks: noAuthChecks,
         },
@@ -1041,6 +1047,7 @@ describe('User and Access', () => {
         // Monitor
         {
             path: ['Monitor', 'Queries and Updates'],
+            testId: 'sub-menu-queries-and-updates',
             expectedUrl: '/monitor/queries',
             expectedTitle: 'Query and Update monitoring',
             checks: noAuthChecks,
@@ -1049,51 +1056,60 @@ describe('User and Access', () => {
         // Setup
         {
             path: ['Setup', 'My Settings'],
+            testId: 'sub-menu-my-settings',
             expectedUrl: '/settings',
             expectedTitle: 'Settings',
             checks: hasAuthChecks,
         },
         {
             path: ['Setup', 'Connectors'],
+            testId: 'sub-menu-connectors',
             expectedUrl: '/connectors',
             expectedTitle: 'Connector management',
             checks: noAuthChecks,
         },
         {
             path: ['Setup', 'Cluster'],
+            testId: 'sub-menu-cluster',
             expectedUrl: '/cluster',
             expectedTitle: 'Cluster management',
             checks: hasAuthChecks,
         },
         {
             path: ['Setup', 'Plugins'],
+            testId: 'sub-menu-plugins',
             expectedUrl: '/plugins',
             checks: noAuthChecks,
         },
         {
             path: ['Setup', 'Namespaces'],
+            testId: 'sub-menu-namespaces',
             expectedUrl: '/namespaces',
             checks: noAuthChecks,
         },
         {
             path: ['Setup', 'Autocomplete'],
+            testId: 'sub-menu-autocomplete',
             expectedUrl: '/autocomplete',
             expectedTitle: 'Autocomplete index',
             checks: noAuthChecks,
         },
         {
             path: ['Setup', 'RDF Rank'],
+            testId: 'sub-menu-rdf-rank',
             expectedUrl: '/rdfrank',
             checks: noAuthChecks,
         },
         {
             path: ['Setup', 'JDBC'],
+            testId: 'sub-menu-jdbc',
             expectedUrl: '/jdbc',
             expectedTitle: 'JDBC configuration',
             checks: noAuthChecks,
         },
         {
             path: ['Setup', 'SPARQL Templates'],
+            testId: 'sub-menu-sparql-templates',
             expectedUrl: '/sparql-templates',
             checks: noAuthChecks,
         },
@@ -1101,6 +1117,7 @@ describe('User and Access', () => {
         // Help
         {
             path: ['Help', 'REST API'],
+            testId: 'sub-menu-rest-api',
             expectedUrl: '/webapi',
             expectedTitle: 'REST API documentation',
             checks: hasAuthChecks,
@@ -1110,6 +1127,7 @@ describe('User and Access', () => {
     const GRAPHQL_READ_MENU_ITEMS = [
         {
             path: ['GraphQL', 'GraphQL Playground'],
+            testId: 'sub-menu-graphql-playground',
             expectedUrl: '/graphql/playground',
             checks: hasAuthChecks,
         },
@@ -1117,21 +1135,25 @@ describe('User and Access', () => {
     const GRAPHQL_REPO_MANAGER_MENU_ITEMS = [
         {
             path: ['GraphQL', 'Endpoint Management'],
+            testId: 'sub-menu-graphql-endpoint-management',
             expectedUrl: '/graphql/endpoints',
             checks: hasAuthChecks,
         },
         {
             path: ['GraphQL', 'GraphQL Playground'],
+            testId: 'sub-menu-graphql-playground',
             expectedUrl: '/graphql/playground',
             checks: hasAuthChecks,
         },
         {
             path: ['Monitor', 'Backup and Restore'],
+            testId: 'sub-menu-backup-and-restore',
             expectedUrl: '/monitor/backup-and-restore',
             checks: hasAuthChecks,
         },
         {
             path: ['Help', 'Interactive guides'],
+            testId: 'sub-menu-guide',
             expectedUrl: '/guides',
             checks: hasAuthChecks,
         },
@@ -1141,6 +1163,7 @@ describe('User and Access', () => {
         // Import
         {
             path: ['Import'],
+            testId: 'menu-import',
             expectedUrl: '/import',
             checks: noAuthChecks,
         },
@@ -1148,26 +1171,31 @@ describe('User and Access', () => {
         // Explore
         {
             path: ['Explore', 'Graphs overview'],
+            testId: 'sub-menu-graph-overview',
             expectedUrl: '/graphs',
             checks: noAuthChecks,
         },
         {
             path: ['Explore', 'Class hierarchy'],
+            testId: 'menu-class-hierarchy',
             expectedUrl: '/hierarchy',
             checks: noAuthChecks,
         },
         {
             path: ['Explore', 'Class relationships'],
+            testId: 'sub-menu-class-relationships',
             expectedUrl: '/relationships',
             checks: noAuthChecks,
         },
         {
             path: ['Explore', 'Visual graph'],
+            testId: 'sub-menu-visual-graph',
             expectedUrl: '/graphs-visualizations',
             checks: noAuthChecks,
         },
         {
             path: ['Explore', 'Similarity'],
+            testId: 'sub-menu-similarity',
             expectedTitle: 'Similarity indexes',
             expectedUrl: '/similarity',
             checks: noAuthChecks,
@@ -1176,6 +1204,7 @@ describe('User and Access', () => {
         // SPARQL
         {
             path: ['SPARQL'],
+            testId: 'menu-sparql',
             expectedTitle: 'SPARQL Query & Update',
             expectedUrl: '/sparql',
             checks: noAuthChecks,
@@ -1184,39 +1213,46 @@ describe('User and Access', () => {
         // Setup
         {
             path: ['Setup', 'Connectors'],
+            testId: 'sub-menu-connectors',
             expectedUrl: '/connectors',
             expectedTitle: 'Connector management',
             checks: noAuthChecks,
         },
         {
             path: ['Setup', 'Plugins'],
+            testId: 'sub-menu-plugins',
             expectedUrl: '/plugins',
             checks: noAuthChecks,
         },
         {
             path: ['Setup', 'Namespaces'],
+            testId: 'sub-menu-namespaces',
             expectedUrl: '/namespaces',
             checks: noAuthChecks,
         },
         {
             path: ['Setup', 'Autocomplete'],
+            testId: 'sub-menu-autocomplete',
             expectedUrl: '/autocomplete',
             expectedTitle: 'Autocomplete index',
             checks: noAuthChecks,
         },
         {
             path: ['Setup', 'RDF Rank'],
+            testId: 'sub-menu-rdf-rank',
             expectedUrl: '/rdfrank',
             checks: noAuthChecks,
         },
         {
             path: ['Setup', 'JDBC'],
+            testId: 'sub-menu-jdbc',
             expectedUrl: '/jdbc',
             expectedTitle: 'JDBC configuration',
             checks: noAuthChecks,
         },
         {
             path: ['Setup', 'SPARQL Templates'],
+            testId: 'sub-menu-sparql-templates',
             expectedUrl: '/sparql-templates',
             checks: noAuthChecks,
         },
