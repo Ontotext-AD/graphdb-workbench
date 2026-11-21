@@ -19,6 +19,21 @@ Cypress.Commands.add('createRepository', (options = {}) => {
     });
 });
 
+/**
+ * Reads a repository config through the REST API.
+ * @param {string} id the repository id
+ * @return the repository config, e.g. {id, params: {ruleset: {value}}}
+ */
+Cypress.Commands.add('getRepositoryConfig', (id) => {
+    return cy.request({
+        method: 'GET',
+        url: REPOSITORIES_URL + '/' + id,
+        headers: {
+            'Accept': 'application/json'
+        }
+    }).its('body');
+});
+
 Cypress.Commands.add('deleteRepository', (id, secured = false) => {
     // unset the repository before delete to avoid missing repo errors
     unsetRepository();

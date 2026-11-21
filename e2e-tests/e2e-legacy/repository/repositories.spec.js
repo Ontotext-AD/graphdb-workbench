@@ -176,11 +176,9 @@ describe('Repositories', () => {
         RepositorySteps.getRepositoryDisableSameAsCheckbox()
             .should('be.checked');
 
-        // RDFS-Plus (Optimized) -> OWL-Horst (Optimized)
-        RepositorySteps.getRepositoryRulesetMenu()
-            .should('have.value', '3')
-            .select('4')
-            .should('have.value', '4');
+        RepositorySteps.verifySelectedRuleset('RDFS-Plus (Optimized)');
+        RepositorySteps.selectRuleset('OWL-Horst (Optimized)');
+        RepositorySteps.verifySelectedRuleset('OWL-Horst (Optimized)');
 
         // Should be automatically enabled when the rule set is changed to one of the OWL rule set
         RepositorySteps.getRepositoryDisableSameAsCheckbox()
@@ -201,13 +199,32 @@ describe('Repositories', () => {
         RepositorySteps.getRepositoryCreateForm();
         RepositorySteps.getRepositoryIdField().should('have.value', repositoryId);
         RepositorySteps.getRepositoryTitleField().should('have.value', repoTitle);
-        // OWL-Horst (Optimized) has become 4
-        RepositorySteps.getRepositoryRulesetMenu().should('have.value', '4');
+        RepositorySteps.verifySelectedRuleset('OWL-Horst (Optimized)');
         RepositorySteps.getRepositoryDisableSameAsCheckbox().should('not.be.checked');
         RepositorySteps.getRepositoryContextIndexCheckbox().should('be.checked');
 
         // TODO uncomment and refactor when FTS configuration is with clear ON or OFF status
         // getRepositoryFtsCheckbox().should('be.checked');
+    });
+
+    it('should create repository with an RDF 1.2 ruleset', () => {
+        // Given I am on the create repository page
+        RepositorySteps.createRepository();
+        RepositorySteps.chooseRepositoryType(GDB_REPOSITORY_TYPE);
+        RepositorySteps.typeRepositoryId(repositoryId);
+
+        // When I select an RDF 1.2 ruleset and save the repository
+        RepositorySteps.selectRuleset('RDFS-Plus (Optimized, RDF 1.2)');
+        RepositorySteps.saveRepository();
+
+        // Then the edit page shows the ruleset by its name
+        RepositorySteps.editRepository(repositoryId);
+        RepositorySteps.verifySelectedRuleset('RDFS-Plus (Optimized, RDF 1.2)');
+
+        // And the repository config contains the ruleset id (the name-to-id mapping is what this change could break)
+        cy.getRepositoryConfig(repositoryId)
+            .its('params.ruleset.value')
+            .should('equal', 'rdfsplus-optimized-rdf12');
     });
 
     it('should create repository with selected ruleset file', () => {
