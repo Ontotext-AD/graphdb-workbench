@@ -137,7 +137,13 @@
     "confirmation": {
       "on_repository_change": {
         "title": "Confirmer le changement de dépôt sélectionné",
-        "message": "<div class=\"alert alert-warning\">Le diagramme sera effacé.</div><div>Voulez-vous vraiment changer le dépôt sélectionné ?</div>"
+        "message": "<div class=\"alert alert-warning\">Le diagramme sera effacé. Pour en garder une copie, annulez et exportez-le d'abord avec « Exporter en JSON » dans le menu du diagramme.</div><div>Voulez-vous vraiment changer le dépôt sélectionné ?</div>"
+      },
+      "diagram_of_another_repository": {
+        "title": "Diagramme d'un autre dépôt",
+        "message": "<div class=\"alert alert-warning\">Le diagramme enregistré a été dessiné dans le dépôt <b>{{repositoryId}}</b>. Si vous le conservez, il est affiché avec les données du dépôt sélectionné.</div><div>Voulez-vous supprimer le diagramme ?</div>",
+        "keep": "Conserver",
+        "discard": "Supprimer"
       }
     },
     "settings": {

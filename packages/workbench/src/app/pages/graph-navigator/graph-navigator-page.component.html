@@ -1,7 +1,7 @@
 <app-page-layout>
   @let repository = currentRepository();
   @let graphNavigatorSettings = settings();
-  @if (repository && graphNavigatorSettings) {
+  @if (repository && graphNavigatorSettings && isDiagramReady()) {
     <app-graph-navigator-settings class="graph-navigator-settings-toolbar"
                             *appRestrictAccess="[ViewPermissions.CAN_MAINTAIN_ACTIVE_REPO]"
                             [settings]="graphNavigatorSettings"

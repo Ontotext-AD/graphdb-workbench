@@ -72,6 +72,7 @@ describe('GraphNavigatorPageComponent', () => {
 
   beforeEach(async () => {
     activatedRouteStub.snapshot.queryParams = {};
+    localStorage.clear();
 
     jest.spyOn(ServiceProvider.get(LanguageContextService), 'getSelectedLanguage')
       .mockReturnValue('en');
@@ -360,6 +361,123 @@ describe('GraphNavigatorPageComponent', () => {
     });
   });
 
+  const DIAGRAM_KEY = 'ontotext.gdb.graphNavigator.diagram';
+  const DIAGRAM_REPOSITORY_KEY = 'ontotext.gdb.graphNavigator.diagramRepository';
+
+  /**
+   * Stores a diagram the way the page and the `graphwise-reactodia` web component persist it: the web component writes
+   * the diagram, the page the repository it was drawn in.
+   */
+  const storeDiagram = (repositoryId: string) => {
+    localStorage.setItem(DIAGRAM_KEY, '{}');
+    localStorage.setItem(DIAGRAM_REPOSITORY_KEY, repositoryId);
+  };
+
+  const getStoredDiagram = () => localStorage.getItem(DIAGRAM_KEY);
+  const getStoredDiagramRepository = () => localStorage.getItem(DIAGRAM_REPOSITORY_KEY);
+
+  describe('diagram of another repository', () => {
+    it('should ask whether to keep a diagram of another repository before rendering it', async () => {
+      // GIVEN: the persisted diagram was drawn in another repository, and the question is not answered yet.
+      storeDiagram(REPOSITORY_B.id);
+      confirmSpy.mockImplementation(() => undefined);
+
+      // WHEN: the page opens.
+      fixture.detectChanges();
+      await selectRepository(REPOSITORY_A);
+      await settle();
+
+      // THEN: the user is asked, naming the other repository.
+      expect(confirmSpy).toHaveBeenCalledTimes(1);
+      expect((confirmSpy.mock.calls[0][0] as ConfirmationConfig).message).toContain(REPOSITORY_B.id);
+      // AND: the diagram is not rendered until the user answers.
+      expect(getFacade()).toBeNull();
+
+      // Confirm again, so the repository reset after the test is not left waiting for an answer.
+      confirmSpy.mockImplementation((config: ConfirmationConfig) => config.acceptHandler?.());
+    });
+
+    it('should keep the diagram for the selected repository when the user keeps it', async () => {
+      // GIVEN: the persisted diagram was drawn in another repository, and the user keeps it.
+      storeDiagram(REPOSITORY_B.id);
+      confirmSpy.mockImplementation((config: ConfirmationConfig) => config.rejectHandler?.());
+
+      // WHEN: the page opens.
+      fixture.detectChanges();
+      await selectRepository(REPOSITORY_A);
+      await settle();
+
+      // THEN: the diagram is kept and belongs to the selected repository.
+      expect(getStoredDiagram()).not.toBeNull();
+      expect(getStoredDiagramRepository()).toBe(REPOSITORY_A.id);
+      // AND: the diagram is rendered.
+      expect(getFacade()).not.toBeNull();
+    });
+
+    it('should remove the diagram when the user discards it', async () => {
+      // GIVEN: the persisted diagram was drawn in another repository, and the user discards it.
+      storeDiagram(REPOSITORY_B.id);
+      confirmSpy.mockImplementation((config: ConfirmationConfig) => config.acceptHandler?.());
+
+      // WHEN: the page opens.
+      fixture.detectChanges();
+      await selectRepository(REPOSITORY_A);
+      await settle();
+
+      // THEN: the diagram is removed.
+      expect(getStoredDiagram()).toBeNull();
+      // AND: the diagram is rendered.
+      expect(getFacade()).not.toBeNull();
+    });
+
+    it('should not ask when the diagram belongs to the selected repository', async () => {
+      // GIVEN: the persisted diagram was drawn in the selected repository.
+      storeDiagram(REPOSITORY_A.id);
+
+      // WHEN: the page opens.
+      fixture.detectChanges();
+      await selectRepository(REPOSITORY_A);
+      await settle();
+
+      // THEN: the user is not asked and the diagram is rendered.
+      expect(confirmSpy).not.toHaveBeenCalled();
+      expect(getFacade()).not.toBeNull();
+    });
+
+    it('should not ask when no diagram is stored', async () => {
+      // GIVEN: the last diagram was drawn in another repository, and the canvas was emptied since.
+      localStorage.setItem(DIAGRAM_REPOSITORY_KEY, REPOSITORY_B.id);
+
+      // WHEN: the page opens.
+      fixture.detectChanges();
+      await selectRepository(REPOSITORY_A);
+      await settle();
+
+      // THEN: the user is not asked and the diagram is rendered for the selected repository.
+      expect(confirmSpy).not.toHaveBeenCalled();
+      expect(getFacade()).not.toBeNull();
+      expect(getStoredDiagramRepository()).toBe(REPOSITORY_A.id);
+    });
+
+    it('should remove the diagram without asking when the page is opened with a seed', async () => {
+      // GIVEN: the persisted diagram was drawn in another repository, and the page is opened with a start resource.
+      storeDiagram(REPOSITORY_B.id);
+      activatedRouteStub.snapshot.queryParams = {uri: 'http://example.com/alice'};
+
+      // WHEN: the page opens.
+      fixture.detectChanges();
+      await selectRepository(REPOSITORY_A);
+      await settle();
+
+      // THEN: the user is not asked, because the seed replaces the diagram.
+      expect(confirmSpy).not.toHaveBeenCalled();
+      expect(getFacade()).not.toBeNull();
+      // AND: the diagram is removed, so it is not restored when the seed is empty or not saved yet.
+      expect(getStoredDiagram()).toBeNull();
+      expect(getStoredDiagramRepository()).toBe(REPOSITORY_A.id);
+    });
+  });
+
   describe('repository switch', () => {
     it('should not ask for confirmation when the first repository is selected', async () => {
       // WHEN: a repository is selected for the first time.
@@ -392,6 +510,41 @@ describe('GraphNavigatorPageComponent', () => {
       expect(component.currentRepository()).toBe(REPOSITORY_B.id);
       expect(component.seedIris()).toEqual([]);
       expect(component.seedGraph()).toEqual([]);
+    });
+
+    it('should remove the diagram when the switch is confirmed before the diagram is rendered', async () => {
+      // GIVEN: the diagram of the first repository is stored, and the diagram is not rendered while the settings load.
+      storeDiagram(REPOSITORY_A.id);
+      getSettingsSpy.mockReturnValue(deferred<GraphNavigatorSettings>().promise);
+      fixture.detectChanges();
+      await selectRepository(REPOSITORY_A);
+      expect(getFacade()).toBeNull();
+
+      // WHEN: the repository is switched and the user confirms.
+      await selectRepository(REPOSITORY_B);
+      await settle();
+
+      // THEN: the diagram is removed, as the confirmation says.
+      expect(getStoredDiagram()).toBeNull();
+      // AND: the user is not asked about it for the new repository.
+      expect(confirmSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should record the new repository for the diagram when the switch is confirmed', async () => {
+      // GIVEN: a diagram drawn in the first repository.
+      storeDiagram(REPOSITORY_A.id);
+      fixture.detectChanges();
+      await selectRepository(REPOSITORY_A);
+      await settle();
+
+      // WHEN: the repository is switched and the user confirms.
+      await selectRepository(REPOSITORY_B);
+      await settle();
+
+      // THEN: the diagram of the first repository is removed.
+      expect(getStoredDiagram()).toBeNull();
+      // AND: what is drawn from now on belongs to the new repository, so returning to the view does not ask about it.
+      expect(getStoredDiagramRepository()).toBe(REPOSITORY_B.id);
     });
 
     it('should keep the repository, the seed and the URL when the switch is rejected', async () => {
