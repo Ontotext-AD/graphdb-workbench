@@ -122,7 +122,7 @@ yasgui-component .confirm-button:hover,
 }
 
 .keyboard-shortcuts-dialog-wrapper .dialog .dialog-header .close-button:hover {
-    color: var(--gw-button-primary-link-hover-color) !important;
+    color: var(--gw-button-link-hover-color) !important;
 }
 
 .keyboard-shortcut-description-item {

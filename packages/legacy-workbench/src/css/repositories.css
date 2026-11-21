@@ -494,7 +494,7 @@ span.label {
 }
 
 .repository .inactive-repo {
-    color: var(--gw-foreground-on-surface-subtile);
+    color: var(--gw-foreground-on-surface-subtle);
 }
 
 .repository .active-repo {

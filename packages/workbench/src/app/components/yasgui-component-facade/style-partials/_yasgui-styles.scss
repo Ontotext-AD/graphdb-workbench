@@ -195,7 +195,7 @@ app-yasgui-component-facade {
       /* Scoped under ".tabsList", so they are more specific than the ".closeTab" and ".addTab" rules above. */
       .tab .closeTab:hover,
       .addTab:hover {
-        color: var(--gw-button-primary-link-hover-color) !important;
+        color: var(--gw-button-link-hover-color) !important;
       }
 
       .tab .closeTab .ri-close-line,

@@ -103,14 +103,14 @@
     gap: 0.5em;
 
     &.status-warning {
-      background-color: var(--gw-button-warn-background);
-      border: 1px solid var(--gw-button-warn-border-color);
-      color: var(--gw-button-warn-color);
+      background-color: var(--gw-button-warning-background);
+      border: 1px solid var(--gw-button-warning-border-color);
+      color: var(--gw-button-warning-color);
 
       &:hover {
-        background-color: var(--gw-button-warn-hover-background);
-        border: 1px solid var(--gw-button-warn-hover-border-color);
-        color: var(--gw-button-warn-hover-color);
+        background-color: var(--gw-button-warning-hover-background);
+        border: 1px solid var(--gw-button-warning-hover-border-color);
+        color: var(--gw-button-warning-hover-color);
       }
     }
 

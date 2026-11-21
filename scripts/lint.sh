@@ -25,5 +25,13 @@ lint_package "api"
 lint_package "shared-components"
 
 echo ''
+echo "########################   Checking -- styleguide tokens --   ###########################"
+echo ''
+
+npm run check:tokens
+
+handle_error "Checking styleguide tokens"
+
+echo ''
 echo '########################   All packages lint check passed successfully!   ###########################'
 echo ''
