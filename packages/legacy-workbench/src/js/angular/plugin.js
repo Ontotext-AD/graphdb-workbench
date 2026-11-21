@@ -53,16 +53,16 @@ PluginRegistry.add('main.menu', {
     },
 );
 PluginRegistry.add('main.menu', {
-        disabled: true,
+        disabled: false,
         items: [
             {
-                label: 'New YASGUI',
-                labelKey: 'New YASGUI',
-                href: 'sparql-new',
-                order: 1.9,
+                label: 'SPARQL',
+                labelKey: 'menu.sparql.label',
+                href: 'sparql',
+                order: 2,
                 role: 'IS_AUTHENTICATED_FULLY',
                 icon: "icon-sparql",
-                guideSelector: 'menu-new-yasgui',
+                guideSelector: 'menu-sparql',
                 children: [],
             },
         ],

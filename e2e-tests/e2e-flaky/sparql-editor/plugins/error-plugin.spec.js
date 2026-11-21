@@ -36,7 +36,7 @@ describe('Error handling', () => {
         // and error message sent by server,
         ErrorPluginSteps.getErrorPluginBody().should('have.text', SHORT_ERROR_BODY);
         // and toolbar with plugins to not be visible,
-        YasrSteps.getResultHeader().should('not.be.visible');
+        YasrSteps.getPluginSelectors().should('not.be.visible');
         // and message info to not be visible,
         YasrSteps.getResponseInfo().should('not.be.visible');
         // and show full/less error message not be visible
@@ -47,7 +47,10 @@ describe('Error handling', () => {
     it('should show error with show full message button when error message is more than than 160 characters.', () => {
         // When I visit a page with "ontotext-yasgui-web-component" in it,
         // and execute wrong query.
-        QueryStubs.stubQueryErrorResponse(repositoryId, 500, LONG_ERROR_BODY);
+        // The response is delayed on purpose: yasgui (ontotext-yasgui-web-component 1.8.8) defers a result draw by
+        // 100 ms at query start. If the response comes sooner, that draw runs after the error is shown and rebuilds
+        // it collapsed, so a "show full" click that lands on it is lost. Remove the delay once yasgui is fixed.
+        QueryStubs.stubQueryErrorResponse(repositoryId, 500, LONG_ERROR_BODY, 500);
         YasqeSteps.executeErrorQuery();
 
         // Then I expect to see a message that
@@ -58,7 +61,7 @@ describe('Error handling', () => {
         // and error message sent by server,
         ErrorPluginSteps.getErrorPluginBody().should('have.text', LESS_MESSAGE);
         // and toolbar with plugins to not be visible,
-        YasrSteps.getResultHeader().should('not.be.visible');
+        YasrSteps.getPluginSelectors().should('not.be.visible');
         // and message info to not be visible,
         YasrSteps.getResponseInfo().should('not.be.visible');
         ErrorPluginSteps.getShowFullErrorMessage().should('be.visible');

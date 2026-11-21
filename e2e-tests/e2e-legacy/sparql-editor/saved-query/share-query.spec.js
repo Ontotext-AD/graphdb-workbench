@@ -1,6 +1,6 @@
 import {SparqlEditorSteps} from "../../../steps/sparql-editor-steps";
 import {YasguiSteps} from "../../../steps/yasgui/yasgui-steps";
-import {ApplicationSteps} from "../../../steps/application-steps";
+import {OntoToastrSteps} from '../../../steps/onto-toastr-steps.js';
 import {QueryStubs} from "../../../stubs/yasgui/query-stubs";
 import {DEFAULT_QUERY, SavedQuery} from "../../../steps/yasgui/saved-query";
 import {SavedQueriesDialog} from "../../../steps/yasgui/saved-queries-dialog";
@@ -46,7 +46,7 @@ describe('Share saved queries', () => {
         ShareSavedQueryDialog.copyLink();
         // Then I expect link to be copied
         ShareSavedQueryDialog.getDialog().should('not.exist');
-        ApplicationSteps.getSuccessNotifications().should('be.visible');
+        OntoToastrSteps.getSuccessToast().should('be.visible');
     });
 
     // FIX: Skipped because the functionality is not working. There is a bug in the application https://graphwise.atlassian.net/browse/GDB-12633

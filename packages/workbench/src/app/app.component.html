@@ -1,4 +1,9 @@
 <div class="main-container">
   <router-outlet></router-outlet>
 </div>
-<p-confirmdialog styleClass="modal-dialog"/>
+<p-confirmdialog styleClass="modal-dialog confirm-dialog"
+                 [pt]="{
+                   content: {'data-test': 'confirm-dialog-content'},
+                   pcAcceptButton: {root: {'data-test': 'confirm-dialog-confirm-btn'}},
+                   pcRejectButton: {root: {'data-test': 'confirm-dialog-cancel-btn'}}
+                 }"/>

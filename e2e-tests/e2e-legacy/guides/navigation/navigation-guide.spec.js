@@ -41,11 +41,11 @@ describe('navigation guide', () => {
         BaseSteps.getUrl().should('include', '/');
         GuideDialogSteps.assertDialogWithTitleIsVisible('Navigation');
         GuideDialogSteps.assertDialogWithContentIsVisible('This is the home page');
-        // When, I navigate to an angular view again (/sparql-new)
+        // When, I navigate to an angular view again (/sparql)
         GuideDialogSteps.clickOnNextButton();
 
         // Then I should see the new sparql view, which is an angular view
-        BaseSteps.getUrl().should('include', 'sparql-new');
+        BaseSteps.getUrl().should('include', 'sparql');
         GuideDialogSteps.assertDialogWithTitleIsVisible('Navigation');
         GuideDialogSteps.assertDialogWithContentIsVisible('This is the new sparql view');
 

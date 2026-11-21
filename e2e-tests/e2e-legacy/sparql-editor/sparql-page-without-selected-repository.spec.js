@@ -1,7 +1,9 @@
 import SparqlSteps from "../../steps/sparql-steps";
 import HomeSteps from "../../steps/home-steps";
 import {MainMenuSteps} from "../../steps/main-menu-steps";
-import {ErrorSteps} from "../../steps/error-steps";
+import {PageRestrictionsSteps} from "../../steps/page-restrictions-steps.js";
+
+const NO_REPOSITORY_MESSAGE = 'Some functionalities are not available because you are not connected to any repository.';
 
 describe('SPARQL page without selected repository', () => {
     it('Should render SPARQL page without selected repository via URL', () => {
@@ -22,5 +24,6 @@ describe('SPARQL page without selected repository', () => {
 
 function validateNoRepositoriesSparqlPage() {
     SparqlSteps.getQueryArea().should('not.exist');
-    ErrorSteps.verifyNoConnectedRepoMessage();
+    PageRestrictionsSteps.getMessages().should('have.length', 1);
+    PageRestrictionsSteps.getMessage(NO_REPOSITORY_MESSAGE).should('be.visible');
 }

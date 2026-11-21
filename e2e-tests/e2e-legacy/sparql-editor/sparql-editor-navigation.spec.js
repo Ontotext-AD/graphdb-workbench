@@ -3,7 +3,7 @@ import {SparqlEditorSteps} from '../../steps/sparql-editor-steps.js';
 import {YasqeSteps} from '../../steps/yasgui/yasqe-steps.js';
 import ImportSteps from '../../steps/import/import-steps.js';
 import {MainMenuSteps} from '../../steps/main-menu-steps.js';
-import {ModalDialogSteps} from '../../steps/modal-dialog-steps.js';
+import {ConfirmDialogSteps} from '../../steps/confirm-dialog-steps.js';
 import {RepositorySelectorSteps} from '../../steps/repository-selector-steps.js';
 import {LanguageSelectorSteps} from '../../steps/language-selector-steps.js';
 import {UserAndAccessSteps} from '../../steps/setup/user-and-access-steps.js';
@@ -11,6 +11,7 @@ import {LoginSteps} from '../../steps/login-steps.js';
 import {HeaderSteps} from '../../steps/header-steps.js';
 
 const LONG_RUNNING_QUERY_DELAY = 10000;
+const RUNNING_QUERY_MESSAGE = 'You have running 1 query. The query will be aborted.';
 
 describe('SPARQL Editor Navigation', () => {
     let repositoryId;
@@ -48,11 +49,11 @@ describe('SPARQL Editor Navigation', () => {
         // AND: I try to leave the page
         MainMenuSteps.clickOnMenuImport();
         // THEN: I expect to see a confirmation dialog
-        ModalDialogSteps.getDialog().should('exist');
-        ModalDialogSteps.getDialogBody().should('contain.text', 'You have running 1 query, that will be aborted.');
+        ConfirmDialogSteps.getDialog().should('exist');
+        ConfirmDialogSteps.getContent().should('contain.text', RUNNING_QUERY_MESSAGE);
 
         // WHEN: I cancel the dialog
-        ModalDialogSteps.cancel();
+        ConfirmDialogSteps.cancel();
         // THEN: I expect to stay on the same view
         SparqlEditorSteps.verifyUrl();
         ImportSteps.getView().should('not.exist');
@@ -61,9 +62,9 @@ describe('SPARQL Editor Navigation', () => {
 
         // WHEN: I confirm leaving the page
         MainMenuSteps.clickOnMenuImport();
-        ModalDialogSteps.getDialog().should('exist');
-        ModalDialogSteps.getDialogBody().should('contain.text', 'You have running 1 query, that will be aborted.');
-        ModalDialogSteps.confirm();
+        ConfirmDialogSteps.getDialog().should('exist');
+        ConfirmDialogSteps.getContent().should('contain.text', RUNNING_QUERY_MESSAGE);
+        ConfirmDialogSteps.confirm();
         // THEN: I expect to navigate to the other view
         ImportSteps.verifyUrl();
         ImportSteps.getView().should('exist');
@@ -84,11 +85,11 @@ describe('SPARQL Editor Navigation', () => {
         // AND: I try to change the repository
         RepositorySelectorSteps.selectRepository(secondRepositoryId);
         // THEN: I expect to see a confirmation dialog
-        ModalDialogSteps.getDialog().should('exist');
-        ModalDialogSteps.getDialogBody().should('contain.text', 'You have running 1 query, that will be aborted.');
+        ConfirmDialogSteps.getDialog().should('exist');
+        ConfirmDialogSteps.getContent().should('contain.text', RUNNING_QUERY_MESSAGE);
 
         // WHEN: I cancel the dialog
-        ModalDialogSteps.cancel();
+        ConfirmDialogSteps.cancel();
         // THEN: I expect the repository not to be changed.
         RepositorySelectorSteps.getSelectedRepository().should('contain', repositoryId);
         // AND: I expect the query not to be aborted
@@ -96,9 +97,9 @@ describe('SPARQL Editor Navigation', () => {
 
         // WHEN: I confirm changing of repository
         RepositorySelectorSteps.selectRepository(secondRepositoryId);
-        ModalDialogSteps.getDialog().should('exist');
-        ModalDialogSteps.getDialogBody().should('contain.text', 'You have running 1 query, that will be aborted.');
-        ModalDialogSteps.confirm();
+        ConfirmDialogSteps.getDialog().should('exist');
+        ConfirmDialogSteps.getContent().should('contain.text', RUNNING_QUERY_MESSAGE);
+        ConfirmDialogSteps.confirm();
         // THEN: I expect the active repository to be changed
         RepositorySelectorSteps.getSelectedRepository().should('contain', secondRepositoryId);
         // AND: I expect the query to be aborted
@@ -108,7 +109,7 @@ describe('SPARQL Editor Navigation', () => {
         RepositorySelectorSteps.selectRepository(repositoryId);
         // THEN: I expect the repository to be changed without confirmation, because there are no running queries.
         RepositorySelectorSteps.getSelectedRepository().should('contain', repositoryId);
-        ModalDialogSteps.getDialog().should('not.exist');
+        ConfirmDialogSteps.getDialog().should('not.exist');
     });
 
     it('should change application language if user confirmed', () => {
@@ -125,11 +126,11 @@ describe('SPARQL Editor Navigation', () => {
         // AND: I try to change the application language
         LanguageSelectorSteps.switchToFr();
         // THEN: I expect to see a confirmation dialog
-        ModalDialogSteps.getDialog().should('exist');
-        ModalDialogSteps.getDialogBody().should('contain.text', 'You have running 1 query, that will be aborted.');
+        ConfirmDialogSteps.getDialog().should('exist');
+        ConfirmDialogSteps.getContent().should('contain.text', RUNNING_QUERY_MESSAGE);
 
         // WHEN: I cancel the dialog
-        ModalDialogSteps.cancel();
+        ConfirmDialogSteps.cancel();
         // THEN: I expect the application language not to be changed.
         LanguageSelectorSteps.getLanguageSelectorDropdownButton().should('contain', 'en');
         // AND: I expect the query not to be aborted
@@ -137,9 +138,9 @@ describe('SPARQL Editor Navigation', () => {
 
         // WHEN: I confirm changing the language
         LanguageSelectorSteps.switchToFr();
-        ModalDialogSteps.getDialog().should('exist');
-        ModalDialogSteps.getDialogBody().should('contain.text', 'You have running 1 query, that will be aborted.');
-        ModalDialogSteps.confirm();
+        ConfirmDialogSteps.getDialog().should('exist');
+        ConfirmDialogSteps.getContent().should('contain.text', RUNNING_QUERY_MESSAGE);
+        ConfirmDialogSteps.confirm();
         // THEN: I expect the query to be aborted
         cy.get('@abortQuery.all').should('have.length', 1);
         // AND: I expect the application language to be changed
@@ -193,13 +194,13 @@ describe('SPARQL Editor Navigation', () => {
             // AND: I try to log out
             LoginSteps.logout();
             // THEN: I expect to see a sign-out confirmation dialog
-            ModalDialogSteps.getDialog().should('exist');
-            ModalDialogSteps.getDialogBody()
-                .should('contain.text', 'You have running 1 query, that will be aborted.')
+            ConfirmDialogSteps.getDialog().should('exist');
+            ConfirmDialogSteps.getContent()
+                .should('contain.text', RUNNING_QUERY_MESSAGE)
                 .and('contain.text', 'Are you sure that you want to sign out?');
 
             // WHEN: I cancel the dialog
-            ModalDialogSteps.cancel();
+            ConfirmDialogSteps.cancel();
             // THEN: I expect to stay logged in
             HeaderSteps.getUserMenu().should('be.visible');
             // AND: I expect the query not to be aborted
@@ -207,9 +208,9 @@ describe('SPARQL Editor Navigation', () => {
 
             // WHEN: I confirm signing out
             LoginSteps.logout();
-            ModalDialogSteps.getDialog().should('exist');
-            ModalDialogSteps.getDialogBody().should('contain.text', 'You have running 1 query, that will be aborted.');
-            ModalDialogSteps.confirm();
+            ConfirmDialogSteps.getDialog().should('exist');
+            ConfirmDialogSteps.getContent().should('contain.text', RUNNING_QUERY_MESSAGE);
+            ConfirmDialogSteps.confirm();
             // THEN: I expect to navigate to the login page.
             LoginSteps.verifyUrl();
             // AND: I expect the query to be aborted

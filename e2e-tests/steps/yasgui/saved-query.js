@@ -1,6 +1,6 @@
 import {YasguiSteps} from "./yasgui-steps";
 import {SaveQueryDialog} from "./save-query-dialog";
-import {ApplicationSteps} from "../application-steps";
+import {OntoToastrSteps} from '../onto-toastr-steps.js';
 
 export const DEFAULT_QUERY = 'select *';
 
@@ -16,7 +16,7 @@ export class SavedQuery {
         SaveQueryDialog.toggleIsPublic();
         SaveQueryDialog.saveQuery();
         SaveQueryDialog.getSaveQueryDialog().should('not.exist');
-        ApplicationSteps.getSuccessNotifications().should('be.visible');
+        OntoToastrSteps.getSuccessToast().should('be.visible');
     }
 
     static generateQueryName() {

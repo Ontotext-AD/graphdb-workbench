@@ -1,10 +1,10 @@
 import {SparqlEditorSteps} from "../../../steps/sparql-editor-steps";
 import {YasguiSteps} from "../../../steps/yasgui/yasgui-steps";
-import {ApplicationSteps} from "../../../steps/application-steps";
 import {QueryStubs} from "../../../stubs/yasgui/query-stubs";
 import {SaveQueryDialog} from "../../../steps/yasgui/save-query-dialog";
 import {SavedQuery} from "../../../steps/yasgui/saved-query";
 import {SavedQueriesDialog} from "../../../steps/yasgui/saved-queries-dialog";
+import {OntoToastrSteps} from '../../../steps/onto-toastr-steps.js';
 
 describe('Save query', () => {
 
@@ -54,9 +54,7 @@ describe('Save query', () => {
         SaveQueryDialog.writeQueryName(savedQueryName);
         SaveQueryDialog.saveQuery();
         // Then I expect that dialog will remain open and an error will be visible
-        // TODO: find out why this check fails on Jenkins sometimes with
-        // AssertionError: Timed out retrying after 30000ms: Expected to find element: `.toast-error`, but never found it. Queried from element: <div#toast-container.toast-bottom-right>
-        // ApplicationSteps.getErrorNotifications().should('be.visible');
+        OntoToastrSteps.getErrorToast().should('be.visible');
         SaveQueryDialog.getSaveQueryDialog().should('be.visible');
         SaveQueryDialog.getErrorsPane().should('contain', 'Error! Cannot create saved query');
         // When I change the query name
@@ -65,6 +63,6 @@ describe('Save query', () => {
         SaveQueryDialog.saveQuery();
         // Then I should be able to save the query
         SaveQueryDialog.getSaveQueryDialog().should('not.exist');
-        ApplicationSteps.getSuccessNotifications().should('be.visible');
+        OntoToastrSteps.getSuccessToast().should('be.visible');
     });
 });
