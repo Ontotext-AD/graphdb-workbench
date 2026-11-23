@@ -82,7 +82,12 @@ export abstract class LocalStorageService implements Persistence {
     this.getStorage().removeItem(usePrefixedKey ? this.getPrefixedKey(key) : key);
   }
 
-  private getPrefixedKey(key: string): string {
+  /**
+   * Prefixes the key with the global and local namespaces, unless it already has them.
+   * @param key The key, with or without the namespaces.
+   * @returns The key in the global and local namespaces.
+   */
+  protected getPrefixedKey(key: string): string {
     const globalLocalPrefix = `${StorageKey.GLOBAL_NAMESPACE}.${this.NAMESPACE}.`;
     const localPrefix = `${this.NAMESPACE}.`;
 

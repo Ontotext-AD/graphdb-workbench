@@ -137,7 +137,13 @@
     "confirmation": {
       "on_repository_change": {
         "title": "Confirm selected repository change",
-        "message": "<div class=\"alert alert-warning\">The diagram will be cleared.</div><div>Are you sure that you want to change the selected repository?</div>"
+        "message": "<div class=\"alert alert-warning\">The diagram will be cleared. To keep a copy, cancel and export it first with \"Export to JSON\" in the diagram menu.</div><div>Are you sure that you want to change the selected repository?</div>"
+      },
+      "diagram_of_another_repository": {
+        "title": "Diagram of another repository",
+        "message": "<div class=\"alert alert-warning\">The saved diagram was drawn in repository <b>{{repositoryId}}</b>. If you keep it, it is shown with the data of the selected repository.</div><div>Do you want to discard the diagram?</div>",
+        "keep": "Keep",
+        "discard": "Discard"
       }
     },
     "settings": {
