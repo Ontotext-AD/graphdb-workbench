@@ -19,7 +19,8 @@ export class GraphNavigatorStubs extends Stubs {
         cy.intercept('POST', '/repositories/*', (req) => {
             // The body is form-encoded (`query=...`), so decode it to match the SPARQL text.
             const body = new URLSearchParams(String(req.body)).get('query') ?? '';
-            if (body.includes('SELECT ?inst ?class ?label WHERE') && body.includes(text)) {
+            // The lookup query may declare a dataset (e.g. `FROM onto:explicit`) between the projection and `WHERE`.
+            if (/SELECT \?inst \?class \?label\s+(FROM\s+\S+\s+)*WHERE/.test(body) && body.includes(text)) {
                 req.alias = 'entity-lookup';
             }
         });
