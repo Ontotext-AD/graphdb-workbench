@@ -137,16 +137,16 @@ class ImportSteps {
         return this.getView().find('.import-from-url-btn');
     }
 
-    static getFileSizeLimitWarning() {
-        return this.getView().find('.file-size-limit-warning');
+    static getFileSizeLimitInfo() {
+        return this.getView().find('.file-size-limit-info');
     }
 
-    static openServerFilesTabFromWarning() {
-        this.getFileSizeLimitWarning().find('.server-files-tab-link').click();
+    static openServerFilesTabFromInfo() {
+        this.getFileSizeLimitInfo().find('.server-files-tab-link').click();
     }
 
-    static openAPIViewFromWarning() {
-        this.getFileSizeLimitWarning().find('.api-link').click();
+    static openAPIViewFromInfo() {
+        this.getFileSizeLimitInfo().find('.api-link').click();
     }
 
     static copyMaxFileSizeLimitProperty() {

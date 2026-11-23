@@ -26,21 +26,21 @@ describe('OntoToastr', () => {
 
     // Then I expect an info toast to be displayed
     ToastrSteps.getVisibleToasts().should('have.length', 2);
-    assertToastMessage('info', 'ri-information-2-fill');
+    assertToastMessage('info', 'ri-information-2-line');
 
     // When I click on the warning toast button
     ToastrSteps.clickWarningToastButton();
 
     // Then I expect a warning toast to be displayed
     ToastrSteps.getVisibleToasts().should('have.length', 3);
-    assertToastMessage('warning', 'ri-message-line');
+    assertToastMessage('warning', 'ri-alert-line');
 
     // When I click on the error toast button
     ToastrSteps.clickErrorToastButton();
 
     // Then I expect an error toast to be displayed
     ToastrSteps.getVisibleToasts().should('have.length', 4);
-    assertToastMessage('error', 'ri-alert-line');
+    assertToastMessage('error', 'ri-close-circle-line');
 
     // And messages should disappear after 5 seconds
     ToastrSteps.getVisibleToasts().should('have.length', 0);
