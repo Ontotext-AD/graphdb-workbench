@@ -49,22 +49,22 @@ describe('Import user data', () => {
         ImportUserDataSteps.getUploadTextSnippetButton().should('be.visible');
     });
 
-    it('Should show the file size limit warning', () => {
+    it('Should show the file size limit info', () => {
         // Given I have visited the import page
         ImportUserDataSteps.visit();
         // When the page is loaded
-        // Then I should see the file size limit warning
-        ImportUserDataSteps.getFileSizeLimitWarning().should('be.visible');
-        // When I click the server files tab through the link in the warning
-        ImportUserDataSteps.openServerFilesTabFromWarning();
+        // Then I should see the file size limit info
+        ImportUserDataSteps.getFileSizeLimitInfo().should('be.visible');
+        // When I click the server files tab through the link in the info
+        ImportUserDataSteps.openServerFilesTabFromInfo();
         // Then I should see the server files tab
         ImportUserDataSteps.getActiveTab().should('have.text', 'Server files');
         cy.url().should('include', '/import').and('include', '#server');
         ImportUserDataSteps.getServerFilesTab().should('be.visible');
-        // When I click on the API link in the warning
+        // When I click on the API link in the info
         ImportUserDataSteps.openUserDataTab();
         ImportUserDataSteps.getUserDataTab().should('be.visible');
-        ImportUserDataSteps.openAPIViewFromWarning();
+        ImportUserDataSteps.openAPIViewFromInfo();
         // Then I should see the API view
         cy.url().should('include', '/webapi');
     });
@@ -80,7 +80,7 @@ describe('Import user data', () => {
         // Then the help should disappear
         ImportUserDataSteps.getHelpMessage().should('not.exist');
         // When I visit the import page again the help should appear again in the empty state
-        ImportUserDataSteps.openAPIViewFromWarning();
+        ImportUserDataSteps.openAPIViewFromInfo();
         cy.url().should('include', '/webapi');
         ImportUserDataSteps.visit();
         ImportUserDataSteps.getHelpMessage().should('be.visible');

@@ -1,6 +1,6 @@
 <div class="page-restrictions" data-test="page-restrictions" [style.height.px]="availableHeight()">
   @for (reason of restrictions(); track reason.translationKey) {
-    <p-message data-test="page-restriction-message" [severity]="reason.severity" icon="ri-alert-line">
+    <p-message data-test="page-restriction-message" [severity]="reason.severity" [icon]="reason.severity === 'info' ? 'ri-information-2-line' : 'ri-alert-line'">
 
       <div>
         <span [innerHTML]="reason.translationKey | transloco: reason.translationParams"></span>

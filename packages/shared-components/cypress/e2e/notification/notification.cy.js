@@ -28,21 +28,21 @@ describe('Notification', () => {
 
     // Then I expect an info toastr to be displayed
     ToastrSteps.getVisibleToasts().should('have.length', 2);
-    assertToastMessage('info', 'ri-information-2-fill');
+    assertToastMessage('info', 'ri-information-2-line');
 
     // When I click on the warning notification button
     NotificationSteps.clickWarningNotificationButton();
 
     // Then I expect a warning toastr to be displayed
     ToastrSteps.getVisibleToasts().should('have.length', 3);
-    assertToastMessage('warning', 'ri-message-line');
+    assertToastMessage('warning', 'ri-alert-line');
 
     // When I click on the error notification button
     NotificationSteps.clickErrorNotificationButton();
 
     // Then I expect an error toastr to be displayed
     ToastrSteps.getVisibleToasts().should('have.length', 4);
-    assertToastMessage('error', 'ri-alert-line');
+    assertToastMessage('error', 'ri-close-circle-line');
 
     // And messages should disappear after 5 seconds
     ToastrSteps.getVisibleToasts().should('have.length', 0);

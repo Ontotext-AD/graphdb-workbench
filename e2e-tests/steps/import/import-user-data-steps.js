@@ -10,8 +10,8 @@ export class ImportUserDataSteps extends ImportSteps {
         return this.getView().find('.user-data-import-help');
     }
 
-    static getFileSizeLimitationWarningMessage() {
-        return this.getView().find('.file-size-limit-warning');
+    static getFileSizeLimitationInfoMessage() {
+        return this.getView().find('.file-size-limit-info');
     }
 
     static openImportTextSnippetDialog() {
