@@ -74,6 +74,10 @@ app-yasgui-component-facade {
     .ontotext-dropdown-menu.open .ontotext-dropdown-menu-item:hover {
       color: var(--gw-tieredmenu-item-focus-color) !important;
       background-color: var(--gw-tieredmenu-item-focus-background) !important;
+
+      /* The items are links, and the global link hover rule underlines them with "!important", so removing the
+      underline needs "!important" too. */
+      text-decoration-line: none !important;
     }
   }
 

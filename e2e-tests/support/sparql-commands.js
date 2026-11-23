@@ -68,6 +68,8 @@ Cypress.Commands.add('pasteIntoCodeMirror', (selector, text) => {
         });
         event.clipboardData.setData('text/plain', text);
 
+        // CodeMirror ignores a paste while the editor is not focused, and the editor no longer takes the focus on load.
+        codeMirror.focus();
         const inputField = codeMirror.getInputField();
         inputField.dispatchEvent(event);
     });
