@@ -1,6 +1,5 @@
 GRAPHDB-WORKBENCH uses the following third-party technologies, as part of its proper functionality and integration:
 
-angucomplete-alt-onto.js	MIT	https://github.com/ghiden/angucomplete-alt	MODIFIED
 angucomplete-alt.js	MIT	https://github.com/ghiden/angucomplete-alt
 angular-bowser.js	MIT	https://github.com/jacqueslareau/angular-bowser/
 angular-cookie.min.js	MIT	https://github.com/ivpusic/angular-cookie
@@ -24,8 +23,6 @@ d3js	ISC from https://github.com/d3/d3/releases/tag/v7.8.5
 d3-tip.js	MIT	https://github.com/caged/d3-tip
 d3-utils.js	ISC	https://github.com/emilbayes/d3-utils
 FileSaver.js	X11/MIT
-font-awesome css	MIT	https://fontawesome.com/v4.7.0/
-font-awesome web fonts	OFL-1.1	https://fontawesome.com/v4.7.0/
 jquery	MIT	https://jquery.com/
 lodash	MIT	https://lodash.com/
 ng-file-upload.min.js	MIT	https://github.com/danialfarid/ng-file-upload

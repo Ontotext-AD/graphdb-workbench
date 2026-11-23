@@ -12,42 +12,6 @@
     "components": [
         {
             "type": "library",
-            "bom-ref": "vendored:angucomplete-alt@2.2.0",
-            "name": "angucomplete-alt",
-            "version": "2.2.0",
-            "description": "Autocomplete directive for AngularJS",
-            "licenses": [
-                {
-                    "license": {
-                        "id": "MIT"
-                    }
-                }
-            ],
-            "purl": "pkg:npm/angucomplete-alt@2.2.0",
-            "externalReferences": [
-                {
-                    "type": "vcs",
-                    "url": "https://github.com/ghiden/angucomplete-alt"
-                }
-            ],
-            "pedigree": {
-                "patches": [
-                    {
-                        "type": "unofficial"
-                    }
-                ],
-                "notes": "Registered as the angucomplete-alt-onto module and the angucompleteAltOnto directive. Binds the input to scope.uri, strips <b> tags from the selected title, shows the dropdown only when the disable-suggestions binding is set, and has no CommonJS/AMD loader."
-            },
-            "evidence": {
-                "occurrences": [
-                    {
-                        "location": "packages/legacy-workbench/src/js/lib/angucomplete-alt/angucomplete-alt-onto.min.js"
-                    }
-                ]
-            }
-        },
-        {
-            "type": "library",
             "bom-ref": "vendored:angucomplete-alt@2.4.1",
             "name": "angucomplete-alt",
             "version": "2.4.1",
