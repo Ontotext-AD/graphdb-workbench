@@ -69,6 +69,9 @@ See also: [Developers Guide](../developers-guide.md)
   `pedigree.ancestors`.
 - **Libraries outside npm:** the hand-written SBOMs in `MERGED_SBOMS`, such as `sbom/vendored-libraries.cdx.json` for
   the libraries copied into `packages/legacy-workbench/src/js/lib/`. Update it when one of them changes.
+- **Libraries bundled into a package:** the SBOM the package ships, also in `MERGED_SBOMS`. `graphwise-reactodia`
+  bundles its libraries into `dist/`, so `cyclonedx-npm` sees only the package itself; its
+  `node_modules/graphwise-reactodia/sbom.cdx.json` lists the rest.
 
 The build fails when the SBOM is not valid CycloneDX 1.6, a component has no name, version or purl, `@ontotext/angular`
 is missing or the upstream `angular` is listed, or cyclonedx-npm lists a package that every lockfile marks as dev.
