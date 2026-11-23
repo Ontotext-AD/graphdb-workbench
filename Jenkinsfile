@@ -218,7 +218,7 @@ def collectGraphdbDiagnostics() {
         docker compose -f '${env.DOCKER_COMPOSE_FILE}' logs --no-color --timestamps graphdb > graphdb-diagnostics/graphdb-container.log 2>&1 || true
         container_id=\$(docker compose -f '${env.DOCKER_COMPOSE_FILE}' ps -aq graphdb)
         if [ -n "\$container_id" ]; then
-            docker cp "\$container_id:/opt/graphdb/home/logs/." graphdb-diagnostics/logs/ || true
+            docker cp "\$container_id:/var/log/graphdb/." graphdb-diagnostics/logs/ || true
         fi
         if [ -f graphdb-diagnostics/logs/heapdump.hprof ]; then
             gzip -1 graphdb-diagnostics/logs/heapdump.hprof || true
