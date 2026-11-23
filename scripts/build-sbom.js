@@ -1,7 +1,8 @@
 // Writes dist/sbom.cdx.json, the CycloneDX 1.6 SBOM of the Workbench build.
 //
 // - npm packages: cyclonedx-npm --omit dev, for each package with its own lockfile.
-// - Libraries outside npm: the hand-written SBOMs in MERGED_SBOMS.
+// - Libraries outside npm: the SBOMs in MERGED_SBOMS (hand-written, or shipped by a package that
+//   bundles its libraries).
 //
 // Fails the build when the SBOM is not valid CycloneDX 1.6, a component has no name,
 // version or purl, the AngularJS fork is missing or listed under the upstream name,
@@ -27,7 +28,9 @@ const NPM_PACKAGES = [
 ];
 
 const MERGED_SBOMS = [
-  'sbom/vendored-libraries.cdx.json'
+  'sbom/vendored-libraries.cdx.json',
+  // The libraries bundled into graphwise-reactodia's dist/, which cyclonedx-npm does not see.
+  'node_modules/graphwise-reactodia/sbom.cdx.json'
 ];
 
 const SUPPLIER = { name: 'Ontotext', url: ['https://www.ontotext.com/'] };
