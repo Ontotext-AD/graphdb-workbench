@@ -23,4 +23,9 @@ module.exports = {
   'packages/workbench/src/**/*.scss': (files) => [
     `npx stylelint --max-warnings=0 ${files.join(' ')}`
   ],
+  // Stops the commit when a staged file uses a --gw-* variable that graphwise-styleguide deprecated, and prints the
+  // replacement. The bin comes with the styleguide installed in root-config.
+  'packages/*/src/**/*.{html,css,scss,less,ts,tsx,js,jsx}': (files) => [
+    `packages/root-config/node_modules/.bin/gw-check-deprecated --fail ${files.map((file) => `"${file}"`).join(' ')}`
+  ],
 };
