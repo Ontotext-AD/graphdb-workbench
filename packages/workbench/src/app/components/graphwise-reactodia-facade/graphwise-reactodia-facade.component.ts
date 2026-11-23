@@ -1,7 +1,14 @@
 import {Component, computed, CUSTOM_ELEMENTS_SCHEMA, inject, input} from '@angular/core';
 import type {EventDetail, ReactodiaConfig, SparqlQueryFunction, SparqlQueryParams} from 'graphwise-reactodia';
 import {defineCustomElements} from 'graphwise-reactodia/loader';
-import {GraphExploreLink, Rdf4jRepositoryService, service, SparqlDataProviderSettings, UriUtil} from '@ontotext/workbench-api';
+import {
+  GraphExploreLink,
+  GraphNavigatorStorageService,
+  Rdf4jRepositoryService,
+  service,
+  SparqlDataProviderSettings,
+  UriUtil
+} from '@ontotext/workbench-api';
 import {LoggerProvider} from '../../services/logger/logger-provider';
 import {GRAPHWISE_REACTODIA_EVENT_HANDLERS} from './models/graphwise-reactodia-event-handlers';
 import {ErrorEventHandler} from './service/error-event-handler.service';
@@ -30,6 +37,7 @@ defineCustomElements();
 })
 export class GraphwiseReactodiaFacadeComponent {
   private readonly rdf4jRepositoryService = service(Rdf4jRepositoryService);
+  private readonly graphNavigatorStorageService = service(GraphNavigatorStorageService);
   private readonly eventHandlers = inject(GRAPHWISE_REACTODIA_EVENT_HANDLERS);
   private readonly logger = LoggerProvider.logger;
 
@@ -64,7 +72,8 @@ export class GraphwiseReactodiaFacadeComponent {
     getResourceLinkUrl: (iri: string) => `${UriUtil.RESOURCE_URL}?uri=${encodeURIComponent(iri)}`,
     seedIris: this.seedIris(),
     seedGraph: this.seedGraph(),
-    ui: GRAPHWISE_REACTODIA_UI_CONFIG
+    ui: GRAPHWISE_REACTODIA_UI_CONFIG,
+    storageKey: this.graphNavigatorStorageService.getDiagramStorageKey()
   }));
 
   /**

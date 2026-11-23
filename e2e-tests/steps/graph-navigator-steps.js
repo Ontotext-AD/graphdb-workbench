@@ -139,6 +139,20 @@ export class GraphNavigatorSteps extends BaseSteps {
         GraphNavigatorSteps.getConfirmDialog().find('.cancel-btn').click();
     }
 
+    /**
+     * Answers the question about a saved diagram of another repository: discard it.
+     */
+    static discardDiagramOfAnotherRepository() {
+        GraphNavigatorSteps.confirmDialog();
+    }
+
+    /**
+     * Answers the question about a saved diagram of another repository: keep it.
+     */
+    static keepDiagramOfAnotherRepository() {
+        GraphNavigatorSteps.cancelDialog();
+    }
+
     static verifyFileDownloaded(fileName) {
         cy.readFile('cypress/downloads/' + fileName);
     }
