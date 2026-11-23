@@ -1,7 +1,6 @@
 import 'angular/utils/file-types';
 import 'angular/rest/explore.rest.service';
 import {saveAs} from 'lib/FileSaver-patch';
-import {decodeHTML} from "../../../app";
 import {ResourceInfo} from "../models/resource/resource-info";
 import {ContextType, ContextTypes} from "../models/resource/context-type";
 import {RoleType} from "../models/resource/role-type";
@@ -37,7 +36,6 @@ const modules = [
 
 angular
     .module('graphdb.framework.explore.controllers', modules)
-    .controller('FindResourceCtrl', FindResourceCtrl)
     .controller('ExploreCtrl', ExploreCtrl)
     .controller('EditResourceCtrl', EditResourceCtrl)
     .controller('ViewTrigCtrl', ViewTrigCtrl);
@@ -468,154 +466,6 @@ WHERE {
             initComponent();
         }
     }));
-}
-
-FindResourceCtrl.$inject = ['$scope', '$http', '$location', '$repositories', '$q', '$timeout', 'toastr', 'AutocompleteRestService', 'ClassInstanceDetailsService', '$routeParams', 'RDF4JRepositoriesRestService', '$translate'];
-
-function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout, toastr, AutocompleteRestService, ClassInstanceDetailsService, $routeParams, RDF4JRepositoriesRestService, $translate) {
-    $scope.submit = submit;
-    $scope.getAutocompleteSuggestions = getAutocompleteSuggestions;
-    $scope.inputChangedFn = inputChangedFn;
-    $scope.selectedUriCallback = selectedUriCallback;
-
-    $scope.selectedUri = {name: ""};
-
-    $scope.autocompleteEnabled = false;
-
-    if (angular.isDefined($routeParams.search)) {
-        $timeout(function() {
-            $('#resources_finder_value').val($routeParams.search);
-            $('.search-button').click();
-        }, 500);
-    }
-
-    function checkAutocompleteStatus() {
-        AutocompleteRestService.checkAutocompleteStatus()
-            .success(function(response) {
-                if (!response) {
-                    const warningMsg = decodeHTML($translate.instant('explore.autocomplete.warning.msg'));
-                    toastr.warning('', `<div class="autocomplete-toast"><a href="autocomplete">${warningMsg}</a></div>`,
-                        {allowHtml: true});
-                }
-                $scope.autocompleteEnabled = response;
-            })
-            .error(function() {
-                toastr.error($translate.instant('explore.error.autocomplete'));
-            });
-    }
-
-    function getAllNamespacesForActiveRepository() {
-        RDF4JRepositoriesRestService.getNamespaces($repositories.getActiveRepository())
-            .success(function(data) {
-                $scope.namespaces = data.results.bindings.map(function(e) {
-                    return {
-                        prefix: e.prefix.value,
-                        uri: e.namespace.value,
-                    };
-                });
-                $scope.loader = false;
-            }).error(function(data) {
-            const msg = getError(data);
-            toastr.error(msg, $translate.instant('common.error'));
-            $scope.loader = false;
-        });
-    }
-
-    function validateRdfUri(value) {
-        // has a pair of angle brackets and the closing one is the last char of the string
-        const hasAngleBrackets = value.indexOf("<") >= 0 && value.lastIndexOf(">") === value.length - 1;
-
-        // does not have a pair of angle bracket - if only one of the is available that is incorrect
-        const noAngleBrackets = value.indexOf("<") === -1 && value.lastIndexOf(">") === -1;
-
-        const validProtocol = /^<?[http|urn].*>?$/.test(value) && (hasAngleBrackets || noAngleBrackets);
-        let validPath = false;
-        if (validProtocol) {
-            if (value.indexOf("http") >= 0) {
-                const schemaSlashesIdx = value.indexOf('//');
-                validPath = schemaSlashesIdx > 4
-                    && value.substring(schemaSlashesIdx + 2).length > 0;
-            } else if (value.indexOf("urn") >= 0) {
-                validPath = value.substring(4).length > 0;
-            }
-        }
-        return validProtocol && validPath;
-    }
-
-    let uri;
-
-    function submit(uri) {
-        function setFormInvalid(isDirty) {
-            // does not work yet
-            $timeout(function() {
-                if ($scope.form) {
-                    $scope.form.$dirty = isDirty;
-                }
-            });
-        }
-
-        if (!uri) {
-            uri = document.getElementById("resources_finder_value").value;
-        }
-        if (uri && validateRdfUri(uri)) {
-            setFormInvalid(false);
-            $location
-                .path('resource')
-                .search('uri', uri);
-        } else {
-            setFormInvalid(true);
-            if (uri) {
-                toastr.error($translate.instant('explore.error.invalid.input'));
-            }
-        }
-    }
-
-    if ($scope.getActiveRepository()) {
-        checkAutocompleteStatus();
-        getAllNamespacesForActiveRepository();
-    }
-
-    // use a global var to keep old uri in order to change it when a new one appears
-    let expandedUri;
-
-    function getAutocompleteSuggestions(str) {
-        // expand prefix to uri only if the last character of the input is a colon and
-        // there are no angle brackets because they are allowed only for absolute uris
-        const ANGLE_BRACKETS_REGEX = /<|>/;
-        if (!ANGLE_BRACKETS_REGEX.test(str) && str.slice(-1) === ':') {
-            const newExpandedUri = ClassInstanceDetailsService.getNamespaceUriForPrefix($scope.namespaces, str.slice(0, -1));
-            expandedUri = (newExpandedUri !== expandedUri) ? newExpandedUri : expandedUri;
-            if (expandedUri) {
-                $("#resources_finder_value").val(expandedUri);
-            }
-        }
-
-        let promise;
-        if ($scope.autocompleteEnabled) {
-            // add semicolon after the expanded uri in order to filter only by local names for this uri
-            const query = str.replace(expandedUri, expandedUri + ';');
-            promise = AutocompleteRestService.getAutocompleteSuggestions(query);
-        } else {
-            // return empty promise
-            promise = $q.when($scope.autocompleteEnabled);
-        }
-        return promise;
-    }
-
-    $scope.$on('repositoryIsSet', function() {
-        checkAutocompleteStatus();
-        getAllNamespacesForActiveRepository();
-    });
-
-    function inputChangedFn() {
-        uri = document.getElementById("resources_finder_value").value;
-        $scope.form.$dirty = !(uri && validateRdfUri(uri));
-    }
-
-    function selectedUriCallback(selected) {
-        $scope.selectedUri = {name: selected.title};
-        submit($scope.selectedUri.name);
-    }
 }
 
 EditResourceCtrl.$inject = ['$scope', '$http', '$location', 'toastr', '$repositories', '$uibModal', '$timeout', 'ClassInstanceDetailsService', 'StatementsService', 'RDF4JRepositoriesRestService', '$translate'];
