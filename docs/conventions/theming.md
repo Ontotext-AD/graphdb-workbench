@@ -24,6 +24,7 @@ Design tokens come from Figma Token Studio and are built into theme stylesheets 
 - When adding repo-local variables, map them to `--gw-*` where practical (see `packages/root-config/src/vendor/variables.css`).
 - **Verify styling changes in both light and dark theme modes** when touching shared/global UI.
 - Be careful not to break legacy styles that depend on `--gw-*` variables in `packages/legacy-workbench`.
+- Do not use deprecated `--gw-*` variables. The pre-commit hook runs `gw-check-deprecated` (from the styleguide) on the staged files and stops the commit with the replacement; the styleguide release notes list the deprecated variables.
 
 ## Local styleguide development
 
