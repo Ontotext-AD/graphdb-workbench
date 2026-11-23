@@ -135,10 +135,13 @@ echo "run-id=$RUN_ID tree=$TREE image=$IMAGE context=${CONTEXT:-/} license=${LIC
 
 [[ $BUILD -eq 1 ]] && build_tree
 stage
-LICENSE_VOL=""
+# The license goes through graphdb.license.file: the conf dir moved from /opt/graphdb/home/conf to
+# /usr/share/graphdb/conf in 12.0.0-TR21, and the property works with images on either side of that change.
+LICENSE_VOL=""; LICENSE_OPT=""
 if [[ -n "$LICENSE" ]]; then
   cp "$LICENSE" "$STACK_DIR/graphdb.license"
-  LICENSE_VOL="      - $STACK_DIR/graphdb.license:/opt/graphdb/home/conf/graphdb.license:ro"
+  LICENSE_VOL="      - $STACK_DIR/graphdb.license:/license/graphdb.license:ro"
+  LICENSE_OPT="-Dgraphdb.license.file=/license/graphdb.license"
 fi
 
 # Port choice and `compose up` (which binds it) run under one lock: parallel runs otherwise pick the same port.
@@ -160,6 +163,7 @@ services:
         -Dgraphdb.workbench.importDirectory=/wb/import/
         -Dgraphdb.stats.default=disabled
         $EXTERNAL_URL_OPT
+        $LICENSE_OPT
 $GDB_PORTS
     volumes:
       - $STACK_DIR/wb:/wb
