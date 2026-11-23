@@ -73,7 +73,10 @@ app-yasgui-component-facade {
 
     .custom-button {
       color: var(--gw-primary-base) !important;
-      background-color: var(--gw-editor-content-background) !important;
+
+      /* Transparent, so that the next button does not cover the focus ring of the previous one. The editor behind
+         them has the same background. */
+      background-color: transparent !important;
 
       &:disabled:hover,
       &:disabled:focus {
@@ -99,7 +102,10 @@ app-yasgui-component-facade {
     .ontotext-run-dropdown-menu-item {
       color: var(--gw-tieredmenu-color) !important;
 
-      &:hover {
+      /* The component highlights the item focused with the keyboard like the hovered one, so both use the theme
+         colours. */
+      &:hover,
+      &:focus-visible {
         color: var(--gw-tieredmenu-item-focus-color) !important;
         background-color: var(--gw-tieredmenu-item-focus-background) !important;
       }
