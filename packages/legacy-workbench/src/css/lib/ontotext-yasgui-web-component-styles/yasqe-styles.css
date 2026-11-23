@@ -25,10 +25,6 @@ This resolves the problem described in more detail in the issue tracker: "https:
         border-radius: 2px;
     }
 
-    .yasqe_buttons .custom-button {
-        background-color: #1C1C1C !important;
-    }
-
     .notification {
         color: var(--gw-button-secondary-color) !important;
         background-color: var(--gw-button-secondary-background) !important;
@@ -55,7 +51,9 @@ yasgui-component .yasqe .yasqe_buttons {
 
 yasgui-component .custom-button {
     color: var(--gw-primary-base) !important;
-    background-color: var(--gw-editor-content-background) !important;
+    /* Transparent, so that the next button does not cover the focus ring of the previous one. The editor behind them
+       has the same background. */
+    background-color: transparent !important;
 }
 
 yasgui-component .yasgui .yasqe .yasqe_expandResultsButton.custom-button.disabled {
@@ -96,7 +94,9 @@ yasgui-component .ontotext-run-dropdown-menu-item {
     color: var(--gw-tieredmenu-color) !important;
 }
 
-yasgui-component .ontotext-run-dropdown-menu-item:hover {
+/* The component highlights the item focused with the keyboard like the hovered one, so both use the theme colours. */
+yasgui-component .ontotext-run-dropdown-menu-item:hover,
+yasgui-component .ontotext-run-dropdown-menu-item:focus-visible {
     color: var(--gw-tieredmenu-item-focus-color) !important;
     background-color: var(--gw-tieredmenu-item-focus-background) !important;
 }

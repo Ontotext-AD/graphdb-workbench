@@ -2,12 +2,29 @@
 /* Base font-size of the yasgui; its elements inherit it unless they set their own */
 yasgui-component {
     font-size: 1rem;
+
+    /* The theme focus ring for every element of the component. The component draws its keyboard focus ring from these
+       variables (navy by default). */
+    --yasgui-focus-ring-width: var(--gw-focus-ring-width);
+    --yasgui-focus-ring-style: var(--gw-focus-ring-style);
+    --yasgui-focus-ring-color: var(--gw-focus-ring-color);
+    --yasgui-focus-ring-offset: var(--gw-focus-ring-offset);
 }
 
 .hidden {
     display: none;
 }
 /* #endregion GLOBAL STYLES FOR BOTH YASQE, YASR AND OTHER COMPONENTS */
+
+/* #region YASGUI CHECKBOXES */
+/* The checkbox focus ring of the theme. The component draws it on keyboard focus only. */
+yasgui-component input[type="checkbox"] {
+    --yasgui-focus-ring-width: var(--gw-checkbox-focus-ring-width);
+    --yasgui-focus-ring-style: var(--gw-checkbox-focus-ring-style);
+    --yasgui-focus-ring-color: var(--gw-checkbox-focus-ring-color);
+    --yasgui-focus-ring-offset: var(--gw-checkbox-focus-ring-offset);
+}
+/* #endregion YASGUI CHECKBOXES */
 
 .run_query_confirmation {
     margin-bottom: 20px;

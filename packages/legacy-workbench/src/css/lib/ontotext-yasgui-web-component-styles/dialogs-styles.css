@@ -149,3 +149,42 @@ yasgui-component .confirm-button:hover,
 }
 
 /* #endregion - DIALOGS - KEYBOARD SHORTCUTS */
+
+/* #region Focus ring of the yasgui dialog footer buttons */
+/* Inside the component (e.g. the save query dialog) the component draws the keyboard focus ring from the
+   --yasgui-focus-ring-* variables, so only the button tokens are set here. */
+yasgui-component .dialog .dialog-footer .cancel-button {
+    --yasgui-focus-ring-width: var(--gw-button-focus-ring-width);
+    --yasgui-focus-ring-style: var(--gw-button-focus-ring-style);
+    --yasgui-focus-ring-color: var(--gw-button-secondary-focus-ring-color);
+    --yasgui-focus-ring-offset: var(--gw-button-focus-ring-offset);
+}
+
+yasgui-component .dialog .dialog-footer .ok-button,
+yasgui-component .dialog .dialog-footer .primary-button,
+yasgui-component .dialog .dialog-footer .confirm-button {
+    --yasgui-focus-ring-width: var(--gw-button-focus-ring-width);
+    --yasgui-focus-ring-style: var(--gw-button-focus-ring-style);
+    --yasgui-focus-ring-color: var(--gw-button-primary-focus-ring-color);
+    --yasgui-focus-ring-offset: var(--gw-button-focus-ring-offset);
+}
+
+/* The close tab confirmation is attached to the html body, where the component's focus ring rule does not reach and
+   its dialog removes the outline of the footer buttons. */
+confirmation-dialog .dialog .dialog-footer .cancel-button:focus-visible {
+    outline: var(--gw-button-focus-ring-width) var(--gw-button-focus-ring-style) var(--gw-button-secondary-focus-ring-color);
+    outline-offset: var(--gw-button-focus-ring-offset);
+}
+
+confirmation-dialog .dialog .dialog-footer .confirm-button:focus-visible {
+    outline: var(--gw-button-focus-ring-width) var(--gw-button-focus-ring-style) var(--gw-button-primary-focus-ring-color);
+    outline-offset: var(--gw-button-focus-ring-offset);
+}
+
+/* The dialog also removes the outline of its X close button. */
+confirmation-dialog .dialog .dialog-header .close-button:focus-visible {
+    outline: var(--gw-focus-ring-width) var(--gw-focus-ring-style) var(--gw-focus-ring-color);
+    outline-offset: var(--gw-focus-ring-offset);
+}
+
+/* #endregion Focus ring of the yasgui dialog footer buttons */

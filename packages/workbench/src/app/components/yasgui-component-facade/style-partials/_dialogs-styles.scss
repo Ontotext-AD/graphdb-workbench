@@ -214,4 +214,12 @@ confirmation-dialog .dialog .dialog-footer {
   }
 }
 
+/* The dialog also removes the outline of its X close button. The more specific .close-button:hover rule above is for the
+   keyboard shortcuts dialog, a different element, so the order does not matter. */
+/* stylelint-disable-next-line no-descending-specificity */
+confirmation-dialog .dialog .dialog-header .close-button:focus-visible {
+  outline: var(--gw-focus-ring-width) var(--gw-focus-ring-style) var(--gw-focus-ring-color);
+  outline-offset: var(--gw-focus-ring-offset);
+}
+
 /* #endregion Focus ring of the yasgui dialog footer buttons */
