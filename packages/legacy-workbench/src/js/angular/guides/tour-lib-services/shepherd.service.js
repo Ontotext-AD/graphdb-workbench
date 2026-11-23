@@ -214,7 +214,7 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
      */
     this._createGuide = (guideId) => {
         this._subscribeToGuideCanceled();
-        return new Shepherd.Tour({
+        const guide = new Shepherd.Tour({
             name: guideId,
             useModalOverlay: true,
             confirmCancel: this._confirmGuideCancel,
@@ -227,6 +227,14 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
                 },
             },
         });
+        // A hidden step keeps observing its target and resizes, which can cause a "ResizeObserver loop" error.
+        // Destroying it removes the observers. The step is created again when shown.
+        guide.on('show', ({step, previous}) => {
+            if (previous && previous !== step) {
+                previous.destroy();
+            }
+        });
+        return guide;
     };
 
     this._confirmGuideCancel = () => {
