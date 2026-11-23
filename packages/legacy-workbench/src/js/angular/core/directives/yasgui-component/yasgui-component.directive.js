@@ -613,6 +613,7 @@ function yasguiComponentDirective(
                     pageSize: 1000,
                     maxPersistentResponseSize: 500000,
                     showResultTabs: true,
+                    autofocus: false,
                 };
             };
 

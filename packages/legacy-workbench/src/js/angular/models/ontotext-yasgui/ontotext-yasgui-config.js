@@ -172,6 +172,14 @@ export class OntotextYasguiConfig {
         this.copyEndpointOnNewTab = true;
 
         /**
+         * If the query editor should receive the focus when a tab is shown, including on page load.
+         * Default value is false, so the focus stays at the start of the page.
+         *
+         * @type {boolean}
+         */
+        this.autofocus = false;
+
+        /**
          * Yasgui use browser local storage to persist its state. In its state, yasgui holds information about:
          * 1. default query when a tab is opened;
          * 2. YASR plugins configuration;

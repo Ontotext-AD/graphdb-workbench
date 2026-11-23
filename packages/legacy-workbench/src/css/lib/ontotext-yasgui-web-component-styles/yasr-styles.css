@@ -141,9 +141,14 @@ yasgui-component .ontotext-dropdown-menu.open .ontotext-dropdown-menu-item {
     background-color: var(--gw-tieredmenu-background) !important;
 }
 
-yasgui-component .ontotext-dropdown-menu .ontotext-dropdown-menu-item:hover {
+/* The ".open" class makes this rule more specific than the global link hover rule, so it wins. */
+yasgui-component .ontotext-dropdown-menu.open .ontotext-dropdown-menu-item:hover {
     color: var(--gw-tieredmenu-item-focus-color) !important;
     background-color: var(--gw-tieredmenu-item-focus-background) !important;
+
+    /* The items are links, and the global link hover rule underlines them with "!important", so removing the
+       underline needs "!important" too. */
+    text-decoration-line: none !important;
 }
 
 /* #endregion YASR - download as buttons */
