@@ -47,6 +47,7 @@
         "sonarqube-scanner": "^5.0.1"
     },
     "dependencies": {
+        "angucomplete-alt": "2.4.1",
         "angular": "npm:@ontotext/angular@1.3.23-onto",
         "angular-animate": "npm:@ontotext/angular-animate@1.3.23-onto",
         "angular-bowser": "0.0.4",

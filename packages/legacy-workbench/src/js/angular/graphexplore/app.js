@@ -8,7 +8,7 @@ import 'lib/d3.patch.js';
 import 'lib/d3-tip/d3-tip-patch';
 import 'angular-pageslide-directive/dist/angular-pageslide-directive';
 import 'angularjs-slider/dist/rzslider.min';
-import 'lib/angucomplete-alt/angucomplete-alt';
+import 'angucomplete-alt';
 import 'ng-tags-input/build/ng-tags-input.min';
 import 'lib/common/d3-utils';
 import 'lib/common/circle-packing';
@@ -52,5 +52,5 @@ angular.module('graphdb.framework.graphexplore', [
     'graphdb.framework.graphexplore.directives.domainrange',
     'graphdb.framework.graphexplore.directives.dependencies',
     'graphdb.framework.graphexplore.directives.searchcontrols',
-    'graphdb.framework.core.directives.yasgui-component'
+    'graphdb.framework.core.directives.yasgui-component',
 ]);
