@@ -15,11 +15,11 @@ An ongoing condition, such as being offline or the backend being unavailable, th
 _Avoid_: Critical notification, sticky notification
 
 **Notification code**:
-A stable identifier for a kind of notification, independent of its display text and parameters. Two notifications with the same code are the same kind, whatever their parameters.
+A stable name for a kind of notification within its notification topic, independent of its display text and parameters. The topic and the code together identify the kind: two notifications with the same topic and code are the same kind, whatever their parameters.
 _Avoid_: Message key, translation key
 
 **Notification topic**:
-The area a notification's cause belongs to, such as namespaces or repositories. It is the leading part of the notification code and is named after the cause, not after the view that raised it.
+The area a notification's cause belongs to, such as namespaces or repositories. It is a field separate from the notification code, fixed by the code's definition, and is named after the cause, not after the view that raised it.
 _Avoid_: Source, category, feature
 
 **Notification severity**:
@@ -34,7 +34,7 @@ Context attached to a notification that does not change which problem it is, suc
 _Avoid_: Context, metadata
 
 **Duplicate notification**:
-A notification with the same code and the same parameters as one already raised. Duplicates collapse into one, which takes the highest severity among them.
+A notification with the same topic, code, parameters and severity as one already raised. Duplicates collapse into one entry with an occurrence count. Notifications that differ only in severity are not duplicates.
 
 **Toast**:
 A brief, self-dismissing display of a notification.
@@ -45,5 +45,5 @@ The place where retained notifications stay for the user to review later.
 _Avoid_: Notification center, inbox
 
 **Retained notification**:
-A notification that is kept in the notification panel after its toast is gone. By default errors and warnings are retained and successes and infos are not; a notification code may override this. Retained notifications belong to the identity that saw them and survive reloads, but not a logout or a change of identity.
+A notification that is kept in the notification panel after its toast is gone. By default errors and warnings are retained and successes and infos are not; a notification code may override this. Retained notifications belong to the user who saw them and survive reloads and logouts; another user never sees them.
 _Avoid_: Persistent notification, sticky notification

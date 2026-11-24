@@ -31,16 +31,20 @@ nothing else should report it instead.
 
 ### Code and topic
 
-Every kind of notification has a **code**: a stable identifier, independent of the text and the parameters.
+Every kind of notification is identified by two separate fields: a **topic** and a **code**. Together they are a
+stable identifier, independent of the text and the parameters.
 
-- Format: `<topic>.<kind>`, both in kebab-case. Example: `namespaces.load-failed`.
-- The topic is one segment, taken from a fixed list. It is the area the **cause** belongs to, not the view that
-  raised the notification. A failure to load namespaces is `namespaces.*`, whether the RDF Rank view or the
-  autocomplete raised it.
-- The code holds no severity: `import.failed`, not `import.errors.failed`.
+- Both are in kebab-case. Example: topic `namespaces`, code `load-failed`.
+- The topic is taken from a fixed list. It is the area the **cause** belongs to, not the view that raised the
+  notification. A failure to load namespaces has topic `namespaces`, whether the RDF Rank view or the autocomplete
+  raised it.
+- The code names the kind of event and is unique within its topic. The same code may exist under different topics:
+  `namespaces` / `load-failed` and `repositories` / `load-failed` are different kinds.
+- The topic is part of the code definition. Whoever raises the notification does not choose or override it.
+- The code holds no severity: `failed`, not `errors.failed`.
 - Codes are defined once, in a registry. Code that raises a notification refers to a registry entry; it never
-  builds a code from a string. Eight views reporting the same cause must raise the same code.
-- The message text is looked up by the code. The code is not the text and not a free-form translation key.
+  builds a topic or a code from a string. Eight views reporting the same cause must raise the same topic and code.
+- The message text is looked up by topic and code. The code is not the text and not a free-form translation key.
 
 ### Severity
 
@@ -76,9 +80,11 @@ notification unique.
 
 ### Duplicates
 
-Two notifications with the same code and the same parameters are **duplicates**. They collapse into one entry with an
-occurrence count. The entry takes the **highest** severity among them: a warning that follows an error for the same
-problem does not downgrade it.
+Two notifications with the same topic, code, parameters and severity are **duplicates**. They collapse into one entry
+with an occurrence count.
+
+Notifications that differ only in severity are **not** duplicates and stay separate entries. A warning that follows an
+error for the same problem appears next to the error; it neither merges into it nor changes its severity.
 
 ### Retained or toast only
 
@@ -92,6 +98,10 @@ Every notification is shown as a toast. Some are also **retained** in the notifi
 A code may override the default. Override it on the **code definition**, not where the notification is raised:
 whether a notification is worth keeping depends on its kind. Typical case: the success of a long operation that
 may finish while the user is on another view (an import, a cluster change).
+
+Retained notifications belong to the **user** who saw them. They survive a reload and a logout: when the same user
+logs in again, the panel shows them again. Another user never sees them. With security off or in free access mode,
+all sessions share one fixed identity.
 
 A toast appears only in the browser tab that raised the notification. Other open tabs update the panel only.
 
@@ -134,8 +144,16 @@ export const ImportCodes = {
 };
 ```
 
-Each code needs a translation under `notifications.<code>`, and each topic under `notifications.topics.<topic>`.
-See [i18n](i18n.md).
+`notificationCode()` returns an object with separate `topic` and `code` fields. Never join them into one string
+to identify a notification.
+
+Each code needs a translation under `notifications.<topic>.<code>`, and each topic under
+`notifications.topics.<topic>`. See [i18n](i18n.md).
+
+### Storing retained notifications
+
+Retained notifications are kept in the browser's `localStorage`, under a key per user. They do not follow the user to
+another browser or machine. Logout does not clear them.
 
 ### Raising a notification
 
