@@ -236,6 +236,11 @@ export class OpenIdService implements Service {
     const isImplicitFlow = config.authFlow === OpenIdAuthFlowType.IMPLICIT;
     const queryParams: AuthFlowParams = OpenIdUtils.parseQueryString(isImplicitFlow);
 
+    if (queryParams.code || queryParams.id_token) {
+      // The callback parameters must not stay in the URL, e.g. as the return URL of the login page.
+      WindowService.replaceUrl(WindowService.getLocationPathname());
+    }
+
     if (queryParams.code) {
       return this.authFlowHandler.handleAuthorizationCode(config, queryParams, this.exchangeTokensForCode.bind(this));
     }

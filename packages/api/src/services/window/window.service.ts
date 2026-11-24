@@ -106,6 +106,15 @@ export class WindowService implements Service {
   }
 
   /**
+   * Replaces the current URL in the browser history without navigating.
+   * @param url The new URL. It must have the same origin as the current one.
+   */
+  static replaceUrl(url: string): void {
+    const history = WindowService.getWindow().history;
+    history.replaceState(history.state, '', url);
+  }
+
+  /**
    * Returns the query parameters from the current URL of the browser window. This method provides a way to access the
    * location.search property.
    * @returns The query parameters from the current URL of the browser window, which is the part of the URL that comes after

@@ -56,6 +56,8 @@ describe('OpenIdService', () => {
 
     // Only mock WindowService static methods for side effects and external I/O
     jest.spyOn(WindowService, 'setLocationHref').mockImplementation(() => undefined);
+    jest.spyOn(WindowService, 'replaceUrl').mockImplementation(() => undefined);
+    jest.spyOn(WindowService, 'getLocationPathname').mockReturnValue('/');
 
     // Mock crypto for PKCE code verifier generation (external I/O)
     jest.spyOn(WindowService, 'getCrypto').mockReturnValue({
@@ -547,6 +549,7 @@ describe('OpenIdService', () => {
       const result = await openIdService.initializeOpenId();
 
       expect(result).toBe(true);
+      expect(WindowService.replaceUrl).toHaveBeenCalledWith('/');
     });
 
     it('should handle implicit flow with id_token in URL params', async () => {
@@ -574,6 +577,7 @@ describe('OpenIdService', () => {
       const result = await openIdService.initializeOpenId();
 
       expect(result).toBe(true);
+      expect(WindowService.replaceUrl).toHaveBeenCalledWith('/');
     });
 
     it('should return false when no authentication flow params are present', async () => {
@@ -594,6 +598,7 @@ describe('OpenIdService', () => {
       const result = await openIdService.initializeOpenId();
 
       expect(result).toBe(false);
+      expect(WindowService.replaceUrl).not.toHaveBeenCalled();
     });
 
     it('should clear authentication when handling authentication flow', async () => {
@@ -640,6 +645,7 @@ describe('OpenIdService', () => {
       openidStorageService.setPkceCodeVerifier('test-verifier');
 
       await expect(openIdService.initializeOpenId()).rejects.toThrow('Cannot retrieve token after login');
+      expect(WindowService.replaceUrl).toHaveBeenCalledWith('/');
     });
 
     it('should successfully exchange tokens and setup refresh when code flow completes', async () => {
