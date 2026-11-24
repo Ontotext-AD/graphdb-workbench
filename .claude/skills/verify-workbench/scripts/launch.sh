@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 # Start the workbench dev stack (root-config :9000, Angular :9002, api :9003) unless one is already up.
 # Usage: launch.sh [--timeout SECONDS]   (default 900; a cold Angular build takes minutes)
+# Exit codes: 0 READY, or REUSING a stack this checkout already serves (shared: cleanup never stops it),
+# 2 no GraphDB at $GDB_URL, 3 ports 9000/9002/9003 partly taken by something not ready, 4 not ready in time,
+# 9 the stack on :9000 serves another checkout (verify this one with container.sh up).
 set -euo pipefail
 source "$(dirname "$0")/env.sh"
 
