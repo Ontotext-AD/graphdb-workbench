@@ -3,7 +3,7 @@
 # the run's workbench URL (e.g. http://localhost:7211/graphdb/). Run it after a scenario, before closing.
 # Usage: check-paths.sh <run-id> [--save NAME]
 #   Exit 0 = nothing escaped, 1 = at least one request left the context path (listed), 2 = no data.
-#   Also lists same-origin responses >= 400 (WARN only: some are expected, see SKILL.md Gotchas).
+#   Also lists same-origin responses >= 400 (WARN only: expected ones are in scripts/compare/noise.txt).
 #   --save NAME writes the full request log to the run's evidence dir as NAME (default: requests.txt).
 set -uo pipefail
 source "$(dirname "$0")/env.sh"

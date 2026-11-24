@@ -1,0 +1,18 @@
+# Known noise for smoke.sh / compare.sh: one JavaScript regex per line, matched against
+#   console: <message> @ <source url>
+#   pageerror: <message>
+#   request: <status|failed reason> <METHOD> <url>
+# Add a pattern only for noise that is expected on every stack; a product regression must never match.
+# Production builds answer 500 (404 on dev) for the optional runtime config.
+/assets/env\.json
+# Standalone GraphDB has no cluster: the cluster probes (status, config, group status) answer 404.
+404.*/rest/cluster/
+# The browser's own favicon probe: <origin>/favicon.ico at the origin root, on every navigation, even for a JSON
+# page (/rest/info/version). Any other favicon URL failing is a finding.
+@ https?://[^/]+/favicon\.ico$
+# Legacy app bootstrap probes for a module that is loaded later.
+\$injector:nomod.*single-spa-angularjs
+# Interactive sessions are not stubbed: analytics hits fail or are blocked.
+google-analytics\.com|googletagmanager\.com|analytics\.google\.com
+# Navigating away aborts in-flight requests.
+^request: net::ERR_ABORTED

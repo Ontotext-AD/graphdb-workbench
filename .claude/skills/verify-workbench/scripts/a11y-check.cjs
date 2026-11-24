@@ -7,10 +7,11 @@ const {chromium} = require(process.env.PW_CORE);
 const ACE = require.resolve('accessibility-checker-engine/ace.js', {paths: [process.env.A11Y_HOME]});
 
 const [base, repo, out, ...routes] = process.argv.slice(2);
+const [width, height] = (process.env.A11Y_VIEWPORT || '1440x900').split('x').map(Number);
 
 (async () => {
     const browser = await chromium.launch({executablePath: process.env.A11Y_CHROME, headless: true});
-    const ctx = await browser.newContext({viewport: {width: 1440, height: 900}});
+    const ctx = await browser.newContext({viewport: {width, height}});
     if (repo !== '-') {
         await ctx.addInitScript((id) => localStorage.setItem('ontotext.gdb.repository.selectedRepository',
             JSON.stringify({id, location: ''})), repo);
@@ -32,7 +33,7 @@ const [base, repo, out, ...routes] = process.argv.slice(2);
         await page.screenshot({path: path.join(out, `a11y-${route.replace(/\W+/g, '_') || 'home'}.png`)});
         const violations = results.filter((x) => x.level === 'VIOLATION/FAIL');
         failures += violations.length;
-        report.push({route, violations: violations.length, results});
+        report.push({route, viewport: `${width}x${height}`, violations: violations.length, results});
         console.log(`\n=== /${route.replace(/^\//, '')}  violations: ${violations.length}  (other non-pass: ${results.length - violations.length})`);
         for (const v of violations) {
             console.log(`- [${v.rule}] ${v.message}\n    ${v.xpath}\n    ${v.snippet}`);

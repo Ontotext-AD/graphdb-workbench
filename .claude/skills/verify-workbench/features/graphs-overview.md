@@ -7,8 +7,9 @@ graph, and opens a graph to see its statements in the resource view.
 
 - `graphs-list` lists the default graph and named graphs.
 - `graphs-open` opens a named graph at `/resource?uri=<graph>&role=context&repositoryId=<id>` with its statements.
-- `graphs-search`, `graphs-pagination`, `graphs-export` (per row / selected / whole repository),
-  `graphs-delete` — not driven.
+- `graphs-search`, `graphs-pagination`, `graphs-export` (per row / selected / whole repository / `Download all
+  graphs`), `graphs-delete` (per row / selected), `graphs-clear-repo` (`Clear repository`,
+  `.clear-repository-btn`) — not driven. SHACL shape graphs list as `SHACL Shape Graph (<iri>)`.
 
 ## How to get to it (user POV)
 
@@ -26,7 +27,7 @@ Preconditions:
   `getGraphRow('urn:verify:graph1')` visible. Proof `01-graphs-list`.
 - **Open graph.** Click the graph link. Path `/resource`, query `uri=urn:verify:graph1`, `role=context`;
   heading shows the IRI and the statement table shows `urn:verify:o`. Proof `02-graph-resource-view`.
-- **Run it.** `$V/scripts/drive.sh $V/specs/graphs-overview.cy.js`.
+- **Run it.** `$V/scripts/drive.sh $V/specs/graphs-overview.cy.js` (proven 2026-11-24 on a container stack).
 
 ## Gotchas
 
@@ -34,3 +35,6 @@ Preconditions:
   IRI (`uri=urn:verify:graph1`); parse it with `URLSearchParams` instead of matching `encodeURIComponent(iri)`.
 - The heading renders before the statement table; wait for a statement value, not the heading.
 - `cy.importRDFTextSnippet` needs `{format: 'application/x-trig'}` for named-graph data.
+- The Cypress runner's URL bar in `02-graph-resource-view` can still read `/graphs` after the in-app navigation;
+  the `cy.location` assertions are the proof of the route, the heading and statement table are the proof of the
+  view.

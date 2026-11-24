@@ -32,6 +32,7 @@ Preconditions:
 - **Deep link + reload.** `$PW open "@/graphs/?repositoryId=<repo>"` → `Page URL` is `…/graphdb/graphs?…`
   (slash stripped) and the route renders (`$PW wait '#wb-export'`); `$PW reload` → same URL, `#wb-export` again.
   Proof `screenshot`. Wait for an element of the route, not a menu link: the navbar renders on every route.
+  Proven 2026-11-24 (deep link with trailing slash, reload, SPARQL menu link, back, `check-paths.sh` exit 0).
 - **Menu navigation.** `$PW click 'role=link[name="SPARQL"]'` → `…/graphdb/sparql`, `$PW wait '#title-container'`;
   `$PW go-back` → `…/graphdb/graphs`, `#wb-export`. Repeat for every route the change touches.
 - **No escape.** After the scenario: `$V/scripts/check-paths.sh $RID` — exit 0 and `OK no request left …`.
@@ -44,7 +45,9 @@ Preconditions:
 - `drive.sh` refuses context stacks (exit 65): the repo's Steps/commands intercept absolute paths
   (`cy.intercept('/rest/locations')`), which never match under `/graphdb/`, so specs time out on the harness.
 - `assets/env.json` answers 500 on every load in a production build — expected, not a regression;
-  `check-paths.sh` lists it as WARN. The `favicon.ico` 500 is the browser's own request: it shows in
-  `console error`, not in the request log `check-paths.sh` reads.
+  `check-paths.sh` lists it as WARN.
+- `<origin>/favicon.ico` 404 in `console error` is the browser's own favicon probe at the origin root
+  (`scripts/compare/noise.txt`), not a request of the app; `check-paths.sh` does not see it. Any other favicon
+  URL failing is a finding.
 - nginx in the stack answers 404 `outside context path` for anything outside the prefix instead of
   redirecting, so an escaped request is also visible as a console error.
