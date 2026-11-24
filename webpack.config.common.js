@@ -190,7 +190,7 @@ module.exports = (webpackConfigEnv, argv) => {
                         to: 'js/lib/rzslider/rzslider.min.css'
                     },
                     {
-                        from: 'packages/legacy-workbench/src/js/lib/angucomplete-alt/angucomplete-alt.css',
+                        from: 'packages/legacy-workbench/node_modules/angucomplete-alt/angucomplete-alt.css',
                         to: 'js/lib/angucomplete-alt/angucomplete-alt.css'
                     },
                     {

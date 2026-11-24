@@ -1,0 +1,29 @@
+/* Workbench overrides of the angucomplete-alt stylesheet, loaded right after it. */
+
+.angucomplete-dropdown {
+    overflow-y: auto;
+    max-height: 250px;
+}
+
+.angucomplete-title {
+    font-size: 0.8em !important;
+}
+
+.angucomplete-selected-row {
+    background-color: var(--gw-secondary-base);
+}
+
+.angucomplete-row, .angucomplete-selected-row, .angucomplete-row.angucomplete-selected-row {
+    max-width: 250px;
+    margin-bottom: 0;
+    font-size: 1.2em;
+    word-wrap: break-word;
+}
+
+.highlight {
+    color: var(--gw-primary-base);
+}
+
+.angucomplete-title .highlight {
+    font-weight: bold;
+}

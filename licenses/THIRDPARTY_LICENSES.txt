@@ -1,6 +1,5 @@
 GRAPHDB-WORKBENCH uses the following third-party technologies, as part of its proper functionality and integration:
 
-angucomplete-alt.js	MIT	https://github.com/ghiden/angucomplete-alt
 angular-bowser.js	MIT	https://github.com/jacqueslareau/angular-bowser/
 angular-cookie.min.js	MIT	https://github.com/ivpusic/angular-cookie
 angular-cookies.min.js	MIT	https://docs.angularjs.org/api/ngCookies
