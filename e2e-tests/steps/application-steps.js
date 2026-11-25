@@ -23,6 +23,10 @@ export class ApplicationSteps {
         return this.getNotifications().filter('.toast-warning');
     }
 
+    static getPopover() {
+        return cy.get('.popover');
+    }
+
     // navigation via main menu
     static openImportPage() {
         cy.get('onto-navbar .menu-element').eq(0).click();

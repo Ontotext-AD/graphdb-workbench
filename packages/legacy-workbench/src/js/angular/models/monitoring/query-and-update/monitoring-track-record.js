@@ -1,3 +1,5 @@
+import {MonitoringTrackRecordState} from './monitoring-track-record-state';
+
 export class MonitoringTrackRecord {
     constructor(rawData = {}) {
         /**
@@ -44,5 +46,34 @@ export class MonitoringTrackRecord {
          * @type {string}
          */
         this.humanLifetime = rawData.humanLifetime;
+        /**
+         * @type {boolean}
+         */
+        this.isClusterReplicating = this.state === MonitoringTrackRecordState.CLUSTER_REPLICATING;
+        /**
+         * @type {boolean}
+         */
+        this.canAbort = !this.isRequestedToStop && !this.isClusterReplicating;
+        /**
+         * The translation key of the Abort button's popover.
+         * @type {string}
+         */
+        this.abortPopoverKey = getAbortPopoverKey(this);
     }
+}
+
+/**
+ * Returns the translation key of the Abort button's popover for the record's type and state.
+ * @param {MonitoringTrackRecord} record
+ * @return {string}
+ */
+function getAbortPopoverKey(record) {
+    const isQuery = record.type === 'QUERY';
+    if (record.isClusterReplicating) {
+        return 'update.cluster_replicating';
+    }
+    if (record.isRequestedToStop) {
+        return isQuery ? 'query.abort.request' : 'update.requested';
+    }
+    return isQuery ? 'click.to.abort.query' : 'click.to.abort.update';
 }
