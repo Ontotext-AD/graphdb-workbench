@@ -1,6 +1,6 @@
 import {service} from '../../../../providers';
 import {LoggerProvider} from '../../../logging/logger-provider';
-import {OpenidStorageService} from './openid-storage.service';
+import {OpenidLocalStorageService} from './openid-local-storage.service';
 import {OpenidTokenUtils} from './openid-token-utils';
 import {WindowService} from '../../../window';
 import {RefreshTokenConfiguration} from '../../../../models/security/authentication/openid-refresh-token-configuration';
@@ -15,7 +15,7 @@ export class OpenIdTokenRefreshManager {
   private readonly DEFAULT_REFRESH_CONFIGURATION: RefreshTokenConfiguration = {refreshAheadMs: 60_000, minDelayMs: 1_000};
   private readonly logger = LoggerProvider.logger;
   private readonly tokenUtils = service(OpenidTokenUtils);
-  private readonly openidStorageService = service(OpenidStorageService);
+  private readonly openidLocalStorageService = service(OpenidLocalStorageService);
   private refreshTokensTimer?: number;
 
   /**
@@ -25,14 +25,14 @@ export class OpenIdTokenRefreshManager {
    * @returns Promise that resolves when setup is complete
    */
   async setupTokensRefresh(refreshCallback: (refreshToken: string) => Promise<void>): Promise<void> {
-    const refreshToken = this.openidStorageService.getRefreshToken().getValue();
+    const refreshToken = this.openidLocalStorageService.getRefreshToken().getValue();
 
     if (!refreshToken || !this.shouldSetupRefresh(refreshToken)) {
       this.clearRefreshTimer();
       this.logger.debug('OpenID: no valid refresh token');
       return;
     }
-    const accessToken = this.openidStorageService.getAccessToken().getValue()!;
+    const accessToken = this.openidLocalStorageService.getAccessToken().getValue()!;
 
     const refreshDelay = this.calculateRefreshDelay(accessToken);
     if (refreshDelay < this.DEFAULT_REFRESH_CONFIGURATION.minDelayMs) {

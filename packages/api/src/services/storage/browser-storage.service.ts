@@ -1,0 +1,106 @@
+import {StorageData, StorageKey} from '../../models/storage';
+import {Persistence} from './persistence';
+import {LoggerProvider} from '../logging/logger-provider';
+
+/**
+ * Persistence implementation backed by a browser {@link Storage}, such as the localStorage or the sessionStorage.
+ * Keys are scoped by {@link StorageKey.GLOBAL_NAMESPACE} and the service's namespace. Extend
+ * {@link LocalStorageService} or {@link SessionStorageService} instead of this class.
+ */
+export abstract class BrowserStorageService implements Persistence {
+  /**
+   * The namespace is used to scope keys for the persistent properties by component or view. Each persistence service
+   * should define a namespace to be used for the keys in the storage.
+   */
+  abstract get NAMESPACE(): string;
+
+  /**
+   * Sets the value for the given key in the storage.
+   * Each implementation must implement this method to store the value in the storage by invoking the
+   * BrowserStorageService.storeValue method and eventually doing some additional work if needed, for example, notifying
+   * other services about the change.
+   * @param key The key to set the value for. Every key must be prefixed with {@link StorageKey.GLOBAL_NAMESPACE}.
+   * @param value The value to set.
+   */
+  abstract set(key: string, value: string): void;
+
+  /**
+   * Getter for the browser storage that holds the values.
+   * @returns The browser storage.
+   */
+  abstract getStorage(): Storage;
+
+  /**
+   * Returns the value of the given key from the storage.
+   * @param key The key to get the value for. Every key must be prefixed with {@link StorageKey.GLOBAL_NAMESPACE}.
+   * @param usePrefixedKey Whether to prefix the key with the global and local namespaces before retrieving the value.
+   * Obtaining unprefixed keys is generally only for migration purposes.
+   * @returns The value of the key wrapped in a StorageData object.
+   */
+  get(key: string, usePrefixedKey = true): StorageData {
+    const value = this.getStorage().getItem(usePrefixedKey ? this.getPrefixedKey(key) : key);
+    return new StorageData(value);
+  }
+
+  /**
+   * Returns the value of the given key from the storage parsed as JSON.
+   *
+   * This method is generally only for migration purposes because it does not try to prefix the provided key.
+   *
+   * @param key The key to get the value for.
+   * @returns The parsed JSON value of the key, or null if the key does not exist or parsing fails.
+   */
+  getAsJson<T>(key: string): T | null {
+    const value = this.getStorage().getItem(key);
+    if (value) {
+      try {
+        return JSON.parse(value) as T;
+      } catch (e) {
+        LoggerProvider.logger.error(`Error parsing JSON from the storage for key ${key}:`, e);
+        return null;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Stores the value for the given key in the storage.
+   * @param key The key to set the value for. Every key must be prefixed with {@link StorageKey.GLOBAL_NAMESPACE}.
+   * @param value The value to set.
+   */
+  storeValue(key: string, value: string): void {
+    this.getStorage().setItem(this.getPrefixedKey(key), value);
+  }
+
+  /**
+   * Removes the value for the given key from the storage.
+   * @param key The key to remove the value for. Every key must be prefixed with {@link StorageKey.GLOBAL_NAMESPACE}.
+   * @param usePrefixedKey Whether to prefix the key with the global and local namespaces before removing the value.
+   */
+  remove(key: string, usePrefixedKey = true): void {
+    this.getStorage().removeItem(usePrefixedKey ? this.getPrefixedKey(key) : key);
+  }
+
+  /**
+   * Prefixes the key with the global and local namespaces, unless it already has them.
+   * @param key The key, with or without the namespaces.
+   * @returns The key in the global and local namespaces.
+   */
+  protected getPrefixedKey(key: string): string {
+    const globalLocalPrefix = `${StorageKey.GLOBAL_NAMESPACE}.${this.NAMESPACE}.`;
+    const localPrefix = `${this.NAMESPACE}.`;
+
+    // If the key is already prefixed with the global and local namespaces, return as is
+    if (key.startsWith(globalLocalPrefix)) {
+      return key;
+    }
+
+    // If the key is prefixed with the local namespace only, add the global namespace
+    if (key.startsWith(localPrefix)) {
+      return `${StorageKey.GLOBAL_NAMESPACE}.${key}`;
+    }
+
+    // If the key is unprefixed, add both global and local namespaces
+    return `${globalLocalPrefix}${key}`;
+  }
+}

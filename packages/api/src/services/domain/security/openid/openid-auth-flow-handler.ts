@@ -1,7 +1,7 @@
 import {service} from '../../../../providers';
 import {OpenidSecurityConfig} from '../../../../models/security';
 import {LoggerProvider} from '../../../logging/logger-provider';
-import {OpenidStorageService} from './openid-storage.service';
+import {OpenidSessionStorageService} from './openid-session-storage.service';
 import {OpenidTokenUtils} from './openid-token-utils';
 import {OpenIdUtils} from './openid-utils';
 import {GeneratorUtils} from '../../../utils/generator-utils';
@@ -21,7 +21,7 @@ export type ExchangeTokensCallback = (code: string, redirectUrl: string, codeVer
 export class OpenIdAuthFlowHandler {
   private readonly logger = LoggerProvider.logger;
   private readonly tokenUtils = service(OpenidTokenUtils);
-  private readonly openidStorageService = service(OpenidStorageService);
+  private readonly openidSessionStorageService = service(OpenidSessionStorageService);
 
   /**
    * Handles authorization code flow for both PKCE and non-PKCE variants.
@@ -77,8 +77,8 @@ export class OpenIdAuthFlowHandler {
    * @param state Random state value for CSRF protection
    */
   storeCodeFlowData(state: string): void {
-    this.openidStorageService.setPkceState(state);
-    this.openidStorageService.setPkceCodeVerifier(GeneratorUtils.generateRandomString(28));
+    this.openidSessionStorageService.setPkceState(state);
+    this.openidSessionStorageService.setPkceCodeVerifier(GeneratorUtils.generateRandomString(28));
   }
 
   /**
@@ -87,7 +87,7 @@ export class OpenIdAuthFlowHandler {
    * @returns Complete authorization URL
    */
   getCodeChallengeForCodeFlow(): string {
-    const codeVerifier = this.openidStorageService.getPkceCodeVerifier().getValue();
+    const codeVerifier = this.openidSessionStorageService.getPkceCodeVerifier().getValue();
     if (!codeVerifier) {
       throw new OpenIdError('Missing PKCE code verifier');
     }
@@ -103,7 +103,7 @@ export class OpenIdAuthFlowHandler {
    * @throws OpenIdError on state mismatch or missing code
    */
   private async handlePkceFlow(params: AuthFlowParams, redirectUri: string, exchangeTokensCallback: ExchangeTokensCallback): Promise<void> {
-    const storedState = this.openidStorageService.getPkceState().getValue();
+    const storedState = this.openidSessionStorageService.getPkceState().getValue();
     if (storedState !== params.state) {
       this.logger.debug(`OpenID: PKCE state mismatch ${storedState} != ${params.state}`);
 
@@ -119,7 +119,7 @@ export class OpenIdAuthFlowHandler {
       throw new MissingAuthorizationCode();
     }
 
-    const codeVerifier = this.openidStorageService.getPkceCodeVerifier().getValue();
+    const codeVerifier = this.openidSessionStorageService.getPkceCodeVerifier().getValue();
     await exchangeTokensCallback(params.code, redirectUri, codeVerifier);
   }
 

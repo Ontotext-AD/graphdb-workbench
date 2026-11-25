@@ -4,20 +4,16 @@ import {StorageData} from '../../../../models/storage';
 /**
  * Service for managing OpenID Connect authentication data in local storage.
  *
- * Provides methods to store, retrieve, and clear tokens, PKCE parameters,
- * and other OpenID Connect related data with proper namespacing.
+ * Provides methods to store, retrieve, and clear the tokens and the nonce, which all tabs share, with proper
+ * namespacing. The data of a login in progress in one tab is in {@link OpenidSessionStorageService}.
  */
-export class OpenidStorageService extends LocalStorageService {
+export class OpenidLocalStorageService extends LocalStorageService {
   private readonly accessToken = 'access_token';
   private readonly idToken = 'id_token';
   private readonly refreshToken = 'refresh_token';
 
   private readonly tokenType = 'token_type';
-  private readonly pkceState = 'pkce_state';
-  private readonly pkceCodeVerifier = 'pkce_code_verifier';
   private readonly nonce = 'nonce';
-
-  private readonly returnUrl = 'return_url';
 
   readonly NAMESPACE = 'auth.openid';
 
@@ -72,30 +68,6 @@ export class OpenidStorageService extends LocalStorageService {
     this.remove(this.tokenType);
   }
 
-  setPkceState(state: string): void {
-    this.set(this.pkceState, state);
-  }
-
-  getPkceState(): StorageData {
-    return this.get(this.pkceState);
-  }
-
-  clearPkceState(): void {
-    this.remove(this.pkceState);
-  }
-
-  setPkceCodeVerifier(codeVerifier: string): void {
-    this.set(this.pkceCodeVerifier, codeVerifier);
-  }
-
-  getPkceCodeVerifier(): StorageData {
-    return this.get(this.pkceCodeVerifier);
-  }
-
-  clearPkceCodeVerifier(): void {
-    this.remove(this.pkceCodeVerifier);
-  }
-
   setNonce(nonce: string): void {
     this.set(this.nonce, nonce);
   }
@@ -106,18 +78,6 @@ export class OpenidStorageService extends LocalStorageService {
 
   clearNonce(): void {
     this.remove(this.nonce);
-  }
-
-  setReturnUrl(url: string): void {
-    this.set(this.returnUrl, url);
-  }
-
-  getReturnUrl(): StorageData {
-    return this.get(this.returnUrl);
-  }
-
-  clearReturnUrl(): void {
-    this.remove(this.returnUrl);
   }
 
   clearTokens(): void {
