@@ -14,6 +14,24 @@ resolve_tree() {
   fi
 }
 
+# Workbench and GraphDB are released in pairs: WB 4.0 <-> GraphDB 12.0, 3.5 <-> 11.5, 2.0 <-> 10.0 (major + 8, same
+# minor), one release branch each. Any other combination is unsupported: it may load or not (a 4.x dist/ on
+# 10.7 gets 406 for /resources/*), and what it shows is no evidence about the product. FAIL unless
+# VERIFY_WB_ALLOW_GDB_MISMATCH=1. Uses TREE and GDB_VERSION.
+check_gdb_pairing() {
+  local wb wb_mm gdb_mm expected
+  wb="$(jq -r .version "$TREE/package.json" 2>/dev/null)"
+  [[ "$wb" =~ ^([0-9]+)\.([0-9]+) ]] || { echo "WARN: cannot read the Workbench version of $TREE; skipping the GraphDB pairing check"; return 0; }
+  wb_mm="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}"
+  expected="$(( BASH_REMATCH[1] + 8 )).${BASH_REMATCH[2]}"
+  [[ "$GDB_VERSION" =~ ^([0-9]+)\.([0-9]+) ]] || { echo "WARN: GraphDB tag '$GDB_VERSION' has no major.minor; skipping the pairing check"; return 0; }
+  gdb_mm="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}"
+  [[ "$gdb_mm" == "$expected" ]] && return 0
+  local msg="Workbench $wb (tree) is paired with GraphDB $expected.x, not $GDB_VERSION: unsupported combination, its failures are not product bugs. Verify an older GraphDB from its own release branch (--tree)"
+  if [[ "${VERIFY_WB_ALLOW_GDB_MISMATCH:-}" == 1 ]]; then echo "WARN: $msg."; return 0; fi
+  echo "FAIL: $msg, or set VERIFY_WB_ALLOW_GDB_MISMATCH=1 on purpose." >&2; exit 64
+}
+
 # LICENSE (--license / VERIFY_WB_LICENSE) or the first fixture found -> absolute path. Handled by path only.
 find_license() {   # <hint for the FAIL message>
   local f
