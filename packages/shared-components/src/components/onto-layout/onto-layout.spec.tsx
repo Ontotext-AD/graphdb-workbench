@@ -5,9 +5,32 @@ jest.mock('@ontotext/workbench-api', () => mockWorkbenchApi());
 const mockGetApplicationsState = jest.fn();
 
 let OntoLayout: typeof import('./onto-layout').OntoLayout;
+let mockWindow: {
+  storageListeners: ((event: Partial<StorageEvent>) => void)[],
+  addEventListener: (type: string, listener: (event: Partial<StorageEvent>) => void) => void,
+  innerWidth: number,
+  location: {reload: jest.Mock},
+};
+let mockAuthenticated = false;
+let mockLoginOrLogout = true;
 
 beforeAll(async () => {
   ({OntoLayout} = await import('./onto-layout'));
+});
+
+beforeEach(() => {
+  mockAuthenticated = false;
+  mockLoginOrLogout = true;
+  mockWindow = {
+    storageListeners: [],
+    addEventListener(type, listener) {
+      if (type === 'storage') {
+        this.storageListeners.push(listener);
+      }
+    },
+    innerWidth: 1280,
+    location: {reload: jest.fn()},
+  };
 });
 
 describe('onto-layout', () => {
@@ -68,6 +91,43 @@ describe('onto-layout', () => {
 
     expect(layout.firstChild).toBe(node);
   });
+
+  describe('a login or logout in another tab', () => {
+    const changeStorage = (key: string, oldValue: string | null, newValue: string | null) => {
+      mockWindow.storageListeners.forEach((listener) => listener({key: `graphdb.auth.${key}`, oldValue, newValue}));
+    };
+
+    it('should reload the page once when both auth keys change', async () => {
+      await render();
+      mockAuthenticated = true;
+
+      changeStorage('authenticated', 'false', 'true');
+      changeStorage('jwt', null, 'GDB token');
+
+      expect(mockWindow.location.reload).toHaveBeenCalledTimes(1);
+    });
+
+    it('should reload the page again when the next change is the opposite state', async () => {
+      await render();
+      mockAuthenticated = false;
+      changeStorage('authenticated', 'true', 'false');
+
+      mockAuthenticated = true;
+      changeStorage('authenticated', 'false', 'true');
+
+      expect(mockWindow.location.reload).toHaveBeenCalledTimes(2);
+    });
+
+    it('should not reload the page for a storage change that is not a login or logout', async () => {
+      await render();
+      mockAuthenticated = true;
+      mockLoginOrLogout = false;
+
+      changeStorage('jwt', 'Bearer old', 'Bearer new');
+
+      expect(mockWindow.location.reload).not.toHaveBeenCalled();
+    });
+  });
 });
 
 /**
@@ -79,17 +139,26 @@ describe('onto-layout', () => {
  */
 function mockWorkbenchApi() {
   const serviceStub = new Proxy({}, {get: (_, property) => property === 'getApplicationsState' ? mockGetApplicationsState : () => jest.fn()});
+  class AuthenticationStorageService {}
+  const authStorageStub = {
+    isAuthenticated: () => mockAuthenticated,
+    isLoginOrLogout: () => mockLoginOrLogout,
+  };
   return {
+    AuthenticationStorageService,
     EventName: {},
     Loggers: {getLoggerInstance: () => ({error: jest.fn(), warn: jest.fn()})},
     MainMenuExtensionPoint: {NAME: 'main.menu'},
     StorageKey: {GLOBAL_NAMESPACE: 'graphdb'},
     WindowService: {
-      getWindow: () => window,
+      getWindow: () => mockWindow,
       getPluginRegistry: () => ({get: (): unknown[] => []}),
     },
     ServiceProvider: {get: () => serviceStub},
-    service: () => serviceStub,
+    service: (type: unknown) => type === AuthenticationStorageService ? authStorageStub : serviceStub,
+    navigate: jest.fn(),
+    navigateToLoginPage: jest.fn(),
+    isLoginPage: () => false,
     SubscriptionList: class {
       private readonly subscriptions: (() => void)[] = [];
 
