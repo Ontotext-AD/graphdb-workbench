@@ -47,6 +47,8 @@ export class OntoNavbar {
   private readonly SUBMENU_VERTICAL_MARGIN = 8;
   private readonly MIN_SUBMENU_HEIGHT = 100;
   private readonly ARIA_CURRENT_PAGE = 'page';
+  // Marks the link of the current page for e2e tests: it is set when the navbar has handled the end of a navigation.
+  private readonly CURRENT_PAGE_TEST_ID = 'navbar-current-page';
   private readonly POINTER_TYPE_KEYBOARD = 'keyboard';
 
   private labels = {
@@ -465,7 +467,8 @@ export class OntoNavbar {
                             </a>
                             :
                             <a class="sub-menu-link" href={submenu.href}
-                              onClick={this.handleSelectMenuItem(submenu)} aria-current={submenu.selected ? this.ARIA_CURRENT_PAGE : undefined}>
+                              onClick={this.handleSelectMenuItem(submenu)} aria-current={submenu.selected ? this.ARIA_CURRENT_PAGE : undefined}
+                              data-test={submenu.selected ? this.CURRENT_PAGE_TEST_ID : undefined}>
                               <translate-label class="menu-item" labelKey={submenu.labelKey}></translate-label>
                               {submenu.icon &&
                                 <span class={`text-muted ${submenu.icon}`}></span>
@@ -480,7 +483,8 @@ export class OntoNavbar {
               }
               {item.children.length === 0 &&
                 <a class={{'menu-element-root': true, 'active': item.selected}}
-                  href={item.href} onClick={this.handleSelectMenuItem(item)} aria-current={item.selected ? this.ARIA_CURRENT_PAGE : undefined}>
+                  href={item.href} onClick={this.handleSelectMenuItem(item)} aria-current={item.selected ? this.ARIA_CURRENT_PAGE : undefined}
+                  data-test={item.selected ? this.CURRENT_PAGE_TEST_ID : undefined}>
                   <span class={`menu-item-icon ${item.icon}`} aria-hidden="true"></span>&nbsp;
                   <translate-label class="menu-item" labelKey={item.labelKey}></translate-label>
                 </a>

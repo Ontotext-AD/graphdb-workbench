@@ -7,6 +7,8 @@ import {ImportUserDataSteps} from "../../steps/import/import-user-data-steps";
 import {ImportSettingsDialogSteps} from "../../steps/import/import-settings-dialog-steps";
 import {ClusterStubs} from "../../stubs/cluster/cluster-stubs";
 import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
+import {AutocompleteStubs} from "../../stubs/autocomplete/autocomplete-stubs";
+import {NamespaceStubs} from "../../stubs/namespace-stubs";
 
 // TODO: Refactor these tests to follow our step based approach for better decoupling from the page implementation
 describe('Repositories', () => {
@@ -63,11 +65,8 @@ describe('Repositories', () => {
 
         cy.get('.create-buttons')
             .find('.repo-type')
-            .should('have.length', 3)
-            .then((repoTypes) => {
-                repoTypes.each(($index, $repoType) => {
-                    expect($repoType.innerText).to.equal(expectedRepoTypes[$index]);
-                });
+            .should(($repoTypes) => {
+                expect($repoTypes.toArray().map((repoType) => repoType.innerText)).to.deep.equal(expectedRepoTypes);
             });
     });
 
@@ -382,7 +381,10 @@ describe('Repositories', () => {
 
         RepositorySteps.typeRepositoryId(repositoryId);
         RepositorySteps.saveRepository();
+        AutocompleteStubs.spyAutocompleteStatus();
+        NamespaceStubs.spyGetNamespaces(repositoryId);
         RepositorySteps.selectRepoFromDropdown(repositoryId);
+        cy.wait(['@autocompleteStatus', '@getNamespaces']);
 
         RepositorySteps.getRepositoryFromList(repositoryId)
             .find('.repository-actions .delete-repository-btn')
@@ -391,7 +393,13 @@ describe('Repositories', () => {
             .and('not.be.disabled')
             .click({force: true});
 
+        RepositoriesStubs.spyDeleteRepository(repositoryId);
         RepositorySteps.confirmModal();
+        cy.wait('@deleteRepository');
+        // The page refreshes the repository list every 5 seconds. A refresh sent before the deletion can land after it
+        // and add the repository back to the list until the next one, so open the page again to get the list after the
+        // deletion. Reloading would keep the deleted repository in the URL.
+        RepositorySteps.visit();
 
         // Check the repo has been deselected and is not present in the repo dropdown menu
         RepositorySteps.getRepositoriesDropdown().click();

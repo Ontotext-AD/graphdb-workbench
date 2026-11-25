@@ -76,6 +76,10 @@ export class RepositoriesStubs extends Stubs {
         cy.intercept('DELETE', '/rest/locations?**').as('deleteLocation');
     }
 
+    static spyDeleteRepository(repositoryId) {
+        cy.intercept('DELETE', `/rest/repositories/${repositoryId}?**`).as('deleteRepository');
+    }
+
     static stubEditOntopResponse(repositoryId) {
         this.interceptRepository(repositoryId, 200);
     }

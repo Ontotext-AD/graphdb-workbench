@@ -45,7 +45,8 @@ describe('Repository rename restrictions', () => {
         cy.wait('@getRepository');
         // Then the repository id should be rendered as read only,
         RepositorySteps.getGDBIdInput()
-            .should('have.value', repositoryId)
+            .should('be.visible')
+            .and('have.value', repositoryId)
             .and('be.disabled');
         // and the action which unlocks the repository id field should not be available, because
         // renaming is allowed only for GraphDB repositories.
