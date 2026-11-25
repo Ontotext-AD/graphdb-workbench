@@ -3,6 +3,7 @@ import {NavbarToggledEvent} from '../onto-navbar/navbar-toggled-event';
 import {debounce} from '../../utils/function-utils';
 import {WINDOW_WIDTH_FOR_COLLAPSED_NAVBAR} from '../../models/constants';
 import {
+  ApplicationLifecycleContextService,
   AuthenticatedUser,
   AuthenticationService,
   AuthenticationStorageService,
@@ -55,6 +56,7 @@ export class OntoLayout {
   private readonly authStorageService = service(AuthenticationStorageService);
   private readonly runtimeConfigurationContextService = service(RuntimeConfigurationContextService);
   private readonly eventService = service(EventService);
+  private readonly applicationLifecycleContextService = service(ApplicationLifecycleContextService);
 
   private readonly fullJwtKey = `${StorageKey.GLOBAL_NAMESPACE}.${this.authStorageService.NAMESPACE}.${this.authStorageService.jwtKey}`;
   private readonly fullAuthenticatedKey = `${StorageKey.GLOBAL_NAMESPACE}.${this.authStorageService.NAMESPACE}.${this.authStorageService.authenticatedKey}`;
@@ -105,6 +107,11 @@ export class OntoLayout {
   }
 
   componentWillLoad() {
+    // When GraphDB serves the Workbench, the layout can load after single-spa has mounted the first application and
+    // emitted its NAVIGATION_END, which then never reaches the layout and would leave it loading forever.
+    if (this.applicationLifecycleContextService.getApplicationsState()) {
+      this.loading = false;
+    }
     this.keepMainContentInPlace();
   }
 
