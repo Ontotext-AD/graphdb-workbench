@@ -21,7 +21,6 @@ import {
   SecurityConfig,
   SecurityContextService,
   service,
-  StorageKey,
   SubscriptionList,
   WindowService,
   MainMenuPlugin,
@@ -58,10 +57,6 @@ export class OntoLayout {
   private readonly eventService = service(EventService);
   private readonly applicationLifecycleContextService = service(ApplicationLifecycleContextService);
 
-  private readonly fullJwtKey = `${StorageKey.GLOBAL_NAMESPACE}.${this.authStorageService.NAMESPACE}.${this.authStorageService.jwtKey}`;
-  private readonly fullAuthenticatedKey = `${StorageKey.GLOBAL_NAMESPACE}.${this.authStorageService.NAMESPACE}.${this.authStorageService.authenticatedKey}`;
-  private readonly authEvents = [this.fullJwtKey, this.fullAuthenticatedKey];
-
   // ========================
   // DOM Refs
   // ========================
@@ -97,6 +92,8 @@ export class OntoLayout {
    * Whether the ongoing navigation changes the page. Query and hash changes keep the page, so the loader is not shown.
    */
   private isPageChanging = false;
+  /** The authentication state this page last reacted to, for changes from other tabs. */
+  private lastAuthenticatedState?: boolean;
 
   // ========================
   // Lifecycle methods
@@ -277,23 +274,26 @@ export class OntoLayout {
   private readonly handleStorageChange = (event: StorageEvent) => {
     const localStorageSubscriptionHandlerService = service(LocalStorageSubscriptionHandlerService);
     localStorageSubscriptionHandlerService.handleStorageChange(event);
-    this.handleAuthChange(event.key);
+    this.handleAuthChange(event);
   };
 
-  private handleAuthChange(changedKey: string | null) {
-    if (!changedKey) {
+  private handleAuthChange(event: StorageEvent) {
+    if (!this.authStorageService.isLoginOrLogout(event)) {
       return;
     }
-
-    if (this.authEvents.includes(changedKey)) {
-      const authenticated = this.authStorageService.isAuthenticated();
-      if (authenticated) {
-        navigate(this.navigationContextService.getPreviousRoute() ?? './');
-      } else if (!isLoginPage()) {
-        navigateToLoginPage();
-      }
-      WindowService.getWindow().location.reload();
+    const authenticated = this.authStorageService.isAuthenticated();
+    // A login or logout in another tab writes several auth keys. React once per state change in this page: a second
+    // reload crashes the tab.
+    if (authenticated === this.lastAuthenticatedState) {
+      return;
     }
+    this.lastAuthenticatedState = authenticated;
+    if (authenticated) {
+      navigate(this.navigationContextService.getPreviousRoute() ?? './');
+    } else if (!isLoginPage()) {
+      navigateToLoginPage();
+    }
+    WindowService.getWindow().location.reload();
   }
 
   private focusBackwardTargetInNav(backwardFocusTarget: HTMLElement): void {
