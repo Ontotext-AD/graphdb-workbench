@@ -2,6 +2,8 @@ import {newSpecPage} from '@stencil/core/testing';
 
 jest.mock('@ontotext/workbench-api', () => mockWorkbenchApi());
 
+const mockGetApplicationsState = jest.fn();
+
 let OntoLayout: typeof import('./onto-layout').OntoLayout;
 
 beforeAll(async () => {
@@ -9,6 +11,10 @@ beforeAll(async () => {
 });
 
 describe('onto-layout', () => {
+  beforeEach(() => {
+    mockGetApplicationsState.mockReset();
+  });
+
   const render = async () => {
     const page = await newSpecPage({
       components: [OntoLayout],
@@ -21,6 +27,28 @@ describe('onto-layout', () => {
   const landmarkOrder = (layout: HTMLElement) => Array.from(layout.children)
     .filter((child) => child.matches('.wb-header, nav, main, footer'))
     .map((child) => child.matches('.wb-header') ? 'header' : child.tagName.toLowerCase());
+
+  it('should show the main content if the application mounted before the layout connected', async () => {
+    // Given, single-spa has already mounted the first application
+    mockGetApplicationsState.mockReturnValue({});
+
+    // When, the layout loads
+    const layout = await render();
+
+    // Then, it should not show the loader
+    expect(layout.classList.contains('loading')).toBe(false);
+  });
+
+  it('should show the loader while the initial application is mounting', async () => {
+    // Given, single-spa has not mounted an application yet
+    mockGetApplicationsState.mockReturnValue(undefined);
+
+    // When, the layout loads
+    const layout = await render();
+
+    // Then, it should show the loader until the navigation ends
+    expect(layout.classList.contains('loading')).toBe(true);
+  });
 
   it('should keep the main content after the header and navigation when the host re-inserts it as the first child', async () => {
     const layout = await render();
@@ -50,7 +78,7 @@ describe('onto-layout', () => {
  * @returns the stand-in for the `@ontotext/workbench-api` module.
  */
 function mockWorkbenchApi() {
-  const serviceStub = new Proxy({}, {get: () => () => jest.fn()});
+  const serviceStub = new Proxy({}, {get: (_, property) => property === 'getApplicationsState' ? mockGetApplicationsState : () => jest.fn()});
   return {
     EventName: {},
     Loggers: {getLoggerInstance: () => ({error: jest.fn(), warn: jest.fn()})},
