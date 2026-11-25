@@ -12,7 +12,8 @@
 #   --proxy        add an external cluster proxy (cluster-proxy -g http://node1:7200,...); the run's URL (pw.sh
 #                  `@/`, drive.sh) is then the proxy, which serves the same dist/. Without it: node1.
 #   --gdb-version  GraphDB image tag (default: $VERIFY_WB_GDB_VERSION, else GDB_VERSION from the tree's .env).
-#                  10.x and later; the proxy launcher path is read from the image.
+#                  10.x and later; the proxy launcher path is read from the image. With the tree's dist/ it must be
+#                  the GraphDB paired with the tree's Workbench (as container.sh up); --bundled-ui skips that check.
 #   --bundled-ui   serve the image's own Workbench instead of the tree's dist/ (no build, no staging). Needed for
 #                  10.x images (10.7.0): they cannot serve a 4.x dist/ (406 for /resources/*, the page stays on
 #                  "loading").
@@ -85,6 +86,7 @@ resolve_tree
 find_license " (a cluster needs an Enterprise license)"
 [[ -n "$GDB_VERSION" ]] || GDB_VERSION="$(sed -n 's/^GDB_VERSION=//p' "$TREE/.env" 2>/dev/null | tr -d '[:space:]')"
 [[ -n "$GDB_VERSION" ]] || { echo "FAIL: no GDB_VERSION in $TREE/.env (pass --gdb-version)" >&2; exit 66; }
+[[ $BUNDLED -eq 1 ]] || check_gdb_pairing   # --bundled-ui serves the image's own, paired Workbench
 IMAGE="docker-registry.ontotext.com/graphdb:$GDB_VERSION"
 pull_image "$IMAGE"
 

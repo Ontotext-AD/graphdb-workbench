@@ -24,7 +24,9 @@
 #   --java-opts  extra JVM options (-D/-X, space-separated) placed after the stack's own, so they win. Recorded in
 #                the run: rebuild and restart keep them.
 # Image: docker-registry.ontotext.com/graphdb:$GDB_VERSION, GDB_VERSION read from the tree's .env
-# (override with VERIFY_WB_GDB_VERSION, e.g. a locally built 12.0-SNAPSHOT image).
+# (override with VERIFY_WB_GDB_VERSION, e.g. a locally built 12.0-SNAPSHOT image). The tag must be the GraphDB
+# paired with the tree's Workbench (WB 4.0 <-> 12.0, 3.5 <-> 11.5: major + 8, same minor), else FAIL (64);
+# VERIFY_WB_ALLOW_GDB_MISMATCH=1 turns that into a WARN.
 # Data lives in the container: restart keeps it, `down` removes everything.
 # up creates the run's evidence dir and prints it. Exit codes: 3 no port, 4 GraphDB not ready / license rejected,
 # 5 build or dist problem, 6 pull failed, 7 compose failed, 8 wrong dist served, 64 usage, 66 bad tree/license.
@@ -169,6 +171,7 @@ if [[ $NO_LICENSE -eq 1 ]]; then LICENSE=""; else find_license ", or --no-licens
 
 GDB_VERSION="${VERIFY_WB_GDB_VERSION:-$(sed -n 's/^GDB_VERSION=//p' "$TREE/.env" 2>/dev/null | tr -d '[:space:]')}"
 [[ -n "$GDB_VERSION" ]] || { echo "FAIL: no GDB_VERSION in $TREE/.env (set VERIFY_WB_GDB_VERSION)" >&2; exit 66; }
+check_gdb_pairing
 IMAGE="docker-registry.ontotext.com/graphdb:$GDB_VERSION"
 pull_image "$IMAGE"
 
