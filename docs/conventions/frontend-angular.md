@@ -42,8 +42,8 @@ Put action buttons in the dialog's `#footer` template, not in the body.
 
 ## Notifications and errors
 
-- Show notifications through `NotificationProviderService` (`services/notification/`), not `OntoToastrService` or
-  `toastr`. Codes, severity and text follow [Notifications](notifications.md).
+- Show notifications through `NotificationProviderService` (`services/notification/`). Codes, severity and text
+  follow [Notifications](notifications.md).
 - Every REST call a user triggers handles failure: catch it and show a notification, or let it reach a caller that
   does. Never swallow it silently.
 

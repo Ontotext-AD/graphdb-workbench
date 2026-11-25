@@ -34,7 +34,7 @@ Context attached to a notification that does not change which problem it is, suc
 _Avoid_: Context, metadata
 
 **Duplicate notification**:
-A notification with the same topic, code, parameters and severity as one already raised. Duplicates collapse into one entry with an occurrence count. Notifications that differ only in severity are not duplicates.
+A notification with the same topic, code, parameters and severity as one already raised. Duplicates collapse into one entry with an occurrence count.
 
 **Toast**:
 A brief, self-dismissing display of a notification.
