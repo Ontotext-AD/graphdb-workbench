@@ -1,6 +1,8 @@
 import HomeSteps from "../../../steps/home-steps";
 import {MainMenuSteps} from "../../../steps/main-menu-steps";
 import {QueriesAndUpdatesSteps} from "../../../steps/monitoring/queries-and-updates-steps";
+import {ApplicationSteps} from "../../../steps/application-steps";
+import {QueriesAndUpdatesStubs} from "../../../stubs/monitoring/queries-and-updates-stubs";
 
 describe('Queries and Updates with selected repository', () => {
     let repositoryId;
@@ -28,6 +30,20 @@ describe('Queries and Updates with selected repository', () => {
         MainMenuSteps.clickOnQueryAndUpdate();
         // Then,
         verifyInitialStateWithSelectedRepository();
+    });
+
+    it('should not allow aborting an update while it is replicated to the cluster', () => {
+        // Given an update is being replicated to the cluster
+        QueriesAndUpdatesStubs.stubGetActiveQueries(repositoryId, '/monitoring/get-active-queries-cluster-replicating.json');
+        // When I open the Queries and Updates page
+        QueriesAndUpdatesSteps.visit();
+        cy.wait('@getActiveQueries');
+
+        // Then I expect Abort to be disabled
+        QueriesAndUpdatesSteps.getAbortButtons().eq(0).should('be.disabled');
+        // And its popover to say why
+        QueriesAndUpdatesSteps.hoverAbortButton(0);
+        ApplicationSteps.getPopover().should('contain.text', 'Update cannot be aborted while being replicated to the cluster');
     });
 
     const verifyInitialStateWithSelectedRepository = () => {

@@ -263,6 +263,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                     $scope.updateList();
                 }).error(function(data) {
                 toastr.warning($translate.instant('import.error.could.not.stop', {data: getError(data)}));
+                $scope.updateList();
             });
         };
 
@@ -460,6 +461,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                 $scope.updateList(true);
             }).error(function(data) {
                 toastr.warning($translate.instant('import.error.could.not.clear', {data: getError(data)}));
+                $scope.updateList(true);
             });
         };
 

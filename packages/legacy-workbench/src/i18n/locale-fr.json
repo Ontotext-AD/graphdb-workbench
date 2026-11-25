@@ -1477,6 +1477,7 @@
     "operations.label": "opérations",
     "query.abort.request": "Il a été demandé d'interrompre la requête et celle-ci sera interrompue lors de la première opération d'E/S.",
     "update.requested": "Il a été demandé d'interrompre la mise à jour, qui sera interrompue si possible.",
+    "update.cluster_replicating": "La mise à jour ne peut pas être interrompue pendant sa réplication dans le cluster",
     "click.to.abort.query": "Cliquez pour annuler la requête",
     "click.to.abort.update": "Cliquez pour interrompre la mise à jour",
     "stop.was.requested": "L'arrêt a été demandé",
