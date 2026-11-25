@@ -38,6 +38,21 @@ export class AuthenticationStorageService extends LocalStorageService {
     this.remove(this.jwtKey);
   }
 
+  /**
+   * Whether the storage event is a login or logout: a change of an auth key that is not a token refresh.
+   *
+   * @param event the storage event.
+   * @returns true for a login or logout, false otherwise.
+   */
+  isLoginOrLogout(event: StorageEvent): boolean {
+    const authKeys = [this.getPrefixedKey(this.jwtKey), this.getPrefixedKey(this.authenticatedKey)];
+    return authKeys.includes(event.key ?? '') && !this.isTokenRefresh(event);
+  }
+
+  private isTokenRefresh(event: StorageEvent): boolean {
+    return event.key === this.getPrefixedKey(this.jwtKey) && !!event.oldValue && !!event.newValue;
+  }
+
   isGDBorOpenIDToken(): boolean {
     return this.isGDBToken() || this.isOpenIDToken();
   }
