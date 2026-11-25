@@ -44,7 +44,7 @@
         "is-obj": "^2.0.0",
         "less": "^3.10.3",
         "minimist": "^1.2.5",
-        "sonarqube-scanner": "^5.0.1"
+        "sonarqube-scanner": "^5.1.0"
     },
     "dependencies": {
         "angucomplete-alt": "2.4.1",
