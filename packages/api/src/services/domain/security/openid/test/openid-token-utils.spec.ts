@@ -2,7 +2,8 @@ import {OpenidTokenUtils} from '../openid-token-utils';
 import {OpenidSecurityConfig, SecurityConfig} from '../../../../../models/security';
 import {TokenType} from '../../../../../models/security/authentication/openid-token-type';
 import {service} from '../../../../../providers';
-import {OpenidStorageService} from '../openid-storage.service';
+import {OpenidLocalStorageService} from '../openid-local-storage.service';
+import {OpenidSessionStorageService} from '../openid-session-storage.service';
 import {SecurityContextService} from '../../security-context.service';
 import {KEYUTIL, KJUR} from 'jsrsasign';
 
@@ -16,7 +17,8 @@ const makeJwt = (header: Record<string, unknown>, payload: Record<string, unknow
 
 describe('OpenidTokenUtils', () => {
   let tokenUtils: OpenidTokenUtils;
-  let openidStorageService: OpenidStorageService;
+  let openidLocalStorageService: OpenidLocalStorageService;
+  let openidSessionStorageService: OpenidSessionStorageService;
   let securityContextService: SecurityContextService;
 
   const mockOpenIdConfig = (overrides: Partial<OpenidSecurityConfig> = {}): OpenidSecurityConfig => {
@@ -35,18 +37,17 @@ describe('OpenidTokenUtils', () => {
 
     // Create real service instances
     tokenUtils = service(OpenidTokenUtils);
-    openidStorageService = service(OpenidStorageService);
+    openidLocalStorageService = service(OpenidLocalStorageService);
+    openidSessionStorageService = service(OpenidSessionStorageService);
     securityContextService = service(SecurityContextService);
 
     // Clear all OpenID-related storage
-    openidStorageService.clearAccessToken();
-    openidStorageService.clearIdToken();
-    openidStorageService.clearRefreshToken();
-    openidStorageService.clearTokenType();
-    openidStorageService.clearPkceState();
-    openidStorageService.clearPkceCodeVerifier();
-    openidStorageService.clearNonce();
-    openidStorageService.clearReturnUrl();
+    openidLocalStorageService.clearAccessToken();
+    openidLocalStorageService.clearIdToken();
+    openidLocalStorageService.clearRefreshToken();
+    openidLocalStorageService.clearTokenType();
+    openidSessionStorageService.clearPkce();
+    openidLocalStorageService.clearNonce();
 
     // Reset JWKS
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -58,16 +59,15 @@ describe('OpenidTokenUtils', () => {
     securityContextService.updateSecurityConfig(undefined as unknown as SecurityConfig);
 
     // Clear tokens and PKCE data
-    openidStorageService.clearTokens();
-    openidStorageService.clearPkceState();
-    openidStorageService.clearPkceCodeVerifier();
-    openidStorageService.clearNonce();
+    openidLocalStorageService.clearTokens();
+    openidSessionStorageService.clearPkce();
+    openidLocalStorageService.clearNonce();
   });
 
   describe('authHeaderGraphDB', () => {
     it('should return Bearer with ID token when token type is ID', () => {
-      openidStorageService.setIdToken('id-123');
-      openidStorageService.setTokenType(TokenType.ID);
+      openidLocalStorageService.setIdToken('id-123');
+      openidLocalStorageService.setTokenType(TokenType.ID);
 
       const header = tokenUtils.authHeaderGraphDB();
 
@@ -75,8 +75,8 @@ describe('OpenidTokenUtils', () => {
     });
 
     it('should return Bearer with ACCESS token when token type is ACCESS', () => {
-      openidStorageService.setAccessToken('acc-456');
-      openidStorageService.setTokenType(TokenType.ACCESS);
+      openidLocalStorageService.setAccessToken('acc-456');
+      openidLocalStorageService.setTokenType(TokenType.ACCESS);
 
       const header = tokenUtils.authHeaderGraphDB();
 
@@ -95,16 +95,16 @@ describe('OpenidTokenUtils', () => {
 
       tokenUtils.saveTokens(tokens, config);
 
-      expect(openidStorageService.getAccessToken().getValue()).toBe('new-access');
-      expect(openidStorageService.getIdToken().getValue()).toBe('new-id');
-      expect(openidStorageService.getRefreshToken().getValue()).toBe('new-refresh');
-      expect(openidStorageService.getTokenType().getValue()).toBe(TokenType.ID);
+      expect(openidLocalStorageService.getAccessToken().getValue()).toBe('new-access');
+      expect(openidLocalStorageService.getIdToken().getValue()).toBe('new-id');
+      expect(openidLocalStorageService.getRefreshToken().getValue()).toBe('new-refresh');
+      expect(openidLocalStorageService.getTokenType().getValue()).toBe(TokenType.ID);
     });
 
     it('should clear PKCE data when saving tokens', () => {
       // Store PKCE data
-      openidStorageService.setPkceState('state');
-      openidStorageService.setPkceCodeVerifier('verifier');
+      openidSessionStorageService.setPkceState('state');
+      openidSessionStorageService.setPkceCodeVerifier('verifier');
 
       const tokens = {
         access_token: 'new-access',
@@ -116,15 +116,15 @@ describe('OpenidTokenUtils', () => {
       tokenUtils.saveTokens(tokens, config);
 
       // Verify PKCE data was cleared
-      expect(openidStorageService.getPkceState().getValue()).toBeNull();
-      expect(openidStorageService.getPkceCodeVerifier().getValue()).toBeNull();
+      expect(openidSessionStorageService.getPkceState().getValue()).toBeNull();
+      expect(openidSessionStorageService.getPkceCodeVerifier().getValue()).toBeNull();
     });
 
     it('should clear missing tokens from storage', () => {
       // Pre-populate tokens
-      openidStorageService.setAccessToken('acc');
-      openidStorageService.setIdToken('id');
-      openidStorageService.setRefreshToken('ref');
+      openidLocalStorageService.setAccessToken('acc');
+      openidLocalStorageService.setIdToken('id');
+      openidLocalStorageService.setRefreshToken('ref');
 
       const tokens = {
         access_token: 'acc2'
@@ -133,31 +133,31 @@ describe('OpenidTokenUtils', () => {
 
       tokenUtils.saveTokens(tokens, config);
 
-      expect(openidStorageService.getAccessToken().getValue()).toBe('acc2');
-      expect(openidStorageService.getIdToken().getValue()).toBeNull();
-      expect(openidStorageService.getRefreshToken().getValue()).toBeNull();
+      expect(openidLocalStorageService.getAccessToken().getValue()).toBe('acc2');
+      expect(openidLocalStorageService.getIdToken().getValue()).toBeNull();
+      expect(openidLocalStorageService.getRefreshToken().getValue()).toBeNull();
     });
   });
 
   describe('clearTokens', () => {
     it('should remove all tokens from storage', () => {
-      openidStorageService.setAccessToken('a');
-      openidStorageService.setIdToken('b');
-      openidStorageService.setRefreshToken('c');
+      openidLocalStorageService.setAccessToken('a');
+      openidLocalStorageService.setIdToken('b');
+      openidLocalStorageService.setRefreshToken('c');
 
       tokenUtils.clearTokens();
 
-      expect(openidStorageService.getAccessToken().getValue()).toBeNull();
-      expect(openidStorageService.getIdToken().getValue()).toBeNull();
-      expect(openidStorageService.getRefreshToken().getValue()).toBeNull();
+      expect(openidLocalStorageService.getAccessToken().getValue()).toBeNull();
+      expect(openidLocalStorageService.getIdToken().getValue()).toBeNull();
+      expect(openidLocalStorageService.getRefreshToken().getValue()).toBeNull();
     });
   });
 
   describe('getTokenByType', () => {
     it('should return correct token by type', () => {
-      openidStorageService.setAccessToken('acc');
-      openidStorageService.setIdToken('id');
-      openidStorageService.setRefreshToken('ref');
+      openidLocalStorageService.setAccessToken('acc');
+      openidLocalStorageService.setIdToken('id');
+      openidLocalStorageService.setRefreshToken('ref');
 
       expect(tokenUtils.getTokenByType(TokenType.ACCESS)).toBe('acc');
       expect(tokenUtils.getTokenByType(TokenType.ID)).toBe('id');
@@ -218,7 +218,7 @@ describe('OpenidTokenUtils', () => {
     });
 
     it('should return true for non-JWT (opaque) refresh token', () => {
-      openidStorageService.setRefreshToken('opaque-refresh');
+      openidLocalStorageService.setRefreshToken('opaque-refresh');
 
       expect(tokenUtils.hasValidRefreshToken()).toBe(true);
     });
@@ -227,7 +227,7 @@ describe('OpenidTokenUtils', () => {
       const now = Math.floor(Date.now() / 1000);
       const payload = { nbf: now + 10, iat: now };
       const jwt = makeJwt({ alg: 'RS256', kid: 'k1' }, payload);
-      openidStorageService.setRefreshToken(jwt);
+      openidLocalStorageService.setRefreshToken(jwt);
 
       expect(tokenUtils.hasValidRefreshToken()).toBe(false);
     });
@@ -236,7 +236,7 @@ describe('OpenidTokenUtils', () => {
       const now = Math.floor(Date.now() / 1000);
       const payload = { exp: now - 10, iat: now - 100 };
       const jwt = makeJwt({ alg: 'RS256', kid: 'k1' }, payload);
-      openidStorageService.setRefreshToken(jwt);
+      openidLocalStorageService.setRefreshToken(jwt);
 
       expect(tokenUtils.hasValidRefreshToken()).toBe(false);
     });
@@ -245,14 +245,14 @@ describe('OpenidTokenUtils', () => {
       const now = Math.floor(Date.now() / 1000);
       const payload = { iat: now };
       const jwt = makeJwt({ alg: 'RS256', kid: 'k1' }, payload);
-      openidStorageService.setRefreshToken(jwt);
+      openidLocalStorageService.setRefreshToken(jwt);
 
       expect(tokenUtils.hasValidRefreshToken()).toBe(true);
     });
 
     it('should return false when JWT refresh token has no iat/exp/nbf', () => {
       const jwt = makeJwt({ alg: 'RS256' }, {});
-      openidStorageService.setRefreshToken(jwt);
+      openidLocalStorageService.setRefreshToken(jwt);
 
       expect(tokenUtils.hasValidRefreshToken()).toBe(false);
     });
@@ -270,7 +270,7 @@ describe('OpenidTokenUtils', () => {
         const header = { alg: 'RS256' };
         const payload = { sub: 'abc' };
         const jwt = makeJwt(header, payload);
-        openidStorageService.setIdToken(jwt);
+        openidLocalStorageService.setIdToken(jwt);
         const config = mockOpenIdConfig();
 
         expect(tokenUtils.verifyToken(TokenType.ID, config)).toBe(false);
@@ -280,7 +280,7 @@ describe('OpenidTokenUtils', () => {
         const header = { alg: 'RS256', kid: 'missing-kid' };
         const payload = { sub: '123' };
         const jwt = makeJwt(header, payload);
-        openidStorageService.setIdToken(jwt);
+        openidLocalStorageService.setIdToken(jwt);
         const config = mockOpenIdConfig();
 
         expect(tokenUtils.verifyToken(TokenType.ID, config)).toBe(false);
@@ -291,8 +291,8 @@ describe('OpenidTokenUtils', () => {
         const header = { alg: 'RS256', kid };
         const payload = { sub: 'user1' };
         const jwt = makeJwt(header, payload);
-        openidStorageService.setIdToken(jwt);
-        openidStorageService.setNonce('nonce-abc');
+        openidLocalStorageService.setIdToken(jwt);
+        openidLocalStorageService.setNonce('nonce-abc');
 
         // Provide JWKS
         securityContextService.updateJsonWebKeysSet({ [kid]: { kid } } as unknown as Record<string, JsonWebKey & { kid: string }>);
@@ -313,7 +313,7 @@ describe('OpenidTokenUtils', () => {
         expect(verifyFields!.alg).toEqual([header.alg]);
         expect(verifyFields!.iss).toEqual([config.issuer]);
         expect(verifyFields!.aud).toEqual([config.clientId, config.issuer]);
-        expect(verifyFields!.nonce).toEqual([openidStorageService.getNonce().getValue() || '']);
+        expect(verifyFields!.nonce).toEqual([openidLocalStorageService.getNonce().getValue() || '']);
       });
 
       it('should return false when verification fails', () => {
@@ -321,7 +321,7 @@ describe('OpenidTokenUtils', () => {
         const header = { alg: 'RS256', kid };
         const payload = { sub: 'user3' };
         const jwt = makeJwt(header, payload);
-        openidStorageService.setIdToken(jwt);
+        openidLocalStorageService.setIdToken(jwt);
         securityContextService.updateJsonWebKeysSet({ [kid]: { kid } } as unknown as Record<string, JsonWebKey & { kid: string }>);
 
         jest.spyOn(KEYUTIL, 'getKey').mockReturnValue('publicKey' as unknown as ReturnType<typeof KEYUTIL.getKey>);
@@ -340,7 +340,7 @@ describe('OpenidTokenUtils', () => {
         const header = { alg: 'RS256', kid };
         const payload = { scope: 'read' };
         const jwt = makeJwt(header, payload);
-        openidStorageService.setAccessToken(jwt);
+        openidLocalStorageService.setAccessToken(jwt);
 
         // Provide JWKS
         securityContextService.updateJsonWebKeysSet({ [kid]: { kid } } as unknown as Record<string, JsonWebKey & { kid: string }>);
@@ -365,7 +365,7 @@ describe('OpenidTokenUtils', () => {
         const header = { error: 'not-jwt' } as const;
         const payload = { any: 'thing' } as const;
         const jwt = makeJwt(header, payload);
-        openidStorageService.setAccessToken(jwt);
+        openidLocalStorageService.setAccessToken(jwt);
 
         const config = mockOpenIdConfig();
         const result = tokenUtils.verifyToken(TokenType.ACCESS, config);
@@ -377,7 +377,7 @@ describe('OpenidTokenUtils', () => {
         const header = { alg: 'RS256' } as const;
         const payload = { sub: 'abc' } as const;
         const jwt = makeJwt(header, payload);
-        openidStorageService.setAccessToken(jwt);
+        openidLocalStorageService.setAccessToken(jwt);
 
         const config = mockOpenIdConfig();
         const result = tokenUtils.verifyToken(TokenType.ACCESS, config);
@@ -401,7 +401,7 @@ describe('OpenidTokenUtils', () => {
       const header = { alg: 'RS256', kid };
       const payload = { sub: 'user' };
       const jwt = makeJwt(header, payload);
-      openidStorageService.setIdToken(jwt);
+      openidLocalStorageService.setIdToken(jwt);
       securityContextService.updateJsonWebKeysSet({ [kid]: { kid } } as unknown as Record<string, JsonWebKey & { kid: string }>);
 
       jest.spyOn(KEYUTIL, 'getKey').mockReturnValue('publicKey' as unknown as ReturnType<typeof KEYUTIL.getKey>);
@@ -418,7 +418,7 @@ describe('OpenidTokenUtils', () => {
       const header = { alg: 'RS256', kid };
       const payload = { sub: 'user' };
       const jwt = makeJwt(header, payload);
-      openidStorageService.setIdToken(jwt);
+      openidLocalStorageService.setIdToken(jwt);
       securityContextService.updateJsonWebKeysSet({ [kid]: { kid } } as unknown as Record<string, JsonWebKey & { kid: string }>);
 
       jest.spyOn(KEYUTIL, 'getKey').mockReturnValue('publicKey' as unknown as ReturnType<typeof KEYUTIL.getKey>);

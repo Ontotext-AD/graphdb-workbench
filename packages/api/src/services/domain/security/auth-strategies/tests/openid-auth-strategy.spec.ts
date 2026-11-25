@@ -2,7 +2,8 @@ import {OpenidAuthStrategy} from '../openid-auth-strategy';
 import {
   AuthenticationService,
   AuthenticationStorageService,
-  OpenidStorageService,
+  OpenidSessionStorageService,
+  OpenidLocalStorageService,
   SecurityContextService,
   SecurityService
 } from '../../index';
@@ -28,7 +29,8 @@ describe('OpenidAuthProvider', () => {
   let openIdService: OpenIdService;
   let tokenUtils: OpenidTokenUtils;
   let securityService: SecurityService;
-  let openidStorageService: OpenidStorageService;
+  let openidLocalStorageService: OpenidLocalStorageService;
+  let openidSessionStorageService: OpenidSessionStorageService;
   let authenticationService: AuthenticationService;
 
   let loggerDebugSpy: jest.SpyInstance;
@@ -91,7 +93,8 @@ describe('OpenidAuthProvider', () => {
     openIdService = ServiceProvider.get(OpenIdService);
     tokenUtils = ServiceProvider.get(OpenidTokenUtils);
     securityService = ServiceProvider.get(SecurityService);
-    openidStorageService = ServiceProvider.get(OpenidStorageService);
+    openidLocalStorageService = ServiceProvider.get(OpenidLocalStorageService);
+    openidSessionStorageService = ServiceProvider.get(OpenidSessionStorageService);
     authenticationService = ServiceProvider.get(AuthenticationService);
 
     // Setup logger spies
@@ -102,7 +105,7 @@ describe('OpenidAuthProvider', () => {
     securityContextService.updateSecurityConfig(undefined as unknown as SecurityConfig);
     securityContextService.updateAuthenticatedUser(undefined as unknown as AuthenticatedUser);
     authenticationStorageService.clearAuthToken();
-    openidStorageService.clearReturnUrl();
+    openidSessionStorageService.clearReturnUrl();
 
     // Mock window.singleSpa.navigateToUrl
     if (!window.singleSpa) {
@@ -200,12 +203,12 @@ describe('OpenidAuthProvider', () => {
       const openidConfig = createOpenIdConfig();
       setupSecurityConfig(openidConfig);
       mockSuccessfulAuthentication();
-      openidStorageService.setReturnUrl('/repositories');
+      openidSessionStorageService.setReturnUrl('/repositories');
 
       await strategy.initialize();
 
       expect(window.singleSpa.navigateToUrl).toHaveBeenCalledWith('http://localhost/repositories');
-      expect(openidStorageService.getReturnUrl().getValue()).toBeNull();
+      expect(openidSessionStorageService.getReturnUrl().getValue()).toBeNull();
     });
 
     it('should not navigate if no return URL after successful authentication', async () => {
@@ -221,7 +224,7 @@ describe('OpenidAuthProvider', () => {
     it('should navigate to the login page with the return URL when I am not logged in', async () => {
       // Given I have logged out from the OpenID provider on a page
       setupSecurityConfig(createOpenIdConfig());
-      openidStorageService.setReturnUrl('/sparql?name=q1');
+      openidSessionStorageService.setReturnUrl('/sparql?name=q1');
       // And I am not logged in after the provider redirected me back
       jest.spyOn(openIdService, 'initializeOpenId').mockResolvedValue(false);
 
@@ -231,7 +234,7 @@ describe('OpenidAuthProvider', () => {
       // Then I expect to be navigated to the login page with that page as return url
       expect(window.singleSpa.navigateToUrl).toHaveBeenCalledWith('http://localhost/login?r=%2Fsparql%3Fname%3Dq1');
       // And the page to be cleared, so it is used only once
-      expect(openidStorageService.getReturnUrl().getValue()).toBeNull();
+      expect(openidSessionStorageService.getReturnUrl().getValue()).toBeNull();
     });
 
     it('should return false when loading authenticated user fails', async () => {
@@ -521,7 +524,7 @@ describe('OpenidAuthProvider', () => {
       jest.spyOn(WindowService, 'getBaseHref').mockReturnValue('/');
       // And I am logged in with an ID token
       authenticationStorageService.setAuthToken('Bearer test-token');
-      openidStorageService.setIdToken('id-token');
+      openidLocalStorageService.setIdToken('id-token');
       const setLocationHrefSpy = jest.spyOn(WindowService, 'setLocationHref').mockImplementation(() => undefined);
 
       // When I log out

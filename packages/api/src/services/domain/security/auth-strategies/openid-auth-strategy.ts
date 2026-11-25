@@ -1,5 +1,11 @@
 import {service} from '../../../../providers';
-import {AuthenticationService, AuthenticationStorageService, OpenidStorageService, SecurityContextService, SecurityService} from '../index';
+import {
+  AuthenticationService,
+  AuthenticationStorageService,
+  OpenidSessionStorageService,
+  SecurityContextService,
+  SecurityService
+} from '../index';
 import {LoggerProvider} from '../../../logging/logger-provider';
 import {OpenIdService} from '../openid/openid-service';
 import {navigate, navigateToLoginPage} from '../../../utils';
@@ -37,7 +43,7 @@ export class OpenidAuthStrategy implements AuthStrategy {
   private readonly authenticationService = service(AuthenticationService);
   private readonly securityContextService = service(SecurityContextService);
   private readonly openIdService = service(OpenIdService);
-  private readonly openidStorageService = service(OpenidStorageService);
+  private readonly openidSessionStorageService = service(OpenidSessionStorageService);
   private readonly tokenUtils = service(OpenidTokenUtils);
 
   type = AuthStrategyType.OPENID;
@@ -65,8 +71,8 @@ export class OpenidAuthStrategy implements AuthStrategy {
         await this.handleSuccessfulAuthentication();
       }
 
-      const returnToUrl = this.openidStorageService.getReturnUrl().getValue();
-      this.openidStorageService.clearReturnUrl();
+      const returnToUrl = this.openidSessionStorageService.getReturnUrl().getValue();
+      this.openidSessionStorageService.clearReturnUrl();
 
       if (isLoggedIn && returnToUrl) {
         navigate(returnToUrl);

@@ -6,7 +6,7 @@ import {
   AuthenticationService,
   ConfigurationContextService,
   OntoToastrService,
-  OpenidStorageService,
+  OpenidSessionStorageService,
   RuntimeConfigurationContextService,
   SecurityService,
   service,
@@ -33,7 +33,7 @@ export class LoginPageComponent implements OnInit, OnDestroy {
   private readonly toastrService = service(OntoToastrService);
   private readonly securityService = service(SecurityService);
   private readonly authenticationService = service(AuthenticationService);
-  private readonly openidStorageService = service(OpenidStorageService);
+  private readonly openidSessionStorageService = service(OpenidSessionStorageService);
   private readonly configurationContextService = service(ConfigurationContextService);
   private readonly runtimeConfigurationContextService = service(RuntimeConfigurationContextService);
 
@@ -97,7 +97,7 @@ export class LoginPageComponent implements OnInit, OnDestroy {
     this.loginForm.setErrors(null);
 
     if (withOpenId) {
-      this.openidStorageService.setReturnUrl(this.returnUrl);
+      this.openidSessionStorageService.setReturnUrl(this.returnUrl);
     } else if (this.isFormValid()) {
       loginData = this.loginForm.value;
     } else {

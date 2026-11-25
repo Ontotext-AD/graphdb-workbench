@@ -1,6 +1,7 @@
 import {OpenIdService} from '../openid-service';
 import {SecurityContextService} from '../../security-context.service';
-import {OpenidStorageService} from '../openid-storage.service';
+import {OpenidLocalStorageService} from '../openid-local-storage.service';
+import {OpenidSessionStorageService} from '../openid-session-storage.service';
 import {OpenidTokenUtils} from '../openid-token-utils';
 import {AuthenticationStorageService} from '../../authentication-storage.service';
 import {OpenIdTokenRefreshManager} from '../openid-token-refresh-manager';
@@ -17,7 +18,8 @@ import {TestUtil} from '../../../../utils/test/test-util';
 describe('OpenIdService', () => {
   let openIdService: OpenIdService;
   let securityContextService: SecurityContextService;
-  let openidStorageService: OpenidStorageService;
+  let openidLocalStorageService: OpenidLocalStorageService;
+  let openidSessionStorageService: OpenidSessionStorageService;
   let tokenUtils: OpenidTokenUtils;
   let authenticationStorageService: AuthenticationStorageService;
   let tokenRefreshManager: OpenIdTokenRefreshManager;
@@ -41,12 +43,37 @@ describe('OpenIdService', () => {
     return config;
   };
 
+  /**
+   * Sets up the redirect back from the OpenID provider with an authorization code, as if the current tab started the
+   * login with the code flow with PKCE: state `test-state` and code verifier `test-verifier`.
+   * @param tokenResponse The tokens the token endpoint returns. Without them, the token request fails with 400.
+   * @returns The OpenID configuration in use.
+   */
+  const givenCodeFlowCallback = (tokenResponse?: OpenIdTokens): OpenidSecurityConfig => {
+    const config = mockOpenIdConfig();
+    securityContextService.updateSecurityConfig(mockSecurityConfig(config));
+    const tokenResponseMock = new ResponseMock(config.openIdTokenUrl!);
+    TestUtil.mockResponses([
+      new ResponseMock(config.openIdKeysUri!).setResponse({keys: [{kid: 'key-1'}]}).setStatus(200),
+      tokenResponse ? tokenResponseMock.setResponse(tokenResponse).setStatus(200) : tokenResponseMock.setStatus(400)
+    ]);
+    jest.spyOn(tokenRefreshManager, 'setupTokensRefresh').mockResolvedValue();
+    // No existing authentication
+    openidLocalStorageService.clearTokens();
+    // The provider redirected back with the code and the state of the current tab
+    jest.spyOn(WindowService, 'getLocationQueryParams').mockReturnValue('?code=auth-code-123&state=test-state');
+    openidSessionStorageService.setPkceState('test-state');
+    openidSessionStorageService.setPkceCodeVerifier('test-verifier');
+    return config;
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
 
     // Create real service instances
     securityContextService = service(SecurityContextService);
-    openidStorageService = service(OpenidStorageService);
+    openidLocalStorageService = service(OpenidLocalStorageService);
+    openidSessionStorageService = service(OpenidSessionStorageService);
     tokenUtils = service(OpenidTokenUtils);
     authenticationStorageService = service(AuthenticationStorageService);
     tokenRefreshManager = service(OpenIdTokenRefreshManager);
@@ -74,11 +101,10 @@ describe('OpenIdService', () => {
     jest.restoreAllMocks();
     securityContextService.updateSecurityConfig(undefined as unknown as SecurityConfig);
     // Clear tokens and PKCE data
-    openidStorageService.clearTokens();
-    openidStorageService.clearPkceState();
-    openidStorageService.clearPkceCodeVerifier();
-    openidStorageService.clearNonce();
-    openidStorageService.clearReturnUrl();
+    openidLocalStorageService.clearTokens();
+    openidSessionStorageService.clearPkce();
+    openidLocalStorageService.clearNonce();
+    openidSessionStorageService.clearReturnUrl();
   });
 
   describe('getJSONWebKeySet', () => {
@@ -231,8 +257,8 @@ describe('OpenIdService', () => {
       // Store tokens - access token can be opaque, but refresh token needs to be a parseable JWT
       // for the TokenRefreshManager to calculate refresh timing
       const refreshToken = 'eyJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE1MTYyMzkwMjIsImV4cCI6OTk5OTk5OTk5OX0.sig';
-      openidStorageService.setAccessToken('opaque-access-token');
-      openidStorageService.setRefreshToken(refreshToken);
+      openidLocalStorageService.setAccessToken('opaque-access-token');
+      openidLocalStorageService.setRefreshToken(refreshToken);
 
       const result = await openIdService.initializeOpenId();
 
@@ -251,7 +277,7 @@ describe('OpenIdService', () => {
       );
 
       // Ensure no tokens in storage - user is not authenticated
-      openidStorageService.clearTokens();
+      openidLocalStorageService.clearTokens();
 
       // Mock empty URL params
       jest.spyOn(WindowService, 'getLocationQueryParams').mockReturnValue('');
@@ -289,8 +315,8 @@ describe('OpenIdService', () => {
 
       // Store tokens - refresh token must be parseable
       const refreshToken = 'eyJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE1MTYyMzkwMjIsImV4cCI6OTk5OTk5OTk5OX0.sig';
-      openidStorageService.setAccessToken('opaque-access-token');
-      openidStorageService.setRefreshToken(refreshToken);
+      openidLocalStorageService.setAccessToken('opaque-access-token');
+      openidLocalStorageService.setRefreshToken(refreshToken);
 
       const updateJsonWebKeysSetSpy = jest.spyOn(securityContextService, 'updateJsonWebKeysSet');
 
@@ -336,9 +362,12 @@ describe('OpenIdService', () => {
 
       openIdService.setupCodeFlow(state, returnToUrl);
 
-      // Verify code flow data was stored
-      expect(openidStorageService.getPkceState().getValue()).toBe(state);
-      expect(openidStorageService.getPkceCodeVerifier().getValue()).toBeTruthy();
+      // Verify code flow data was stored in the sessionStorage of the current tab
+      expect(sessionStorage.getItem('ontotext.gdb.auth.openid.pkce_state')).toEqual(state);
+      expect(sessionStorage.getItem('ontotext.gdb.auth.openid.pkce_code_verifier')).toBeTruthy();
+      // And not in the localStorage, where another tab could overwrite it
+      expect(localStorage.getItem('ontotext.gdb.auth.openid.pkce_state')).toBeNull();
+      expect(localStorage.getItem('ontotext.gdb.auth.openid.pkce_code_verifier')).toBeNull();
 
       // Verify redirect was called
       expect(WindowService.setLocationHref).toHaveBeenCalled();
@@ -358,12 +387,12 @@ describe('OpenIdService', () => {
       const returnToUrl = 'https://app.example.com/callback';
 
       // Set a code verifier first
-      openidStorageService.setPkceCodeVerifier('some-verifier');
+      openidSessionStorageService.setPkceCodeVerifier('some-verifier');
 
       openIdService.setupCodeNoPkceFlow(state, returnToUrl);
 
       // Verify code verifier was cleared
-      expect(openidStorageService.getPkceCodeVerifier().getValue()).toBeNull();
+      expect(openidSessionStorageService.getPkceCodeVerifier().getValue()).toBeNull();
 
       // Verify redirect was called
       expect(WindowService.setLocationHref).toHaveBeenCalled();
@@ -384,7 +413,7 @@ describe('OpenIdService', () => {
       openIdService.setupImplicitFlow(state, returnToUrl);
 
       // Verify nonce was stored
-      expect(openidStorageService.getNonce().getValue()).toBe(state);
+      expect(openidLocalStorageService.getNonce().getValue()).toBe(state);
 
       // Verify redirect was called
       expect(WindowService.setLocationHref).toHaveBeenCalled();
@@ -455,7 +484,7 @@ describe('OpenIdService', () => {
       const securityConfig = mockSecurityConfig(config);
       securityContextService.updateSecurityConfig(securityConfig);
       // And I have a stored ID token
-      openidStorageService.setIdToken('id-token');
+      openidLocalStorageService.setIdToken('id-token');
 
       // When I log out from the OpenID provider
       openIdService.logout(true);
@@ -464,7 +493,7 @@ describe('OpenIdService', () => {
       const logoutUrl = (WindowService.setLocationHref as jest.Mock).mock.calls[0][0];
       expect(logoutUrl).toContain('id_token_hint=id-token');
       // And the ID token to be cleared
-      expect(openidStorageService.getIdToken().getValue()).toBeNull();
+      expect(openidLocalStorageService.getIdToken().getValue()).toBeNull();
     });
 
     it('should not send id_token_hint on hard logout when there is no ID token', () => {
@@ -473,7 +502,7 @@ describe('OpenIdService', () => {
       const securityConfig = mockSecurityConfig(config);
       securityContextService.updateSecurityConfig(securityConfig);
       // And I have no stored ID token
-      openidStorageService.clearIdToken();
+      openidLocalStorageService.clearIdToken();
 
       // When I log out from the OpenID provider
       openIdService.logout(true);
@@ -496,8 +525,9 @@ describe('OpenIdService', () => {
       // When I log out from the OpenID provider
       openIdService.logout(true);
 
-      // Then I expect the current page to be stored without the context path
-      expect(openidStorageService.getReturnUrl().getValue()).toEqual('/sparql?name=q1');
+      // Then I expect the current page to be stored without the context path, only for the current tab
+      expect(sessionStorage.getItem('ontotext.gdb.auth.openid.return_url')).toEqual('/sparql?name=q1');
+      expect(localStorage.getItem('ontotext.gdb.auth.openid.return_url')).toBeNull();
       // And the provider to redirect back to the base URL
       const logoutUrl = (WindowService.setLocationHref as jest.Mock).mock.calls[0][0];
       expect(logoutUrl).toContain(`post_logout_redirect_uri=${encodeURIComponent('http://localhost/graphdb/')}`);
@@ -511,45 +541,25 @@ describe('OpenIdService', () => {
       openIdService.logout();
 
       // Then I expect no page to be stored
-      expect(openidStorageService.getReturnUrl().getValue()).toBeNull();
+      expect(openidSessionStorageService.getReturnUrl().getValue()).toBeNull();
     });
   });
 
   describe('initializeOpenId - handleAuthenticationFlow', () => {
     it('should handle authorization code flow with code in URL params', async () => {
-      const config = mockOpenIdConfig();
-      const securityConfig = mockSecurityConfig(config);
-      securityContextService.updateSecurityConfig(securityConfig);
-
-      const mockJWKS = {keys: [{kid: 'key-1'}]};
       // Return parseable JWT tokens - refresh token must be parseable for TokenRefreshManager
-      const mockTokens: OpenIdTokens = {
+      const config = givenCodeFlowCallback({
         access_token: 'access-token',
         id_token: 'id-token',
         refresh_token: 'eyJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE1MTYyMzkwMjIsImV4cCI6OTk5OTk5OTk5OX0.sig'
-      };
-
-      TestUtil.mockResponses([
-        new ResponseMock(config.openIdKeysUri!).setResponse(mockJWKS).setStatus(200),
-        new ResponseMock(config.openIdTokenUrl!).setResponse(mockTokens).setStatus(200)
-      ]);
-
-      jest.spyOn(tokenRefreshManager, 'setupTokensRefresh').mockReturnValue(Promise.resolve());
-
-      // Ensure no existing auth
-      openidStorageService.clearTokens();
-
-      // Mock URL params to simulate callback from IDP
-      jest.spyOn(WindowService, 'getLocationQueryParams').mockReturnValue('?code=auth-code-123&state=test-state');
-
-      // Store PKCE state to simulate we initiated the flow
-      openidStorageService.setPkceState('test-state');
-      openidStorageService.setPkceCodeVerifier('test-verifier');
+      });
 
       const result = await openIdService.initializeOpenId();
 
       expect(result).toBe(true);
       expect(WindowService.replaceUrl).toHaveBeenCalledWith('/');
+      // The code verifier stored for the current tab is sent for the tokens
+      expect(TestUtil.getRequest(config.openIdTokenUrl!)!.body!.toString()).toContain('code_verifier=test-verifier');
     });
 
     it('should handle implicit flow with id_token in URL params', async () => {
@@ -564,7 +574,7 @@ describe('OpenIdService', () => {
       );
 
       // Clear any existing auth
-      openidStorageService.clearTokens();
+      openidLocalStorageService.clearTokens();
 
       // Mock URL hash to simulate implicit flow callback
       // Use a valid JWT token structure
@@ -572,7 +582,7 @@ describe('OpenIdService', () => {
       jest.spyOn(WindowService, 'getLocationHash').mockReturnValue(`#id_token=${validToken}&state=test-state`);
 
       // Store nonce to simulate we initiated the flow
-      openidStorageService.setNonce('test-state');
+      openidLocalStorageService.setNonce('test-state');
 
       const result = await openIdService.initializeOpenId();
 
@@ -592,7 +602,7 @@ describe('OpenIdService', () => {
       );
 
       // Clear tokens and ensure no URL params
-      openidStorageService.clearTokens();
+      openidLocalStorageService.clearTokens();
       jest.spyOn(WindowService, 'getLocationQueryParams').mockReturnValue('');
 
       const result = await openIdService.initializeOpenId();
@@ -612,7 +622,7 @@ describe('OpenIdService', () => {
         new ResponseMock(config.openIdKeysUri!).setResponse(mockJWKS).setStatus(200)
       );
 
-      openidStorageService.clearTokens();
+      openidLocalStorageService.clearTokens();
       jest.spyOn(WindowService, 'getLocationQueryParams').mockReturnValue('');
 
       const clearAuthenticationSpy = jest.spyOn(openIdService, 'clearAuthentication');
@@ -623,59 +633,20 @@ describe('OpenIdService', () => {
     });
 
     it('should handle error when exchanging tokens for code fails', async () => {
-      const config = mockOpenIdConfig();
-      const securityConfig = mockSecurityConfig(config);
-      securityContextService.updateSecurityConfig(securityConfig);
-
-      const mockJWKS = {keys: [{kid: 'key-1'}]};
-
-      TestUtil.mockResponses([
-        new ResponseMock(config.openIdKeysUri!).setResponse(mockJWKS).setStatus(200),
-        new ResponseMock(config.openIdTokenUrl!).setStatus(400)
-      ]);
-
-      // Clear tokens
-      openidStorageService.clearTokens();
-
-      // Mock URL params with auth code
-      jest.spyOn(WindowService, 'getLocationQueryParams').mockReturnValue('?code=auth-code-123&state=test-state');
-
-      // Store PKCE state
-      openidStorageService.setPkceState('test-state');
-      openidStorageService.setPkceCodeVerifier('test-verifier');
+      givenCodeFlowCallback();
 
       await expect(openIdService.initializeOpenId()).rejects.toThrow('Cannot retrieve token after login');
       expect(WindowService.replaceUrl).toHaveBeenCalledWith('/');
     });
 
     it('should successfully exchange tokens and setup refresh when code flow completes', async () => {
-      const config = mockOpenIdConfig();
-      const securityConfig = mockSecurityConfig(config);
-      securityContextService.updateSecurityConfig(securityConfig);
-
-      const mockJWKS = {keys: [{kid: 'key-1'}]};
       // Return parseable JWT tokens
       const mockTokens: OpenIdTokens = {
         access_token: 'new-access-token',
         id_token: 'new-id-token',
         refresh_token: 'eyJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE1MTYyMzkwMjIsImV4cCI6OTk5OTk5OTk5OX0.sig'
       };
-
-      TestUtil.mockResponses([
-        new ResponseMock(config.openIdKeysUri!).setResponse(mockJWKS).setStatus(200),
-        new ResponseMock(config.openIdTokenUrl!).setResponse(mockTokens).setStatus(200)
-      ]);
-      jest.spyOn(tokenRefreshManager, 'setupTokensRefresh').mockReturnValue(Promise.resolve());
-
-      // Clear tokens
-      openidStorageService.clearTokens();
-
-      // Mock URL params with auth code
-      jest.spyOn(WindowService, 'getLocationQueryParams').mockReturnValue('?code=auth-code-123&state=test-state');
-
-      // Store PKCE state to simulate we initiated the flow
-      openidStorageService.setPkceState('test-state');
-      openidStorageService.setPkceCodeVerifier('test-verifier');
+      const config = givenCodeFlowCallback(mockTokens);
 
       const saveTokensSpy = jest.spyOn(tokenUtils, 'saveTokens');
 

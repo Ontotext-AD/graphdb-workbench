@@ -3,13 +3,15 @@ import {OpenidSecurityConfig} from '../../../../../models/security';
 import {OpenIdError} from '../../errors/openid/openid-error';
 import {InvalidOpenidAuthFlow} from '../../errors/openid/invalid-openid-auth-flow';
 import {MissingAuthorizationCode} from '../../errors/openid/missing-authorization-code';
-import {OpenidStorageService} from '../openid-storage.service';
+import {OpenidLocalStorageService} from '../openid-local-storage.service';
+import {OpenidSessionStorageService} from '../openid-session-storage.service';
 import {service} from '../../../../../providers';
 import {AuthFlowParams, OpenIdAuthFlowType} from '../../../../../models/security/authentication/openid-auth-flow-models';
 
 describe('OpenIdAuthFlowHandler', () => {
   let handler: OpenIdAuthFlowHandler;
-  let storageService: OpenidStorageService;
+  let openidLocalStorageService: OpenidLocalStorageService;
+  let openidSessionStorageService: OpenidSessionStorageService;
   let exchangeTokensCallback: jest.MockedFunction<ExchangeTokensCallback>;
 
   const createConfig = (authFlow: string) => new OpenidSecurityConfig({ authFlow });
@@ -22,25 +24,24 @@ describe('OpenIdAuthFlowHandler', () => {
 
   beforeEach(() => {
     handler = new OpenIdAuthFlowHandler();
-    storageService = service(OpenidStorageService);
+    openidLocalStorageService = service(OpenidLocalStorageService);
+    openidSessionStorageService = service(OpenidSessionStorageService);
     exchangeTokensCallback = jest.fn();
 
     // Clear storage before each test
-    storageService.clearPkceState();
-    storageService.clearPkceCodeVerifier();
-    storageService.clearAccessToken();
-    storageService.clearIdToken();
-    storageService.clearRefreshToken();
+    openidSessionStorageService.clearPkce();
+    openidLocalStorageService.clearAccessToken();
+    openidLocalStorageService.clearIdToken();
+    openidLocalStorageService.clearRefreshToken();
   });
 
   afterEach(() => {
     jest.clearAllMocks();
     // Clean up storage after each test
-    storageService.clearPkceState();
-    storageService.clearPkceCodeVerifier();
-    storageService.clearAccessToken();
-    storageService.clearIdToken();
-    storageService.clearRefreshToken();
+    openidSessionStorageService.clearPkce();
+    openidLocalStorageService.clearAccessToken();
+    openidLocalStorageService.clearIdToken();
+    openidLocalStorageService.clearRefreshToken();
   });
 
   describe('handleAuthorizationCode', () => {
@@ -159,7 +160,7 @@ describe('OpenIdAuthFlowHandler', () => {
 
       handler.storeCodeFlowData(state);
 
-      expect(storageService.getPkceState().getValue()).toBe(state);
+      expect(openidSessionStorageService.getPkceState().getValue()).toBe(state);
     });
 
     it('should generate and store PKCE code verifier', () => {
@@ -167,7 +168,7 @@ describe('OpenIdAuthFlowHandler', () => {
 
       handler.storeCodeFlowData(state);
 
-      const codeVerifier = storageService.getPkceCodeVerifier().getValue();
+      const codeVerifier = openidSessionStorageService.getPkceCodeVerifier().getValue();
       expect(codeVerifier).toBeTruthy();
       expect(typeof codeVerifier).toBe('string');
       expect(codeVerifier!.length).toBeGreaterThan(0);
@@ -187,7 +188,7 @@ describe('OpenIdAuthFlowHandler', () => {
 
     it('should throw OpenIdError when code verifier is missing', () => {
       // Ensure storage is clean
-      storageService.clearPkceCodeVerifier();
+      openidSessionStorageService.clearPkceCodeVerifier();
 
       expect(() => handler.getCodeChallengeForCodeFlow()).toThrow(OpenIdError);
       expect(() => handler.getCodeChallengeForCodeFlow()).toThrow('Missing PKCE code verifier');

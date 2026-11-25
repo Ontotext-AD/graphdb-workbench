@@ -7,7 +7,8 @@ import {OpenidSecurityConfig} from '../../../../models/security';
 import {OpenIdUrlBuilder} from './openid-url-builder';
 import {OpenIdAuthFlowHandler} from './openid-auth-flow-handler';
 import {OpenIdTokenRefreshManager} from './openid-token-refresh-manager';
-import {OpenidStorageService} from './openid-storage.service';
+import {OpenidLocalStorageService} from './openid-local-storage.service';
+import {OpenidSessionStorageService} from './openid-session-storage.service';
 import {OpenidTokenUtils} from './openid-token-utils';
 import {OpenIdUtils} from './openid-utils';
 import {AuthenticationStorageService} from '../authentication-storage.service';
@@ -29,7 +30,8 @@ import {HttpErrorResponse} from '../../../../models/http';
 export class OpenIdService implements Service {
   private readonly logger = LoggerProvider.logger;
   private readonly openIdRestService = service(OpenIdRestService);
-  private readonly openidStorageService = service(OpenidStorageService);
+  private readonly openidLocalStorageService = service(OpenidLocalStorageService);
+  private readonly openidSessionStorageService = service(OpenidSessionStorageService);
   private readonly securityContextService = service(SecurityContextService);
   private readonly tokenUtils = service(OpenidTokenUtils);
   private readonly authenticationStorageService = service(AuthenticationStorageService);
@@ -147,7 +149,7 @@ export class OpenIdService implements Service {
    * @param {string} returnToUrl - Redirect URI after login
    */
   setupCodeNoPkceFlow(state: string, returnToUrl: string): void {
-    this.openidStorageService.clearPkceCodeVerifier();
+    this.openidSessionStorageService.clearPkceCodeVerifier();
     const loginUrl = this.getLoginUrl(state, '', returnToUrl);
     this.redirectToUrl(loginUrl);
   }
@@ -159,7 +161,7 @@ export class OpenIdService implements Service {
    * @param {string} returnToUrl - Redirect URI after login
    */
   setupImplicitFlow(state: string, returnToUrl: string): void {
-    this.openidStorageService.setNonce(state);
+    this.openidLocalStorageService.setNonce(state);
     const loginUrl = this.getLoginUrl(state, '', returnToUrl);
     this.redirectToUrl(loginUrl);
   }
@@ -297,10 +299,10 @@ export class OpenIdService implements Service {
    */
   private hardLogout(redirectUrl: string): void {
     // Read the ID token before softLogout() clears it, it is sent as id_token_hint.
-    const idToken = this.openidStorageService.getIdToken().getValue();
+    const idToken = this.openidLocalStorageService.getIdToken().getValue();
     this.softLogout();
     // The provider redirects back to the base URL, which is the only registered post logout redirect URI.
-    this.openidStorageService.setReturnUrl(getLocationPathWithQueryParams());
+    this.openidSessionStorageService.setReturnUrl(getLocationPathWithQueryParams());
     const logoutUrl = this.getLogoutUrl(redirectUrl, idToken);
     this.redirectToUrl(logoutUrl);
   }

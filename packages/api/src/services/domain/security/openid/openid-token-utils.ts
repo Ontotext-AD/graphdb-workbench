@@ -1,7 +1,8 @@
 import {LoggerProvider} from '../../../logging/logger-provider';
 import {b64utoutf8, KEYUTIL, KJUR, RSAKey} from 'jsrsasign';
 import {service} from '../../../../providers';
-import {OpenidStorageService} from './openid-storage.service';
+import {OpenidLocalStorageService} from './openid-local-storage.service';
+import {OpenidSessionStorageService} from './openid-session-storage.service';
 import {SecurityContextService} from '../index';
 import {OpenidSecurityConfig} from '../../../../models/security/openid-security-config';
 import {InvalidJwtToken} from '../errors/openid/invalid-jwt-token';
@@ -10,7 +11,8 @@ import {OpenIdTokens} from '../../../../models/security/authentication/openid-au
 
 export class OpenidTokenUtils {
   private readonly logger = LoggerProvider.logger;
-  private readonly openidStorageService = service(OpenidStorageService);
+  private readonly openidLocalStorageService = service(OpenidLocalStorageService);
+  private readonly openidSessionStorageService = service(OpenidSessionStorageService);
   private readonly securityContextService = service(SecurityContextService);
   private readonly REFRESH_TOKEN_TOLERANCE = 5000; // 5 seconds
 
@@ -74,30 +76,29 @@ export class OpenidTokenUtils {
   saveTokens(token: OpenIdTokens, openIdSecurityConfig: OpenidSecurityConfig) {
     if (token.refresh_token) {
       // Some OpenId providers give you a new token on refresh, some don't
-      this.openidStorageService.setRefreshToken(token.refresh_token);
+      this.openidLocalStorageService.setRefreshToken(token.refresh_token);
     } else {
-      this.openidStorageService.clearRefreshToken();
+      this.openidLocalStorageService.clearRefreshToken();
     }
 
     if (token.access_token) {
-      this.openidStorageService.setAccessToken(token.access_token);
+      this.openidLocalStorageService.setAccessToken(token.access_token);
     } else {
-      this.openidStorageService.clearAccessToken();
+      this.openidLocalStorageService.clearAccessToken();
     }
 
     if (token.id_token) {
-      this.openidStorageService.setIdToken(token.id_token);
+      this.openidLocalStorageService.setIdToken(token.id_token);
     } else {
-      this.openidStorageService.clearIdToken();
+      this.openidLocalStorageService.clearIdToken();
     }
 
-    this.openidStorageService.setTokenType(openIdSecurityConfig.tokenType!);
+    this.openidLocalStorageService.setTokenType(openIdSecurityConfig.tokenType!);
 
     this.logger.debug('OpenID: saved tokens');
 
     // Clean these up since we don't need them anymore
-    this.openidStorageService.clearPkceState();
-    this.openidStorageService.clearPkceCodeVerifier();
+    this.openidSessionStorageService.clearPkce();
   };
 
   /**
@@ -108,7 +109,7 @@ export class OpenidTokenUtils {
    * @returns {string} The Authorization header value.
    */
   authHeaderGraphDB(): string {
-    const tokenType = this.openidStorageService.getTokenType().getValue();
+    const tokenType = this.openidLocalStorageService.getTokenType().getValue();
     if (tokenType === TokenType.ID) {
       return 'Bearer ' + this.getTokenByType(TokenType.ID);
     } else {
@@ -217,7 +218,7 @@ export class OpenidTokenUtils {
       // all expected values and validation will work even if some are missing from the token,
       // but it will fail if the token contains a value that isn't in verifyFields.
       verifyFields['aud'] = [openIdSecurityConfig.clientId, openIdSecurityConfig.issuer];
-      verifyFields['nonce'] = [this.openidStorageService.getNonce().getValue() || ''];
+      verifyFields['nonce'] = [this.openidLocalStorageService.getNonce().getValue() || ''];
     } else if (tokenType === 'access') {
       verifyFields['aud'] = [openIdSecurityConfig.tokenAudience];
       verifyFields['iss'] = [openIdSecurityConfig.tokenIssuer];
@@ -229,7 +230,7 @@ export class OpenidTokenUtils {
    * Clears all stored tokens from local storage.
    */
   clearTokens() {
-    this.openidStorageService.clearTokens();
+    this.openidLocalStorageService.clearTokens();
   }
 
   /**
@@ -240,11 +241,11 @@ export class OpenidTokenUtils {
    */
   getTokenByType(tokenType: TokenType): string | null {
     if (tokenType === TokenType.ID) {
-      return this.openidStorageService.getIdToken().getValue();
+      return this.openidLocalStorageService.getIdToken().getValue();
     } else if (tokenType === TokenType.ACCESS) {
-      return this.openidStorageService.getAccessToken().getValue();
+      return this.openidLocalStorageService.getAccessToken().getValue();
     } else if (tokenType === TokenType.REFRESH) {
-      return this.openidStorageService.getRefreshToken().getValue();
+      return this.openidLocalStorageService.getRefreshToken().getValue();
     }
     return null;
   }

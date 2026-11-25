@@ -2,6 +2,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {LoginPageComponent} from './login-page.component';
 import {provideTranslocoForTesting} from '../../../testing-utils/transloco-utils';
 import {
+  AuthenticationService,
   Configuration,
   ConfigurationContextService,
   RuntimeConfigurationContextService,
@@ -279,6 +280,37 @@ describe('LoginPageComponent', () => {
         expect(getEl('input[data-test="username-input"]')).toBeNull();
         expect(getEl('input[data-test="password-input"]')).toBeNull();
         expect(getEl('button[data-test="submit-btn"]')).toBeNull();
+      });
+    });
+
+    describe('when I log in with OpenID', () => {
+      const returnUrlKey = 'ontotext.gdb.auth.openid.return_url';
+
+      beforeEach(() => {
+        sessionStorage.clear();
+        localStorage.clear();
+        jest.spyOn(securityService, 'isPasswordLoginEnabled').mockReturnValue(false);
+        jest.spyOn(securityService, 'isOpenIDEnabled').mockReturnValue(true);
+        // The OpenID login redirects to the provider, so it never resolves.
+        jest.spyOn(ServiceProvider.get(AuthenticationService), 'login').mockReturnValue(new Promise(() => undefined));
+      });
+
+      afterEach(() => {
+        sessionStorage.clear();
+      });
+
+      it('should store the return url only for the current tab', () => {
+        // Given I am on the login page with a return url
+        mockActivatedRoute.snapshot.queryParamMap.get.mockImplementation((key: string) => key === 'r' ? '/sparql' : null);
+        fixture.detectChanges();
+
+        // When I click the OpenID sign-in button
+        const buttons: HTMLButtonElement[] = Array.from(fixture.nativeElement.querySelectorAll('button'));
+        buttons.find((b) => b.textContent?.trim().includes('Login with OpenID'))!.click();
+
+        // Then I expect the return url to be stored in the session storage of this tab, and not shared with other tabs
+        expect(sessionStorage.getItem(returnUrlKey)).toBe('/sparql');
+        expect(localStorage.getItem(returnUrlKey)).toBeNull();
       });
     });
 

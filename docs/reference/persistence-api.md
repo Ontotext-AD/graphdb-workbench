@@ -1,12 +1,14 @@
 # Persistence API
 
-Local-storage-backed persistence for GraphDB Workbench, built on the `Persistence` interface and `LocalStorageService`.
+Browser-storage-backed persistence for GraphDB Workbench, built on the `Persistence` interface and 
+`BrowserStorageService`.
 
 ## Contents
 
 - [Overview of the `Persistence` API](#overview-of-the-persistence-api): the generic storage interface.
 - [Key Components](#key-components): the `Persistence` interface and its methods.
-- [Local Storage Implementation](#local-storage-implementation): `LocalStorageService`, namespaces, and key prefixing.
+- [Browser Storage Implementation](#browser-storage-implementation): `BrowserStorageService`, `LocalStorageService`,
+  `SessionStorageService`, namespaces, and key prefixing.
 - [Handling Storage Change Events](#handling-storage-change-events): how storage events from other tabs update the context.
 - [Practical Considerations](#practical-considerations): prefixed keys, specialization, error handling.
 
@@ -27,10 +29,17 @@ The `Persistence` interface defines the structure for storage-related services:
 - `set(key: string, value: string): void` - Stores the given value under the provided key.
 - `remove(key: string): void` - Deletes the value associated with the provided key.
 
-## Local Storage Implementation
+## Browser Storage Implementation
 
-The `LocalStorageService` abstract class implements the `Persistence` interface using `localStorage`. It is the base
-class for specialized storage services.
+The `BrowserStorageService` abstract class implements the `Persistence` interface on top of a browser `Storage`.
+Specialized services extend one of its two subclasses, which only choose the storage:
+
+- `LocalStorageService` uses `localStorage`. Values are shared by all tabs, survive closing the browser, and changes
+  reach the other tabs through the `storage` event.
+- `SessionStorageService` uses `sessionStorage`. Each tab has its own values, which survive a reload and a redirect
+  to another site and back in the same tab. Other tabs do not see them. For example, `OpenidSessionStorageService`
+  keeps per tab the data of an OpenID login or logout in progress: the page to return to, the PKCE state and the
+  code verifier.
 
 ### Key Features
 
@@ -108,8 +117,10 @@ handleStorageChange(event: StorageEvent): void {
 
 ## Practical Considerations
 
-1. **Prefixed keys.** Always go through a `LocalStorageService` subclass so keys are prefixed and isolated.
-2. **Service specialization.** Extend `LocalStorageService` per domain, specifying the `NAMESPACE`.
+1. **Prefixed keys.** Always go through a `LocalStorageService` or `SessionStorageService` subclass so keys are
+   prefixed and isolated.
+2. **Service specialization.** Extend `LocalStorageService` per domain, specifying the `NAMESPACE`. Extend
+   `SessionStorageService` instead when a value must stay in one tab.
 3. **Property names.** For cross-tab sync, the stored key's property name must equal a context service field value
    (e.g. `selectedRepository`), so `canHandle` finds the service.
 4. **Error handling.** A missing namespace or handler is logged at debug level and ignored.
