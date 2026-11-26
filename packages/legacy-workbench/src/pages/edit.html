@@ -1,8 +1,9 @@
 <link href="css/lib/angular-xeditable/xeditable.min.css?v=[AIV]{version}[/AIV]" rel="stylesheet">
 
 <div core-errors></div>
-<div class="page" ng-show="getActiveRepository()">
-    <div class="resource-info">
+<div class="page" ng-show="hasActiveRepository">
+    <div class="alert alert-warning" ng-show="!hasUri" data-test="edit-resource-no-resource-selected">{{'edit.resource.no_resource_selected' | translate}}</div>
+    <div class="resource-info" ng-show="hasUri">
         <div class="thumb" ng-show="{{details.img}}">
             <a href="{{details.img}}"><img ng-src="{{details.img}}" alt="details image"/></a>
         </div>
@@ -21,7 +22,7 @@
         </p>
     </div>
 
-    <div>
+    <div ng-show="hasUri">
 
             <table class="table table-hover table-striped" aria-label="{{'edit.resource.table.label' | translate}}">
                 <thead>
@@ -184,7 +185,7 @@
                 </tbody>
             </table>
     </div>
-    <div class="text-xs-right">
+    <div class="text-xs-right" ng-show="hasUri">
 		<button class="btn btn-secondary view-trig-btn"
                 ng-disabled="statements.length == 0"
                 gdb-tooltip="{{'view.resource.trig.format.tooltip' | translate}}"

@@ -95,6 +95,10 @@ class ClassViewsSteps extends BaseSteps {
         return this.getSVGButton().trigger('mouseover');
     }
 
+    static visitDomainRangeGraph() {
+        cy.visit('/domain-range-graph');
+    }
+
     static getDomainRangeGraphButton() {
         return cy.get('.domain-range-graph-btn');
     }
