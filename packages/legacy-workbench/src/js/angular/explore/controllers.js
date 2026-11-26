@@ -480,6 +480,8 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $uibM
         },
     };
     $scope.newResource = false;
+    $scope.hasActiveRepository = false;
+    $scope.hasUri = !!$scope.uriParam;
     $scope.datatypeOptions = StatementsService.getDatatypeOptions();
 
     $scope.activeRepository = function() {
@@ -530,7 +532,8 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $uibM
     $scope.$watch(function() {
         return $repositories.getActiveRepository();
     }, function() {
-        if ($scope.activeRepository()) {
+        $scope.hasActiveRepository = !!$scope.activeRepository();
+        if ($scope.hasActiveRepository && $scope.hasUri) {
             $scope.getClassInstancesDetails();
         }
     });

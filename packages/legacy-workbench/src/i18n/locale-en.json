@@ -3226,6 +3226,7 @@
     "context.label": "Context",
     "source.label": "Source",
     "edit.resource.label": "Edit resource",
+    "edit.resource.no_resource_selected": "No resource selected. Open a resource and click Edit.",
     "target.label": "Target",
     "show.blank.nodes.label": "Show Blank Nodes",
     "download.as.label": "Download",
