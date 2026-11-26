@@ -1,13 +1,17 @@
 @Library('ontotext-platform@v0.1.49') _
 
-def performCleanup = {
-    dir("${env.WORKSPACE}") {
-        sh "git restore .npmrc || git checkout HEAD -- .npmrc"
-        dir("e2e-tests") {
-            sh "rm -f .npmrc"
-        }
-    }
-}
+/*
+ * Release of graphdb-workbench and graphdb-workbench-tests:
+ *   1. Validate: the version is well formed, not released yet, and the npm token works.
+ *   2. Build the packages with the release version.
+ *   3. Push the release commit and tag in one atomic push; rejected when the branch moved.
+ *   4. Publish both packages to npm.
+ *
+ * The steps are in .jenkins/release-steps.groovy, the Slack messages in .jenkins/release-notifications.groovy.
+ */
+
+def release
+def notifications
 
 pipeline {
     agent {
@@ -17,7 +21,7 @@ pipeline {
     environment {
         // Required for our version of webpack + newer Node.js
         NODE_OPTIONS = "--openssl-legacy-provider"
-        NODE_IMAGE = 'node:20-bullseye'
+        NODE_IMAGE = 'node:22.17.0-bullseye'
     }
 
     parameters {
@@ -34,16 +38,16 @@ pipeline {
             description: 'Version to release',
             defaultValue: ''
 
-        booleanParam(
-            name: 'NOTIFY_SLACK',
-            defaultValue: false,
-            description: 'Send Slack notification after successful build'
-        )
-
         string(
             name: 'SLACK_CHANNEL',
             defaultValue: '#frontend-notifications',
-            description: 'Slack channel for notification (only used if checkbox above is selected)'
+            description: 'Slack channel notified when the release succeeds, fails or is aborted'
+        )
+
+        booleanParam(
+            name: 'DRY_RUN',
+            defaultValue: false,
+            description: 'Build and validate, but run git push and npm publish with --dry-run'
         )
     }
 
@@ -54,7 +58,18 @@ pipeline {
     }
 
     stages {
-        stage ('Prepare & Publish') {
+        // On the host, before any docker agent: a failure to start the container is reported too.
+        stage('Prepare') {
+            steps {
+                script {
+                    // Loaded before the checkout, so they come from the same commit as this file.
+                    release = load '.jenkins/release-steps.groovy'
+                    notifications = load '.jenkins/release-notifications.groovy'
+                }
+            }
+        }
+
+        stage('Validate & Build') {
             agent {
                 docker {
                     image "${env.NODE_IMAGE}"
@@ -65,26 +80,34 @@ pipeline {
             }
             steps {
                 script {
-                    git_cmd.checkout(branch: params.GIT_BRANCH)
-                    npm.prepareRelease(version: params.RELEASE_VERSION, scripts: ['install:ci', 'build'])
-                    npm.prepareRelease(version: params.RELEASE_VERSION, dir: "e2e-tests/")
+                    release.checkout(params.GIT_BRANCH)
+                    release.validate(params.RELEASE_VERSION)
+                    release.build(params.RELEASE_VERSION, params.GIT_BRANCH)
+                }
+            }
+        }
 
-                    withKsm(application: [
-                        [
-                            credentialsId: 'ksm-jenkins',
-                            secrets: [
-                                [destination: 'env', envVar: 'NPM_TOKEN', filePath: '', notation: 'keeper://FcbEgbi287PN2yx_3uCz4Q/field/note'],
-                            ]
-                        ]
-                    ]) {
-                        sh "echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc"
-                        sh "npm whoami || { echo 'ERROR: NPM authentication failed! Invalid or expired NPM_TOKEN.'; exit 1; }"
-                        sh "npm publish"
-                        dir("e2e-tests/") {
-                            sh "echo //registry.npmjs.org/:_authToken=\${NPM_TOKEN} > .npmrc"
-                            sh "npm publish"
-                        }
-                    }
+        // On the host, not in the container: the push uses the agent's SSH key.
+        stage('Push') {
+            steps {
+                script {
+                    release.push(params.RELEASE_VERSION, params.GIT_BRANCH, params.DRY_RUN)
+                }
+            }
+        }
+
+        stage('Publish') {
+            agent {
+                docker {
+                    image "${env.NODE_IMAGE}"
+                    label 'aws-small'
+                    reuseNode true
+                    args '-v $WORKSPACE/.npmrc:/home/node/.npmrc --entrypoint=""'
+                }
+            }
+            steps {
+                script {
+                    release.publish(params.RELEASE_VERSION, params.DRY_RUN)
                 }
             }
         }
@@ -93,55 +116,29 @@ pipeline {
     post {
         always {
             script {
-              currentBuild.displayName = "${params.RELEASE_VERSION ?: currentBuild.displayName}"
+                currentBuild.displayName = "${params.RELEASE_VERSION ?: currentBuild.displayName}"
             }
         }
         success {
             script {
-                performCleanup()
-
-                // Commit and tag the release
-                sh "git commit -a -m 'Release ${params.RELEASE_VERSION}'"
-                sh "git tag -a v${params.RELEASE_VERSION} -m 'Release v${params.RELEASE_VERSION}'"
-
-                withKsm(application: [
-                    [
-                        credentialsId: 'ksm-jenkins',
-                        secrets: [
-                            [destination: 'env', envVar: 'GIT_USER', filePath: '', notation: 'keeper://8hm1g9HCfBPgoWAmpiHn6w/field/login'],
-                            [destination: 'env', envVar: 'GIT_TOKEN', filePath: '', notation: 'keeper://8hm1g9HCfBPgoWAmpiHn6w/field/password']
-                        ]
-                    ]
-                ]) {
-                    sh 'mkdir -p ~/.ssh'
-                    sh 'ssh-keyscan github.com >> ~/.ssh/known_hosts'
-
-                    sh 'git config --global user.name "$GIT_USER"'
-                    sh 'git config --global user.email "$GIT_USER@users.noreply.github.com"'
-
-                    sh 'git remote set-url origin git@github.com:Ontotext-AD/graphdb-workbench.git'
-                    sh "git push --set-upstream origin ${params.GIT_BRANCH}"
-                    sh 'git push --tags'
-                }
-
-                // Optional Slack notification if enabled and channel is provided
-                if (params.NOTIFY_SLACK && params.SLACK_CHANNEL?.trim()) {
-                    try {
-                        slack.notifyResult(channel: params.SLACK_CHANNEL, color:'good', message:"Released graphdb-workbench v${params.RELEASE_VERSION}")
-                    } catch (e) {
-                        echo "Slack notification failed: ${e.getMessage()}"
-                    }
-                }
+                notifications?.released()
             }
         }
-
-        failure {
+        unsuccessful {
+            script {
+                // Not loaded when the build stopped before Prepare, e.g. in the SCM checkout.
+                // No "?.": Groovy would still evaluate release.progress() and throw, skipping the mail.
+                if (notifications) {
+                    notifications.stopped(release.progress(), currentBuild.currentResult == 'ABORTED')
+                }
+            }
             wrap([$class: 'BuildUser']) {
                 sendMail(env.BUILD_USER_EMAIL)
             }
-
+        }
+        cleanup {
             script {
-                performCleanup()
+                release?.cleanup(params.RELEASE_VERSION)
             }
         }
     }
