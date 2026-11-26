@@ -1242,68 +1242,84 @@ button:disabled {
     Radio button
 -------------------------------------------------------------*/
 
+/*
+ * Mirrors PrimeNG's small radio button (p-radiobutton size="small") with the styleguide tokens.
+ * A checked radio has no separate dot: its background is the dot colour and the coloured ring is
+ * painted over it. Ring and dot are one element, so the browser cannot round them to different
+ * pixels and the dot always sits in the centre.
+ * Where the ring has the border colour, the ring is a thick border. Elsewhere an inset shadow paints
+ * it inside the border, which can leave a thin light seam between the two at high pixel density.
+ */
 input[type=radio] {
+    --radio-border-width: 1px;
+    /* Ring width: what is left of the inner box once the dot is cut out of its middle. */
+    --radio-ring-width: calc((var(--gw-radiobutton-sm-width) - 2 * var(--radio-border-width) - var(--gw-radiobutton-icon-sm-size)) / 2);
+    --radio-ring-color: transparent;
+    --radio-shadow: var(--gw-radiobutton-shadow-offset-x) var(--gw-radiobutton-shadow-offset-y) var(--gw-radiobutton-shadow-blur) var(--gw-radiobutton-shadow-spread) var(--gw-radiobutton-shadow-color);
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    color: var(--gw-radiobutton-label-color);
-    background-color: var(--gw-radiobutton-background);
-    border: 1px solid var(--gw-radiobutton-border-color);
-    width: 1em;
-    height: 1em;
-    display: inline-block;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    width: var(--gw-radiobutton-sm-width);
+    height: var(--gw-radiobutton-sm-height);
     vertical-align: middle;
-    cursor: pointer;
+    border: var(--radio-border-width) solid var(--gw-radiobutton-border-color);
     border-radius: 50%;
+    background-color: var(--gw-radiobutton-background);
+    box-shadow: inset 0 0 0 var(--radio-ring-width) var(--radio-ring-color), var(--radio-shadow);
+    outline-color: transparent;
+    cursor: pointer;
+    transition: background-color var(--gw-radiobutton-transition-duration),
+        border-color var(--gw-radiobutton-transition-duration),
+        border-width var(--gw-radiobutton-transition-duration),
+        box-shadow var(--gw-radiobutton-transition-duration),
+        outline-color var(--gw-radiobutton-transition-duration);
+}
+
+input[type=radio]:not(:disabled):hover {
+    border-color: var(--gw-radiobutton-hover-border-color);
+}
+
+input[type=radio]:checked {
+    --radio-ring-color: var(--gw-radiobutton-checked-background);
+    border-color: var(--gw-radiobutton-checked-border-color);
+    background-color: var(--gw-radiobutton-icon-checked-color);
+}
+
+input[type=radio]:checked:not(:disabled):hover {
+    --radio-ring-color: var(--gw-radiobutton-checked-hover-background);
+    border-color: var(--gw-radiobutton-checked-hover-border-color);
+    background-color: var(--gw-radiobutton-icon-checked-hover-color);
+}
+
+/* Border and ring have the same colour here: a thick border paints both, with no seam between them. */
+input[type=radio]:checked:not(:disabled):not(:focus-visible) {
+    --radio-ring-color: transparent;
+    border-width: calc(var(--radio-border-width) + var(--radio-ring-width));
 }
 
 /* Like PrimeNG radio buttons, show the focus ring on keyboard focus only. */
-input[type=radio]:focus-visible {
+input[type=radio]:not(:disabled):focus-visible {
+    /* PrimeNG drops the drop shadow on focus; "none" is not valid inside the box-shadow list. */
+    --radio-shadow: 0 0 0 0 transparent;
+    border-color: var(--gw-radiobutton-focus-border-color);
     outline: var(--gw-radiobutton-focus-ring-width) var(--gw-radiobutton-focus-ring-style) var(--gw-radiobutton-focus-ring-color);
     outline-offset: var(--gw-radiobutton-focus-ring-offset);
 }
 
-input[type=radio]:checked {
-    color: var(--gw-radiobutton-checked-label-color);
-    border-color: var(--gw-radiobutton-checked-border-color);
+input[type=radio]:checked:not(:disabled):focus-visible {
+    border-color: var(--gw-radiobutton-checked-focus-border-color);
 }
 
-input[type=radio]:checked:hover {
-    background-color: var(--gw-radiobutton-checked-hover-background);
-    border-color: var(--gw-radiobutton-checked-hover-border-color);
+/* The styleguide has one disabled border colour for radio buttons, named after the checked state. */
+input[type=radio]:disabled {
+    border-color: var(--gw-radiobutton-checked-disabled-border-color);
+    background-color: var(--gw-radiobutton-disabled-background);
 }
 
 input[type=radio]:checked:disabled {
-    color: var(--gw-radiobutton-checked-disabled-label-color);
-    border-color: var(--gw-radiobutton-checked-disabled-border-color);
-    opacity: var(--gw-button-disabled-opacity);
-}
-
-input[type=radio]:disabled {
-    color: var(--gw-radiobutton-disabled-label-color);
-    background-color: var(--gw-radiobutton-disabled-background);
-    opacity: var(--gw-button-disabled-opacity);
-}
-
-input[type=radio]:hover {
-    border-color: var(--gw-radiobutton-hover-border-color);
-}
-
-input[type=radio]:checked::after {
-    content: "";
-    display: block;
-    width: 0.5em;
-    height: 0.5em;
-    border-radius: 50%;
-    background-color: var(--gw-radiobutton-checked-background);
-    margin: 0.2em;
-}
-
-input[type=radio]:checked:hover::after {
-    background-color: var(--gw-radiobutton-icon-checked-hover-color);
-}
-
-input[type=radio]:checked:disabled::after {
+    --radio-ring-color: var(--gw-radiobutton-disabled-background);
     background-color: var(--gw-radiobutton-icon-disabled-color);
 }
 
