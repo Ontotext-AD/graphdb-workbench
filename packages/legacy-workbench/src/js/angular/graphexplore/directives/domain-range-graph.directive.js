@@ -310,7 +310,9 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
         var classNodeLabel = $location.search().name;
         const collapsed = $location.search().collapsed;
 
-        getDomainRangeData(selectedRdfUri, collapsed);
+        if (selectedRdfUri) {
+            getDomainRangeData(selectedRdfUri, collapsed);
+        }
 
         function getDomainRangeData(selectedRdfUri, collapsed) {
             GraphDataRestService.getDomainRangeData(selectedRdfUri, collapsed)

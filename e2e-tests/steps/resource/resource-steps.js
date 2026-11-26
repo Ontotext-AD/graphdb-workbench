@@ -14,6 +14,14 @@ export class ResourceSteps {
         cy.get('.yasr');
     }
 
+    static visitEdit() {
+        cy.visit(`${VIEW_URL}/edit`);
+    }
+
+    static getNoResourceSelectedMessage() {
+        return cy.getByTestId('edit-resource-no-resource-selected');
+    }
+
     static verifyUrl() {
         cy.url().should('include+', `${Cypress.config('baseUrl')}${VIEW_URL}`);
     }
