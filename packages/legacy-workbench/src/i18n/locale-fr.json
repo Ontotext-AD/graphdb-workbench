@@ -3224,6 +3224,7 @@
     "context.label": "Le contexte",
     "source.label": "La source",
     "edit.resource.label": "Modifier la ressource",
+    "edit.resource.no_resource_selected": "Aucune ressource sélectionnée. Ouvrez une ressource et cliquez sur Modifier.",
     "target.label": "Cible",
     "show.blank.nodes.label": "Afficher les nœuds vides",
     "download.as.label": "Télécharger",
