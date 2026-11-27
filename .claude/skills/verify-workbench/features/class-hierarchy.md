@@ -7,7 +7,8 @@ the diagram is cached on the server and recalculated on demand when the data cha
 
 ## Sub-features
 
-- `ch-diagram` the diagram renders the top 50 classes (slider `aria-valuenow="50"`), e.g. `food:Grape`.
+- `ch-diagram` the diagram renders the repository's classes: the slider starts at the class count (capped at
+  1500), here wine's 50 (`aria-valuenow="50"`), e.g. `food:Grape`.
 - `ch-class-panel` a click on a class zooms in, sets `#<class id>` in the URL and opens the side panel
   (`:Winery … View all 43 instances in SPARQL` and the instance list).
 - `ch-search` the toolbar search finds a class by prefix and selects it on Enter.

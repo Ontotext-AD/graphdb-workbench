@@ -25,8 +25,9 @@ advances when the user clicks the highlighted element or `Next`, and can be exit
   `ROLE_REPO_MANAGER`).
 - Row play button: `#guides-table tr:has-text("<guide name>") button`.
 - Source: route/menu `packages/legacy-workbench/src/js/angular/guides/plugin.js`, list `GuidesCtrl`
-  (`guides/controllers.js`, template `src/pages/guides.html`), start → `NewGuidesService.startGuide`
-  (`guides/guides.service.js`, Shepherd via `guides/tour-lib-services`), REST `rest/guides.rest.service.js`.
+  (`guides/controllers.js`, template `src/pages/guides.html`), start → `GuidesService.startGuide`
+  in `packages/api/src/services/domain/guides/` (`guides.service.ts`, Shepherd via `shepherd.service.ts`, REST
+  `guides-rest.service.ts`); the legacy `guides/guides.service.js` only supplies the guide blocks.
 
 ## Driving it with verify-workbench
 
@@ -55,7 +56,8 @@ Preconditions:
   Read the current box with `$PW eval` over `.shepherd-element` filtered by `checkVisibility()` (title,
   `.shepherd-text`, `.shepherd-button` labels) and `document.querySelector('.shepherd-target')`.
 - **Run it (Cypress).** No verify spec; the repo's own specs replay with
-  `$V/scripts/drive.sh e2e-tests/e2e-legacy/help/guides/guides-with-repository.spec.js` (cypress-guides config) —
+  `$V/scripts/drive.sh e2e-tests/e2e-legacy/help/guides/guides-with-repository.spec.js` (cypress-legacy config;
+  `e2e-legacy/guides/*` uses cypress-guides) —
   not run in this session.
 
 ## Gotchas

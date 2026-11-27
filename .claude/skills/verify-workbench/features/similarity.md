@@ -25,7 +25,9 @@ document and gets a ranked result table with scores, and can edit, clone, rebuil
   `#indexes-table a.index-name`, `.delete-index-btn`, `.search-type-btn` / `.result-type-btn` with
   `.dropdown-result-type .dropdown-item`, search field `search-resource-input input.view-res-input`, `Show` button
   `.autocomplete-visual-btn`.
-- Source: `packages/legacy-workbench/src/js/angular/similarity/plugin.js` (`SimilarityCtrl`, `CreateSimilarityIdxCtrl`),
+- Source: `packages/legacy-workbench/src/js/angular/similarity/plugin.js` (routes), controllers
+  `similarity/controllers/similarity-list.controller.js` (`SimilarityCtrl`), `create-index.controller.js`
+  (`CreateSimilarityIdxCtrl`),
   templates `src/pages/similarity-indexes.html`, `src/pages/create-index.html`; REST
   `rest/similarity.rest.service.js` (`GET rest/similarity` with header `X-GraphDB-Repository: <id>` lists indexes
   with `status`).
@@ -56,7 +58,8 @@ Preconditions:
     `$PW click 'role=dialog >> role=button[name="Yes"]'` → `$PW wait-gone '#indexes-table a.index-name:text-is("verifyidx")'`;
     read-back `[]`.
   `screenshot --filename=…` after each state.
-- **Run it (Cypress).** No verify spec; `SimilarityIndexesSteps` / `SimilarityIndexCreateSteps`
+- **Run it (Cypress).** No verify spec; `e2e-legacy/explore/similarity-index/*.spec.js` replay with `drive.sh`;
+  `SimilarityIndexesSteps` / `SimilarityIndexCreateSteps`
   (`e2e-tests/steps/explore/`) hold the selectors.
 
 ## Gotchas

@@ -11,6 +11,8 @@ Performance (queries, transactions/connections, entity pool, global cache) and C
   `IN_HAS_NEXT`, lifetime ticking); none → `[data-test="no-running-queries-or-updates-alert"]`.
 - `monitor-queries-abort` row `Abort query` (`.abortQuery`) › dialog `Confirm abort` › `Yes` stops the query: the row
   goes, the client's request ends with no bindings, `GET …/query/active` is `[]`.
+- `monitor-abort-replicating` an update in state `FOLLOWER_COMMIT` (being replicated to the cluster) has its
+  Abort disabled with the popover "Update cannot be aborted while being replicated to the cluster" (GDB-15394).
 - `monitor-system-resources` tab `Resource monitoring` (default): five `[data-test="*-chart"]` charts with SVG data.
 - `monitor-system-performance` tab `Performance` (URL hash `#performance`): `#activeQueries`, `#connections`,
   `#epool`, `#globalCache` charts with data.
@@ -44,7 +46,7 @@ Preconditions:
   - Queries: `$PW goto "@/monitor/queries?repositoryId=verify-$RID-mon"` → (repository-switch `Confirm`:
     [driving.md](../reference/driving.md) › Setup data) → `$PW wait '#wb-monitoringQueries-queryInQueries tbody tr'`; row text
     `<trackId> verify-…-mon admin QUERY … SELECT (COUNT(*) … IN_HAS_NEXT … Abort query`.
-  - Abort: `$PW click '#wb-monitoringQueries-queryInQueries tbody tr:has-text("<trackId>") .abortQuery'` →
+  - Abort: `$PW click '#wb-monitoringQueries-queryInQueries tbody tr:has-text("<trackId>") [data-test="monitoring-queries-abort-button"]'` →
     `$PW wait 'role=dialog >> role=button[name="Yes"]'` → click it →
     `$PW wait '[data-test="no-running-queries-or-updates-alert"]' 30000`; read-back `…/query/active` = `[]`, the
     background curl ends (exit 18, empty bindings).
@@ -54,6 +56,10 @@ Preconditions:
   - Performance: `$PW click '.performance-tab .nav-link'` → URL `…#performance` →
     `$PW wait '#performanceMonitorTab #activeQueries svg' 60000`.
   `screenshot --filename=…` after each state.
+- **Abort while replicating (Cypress).** A real `FOLLOWER_COMMIT` window is too short to catch; the repo spec
+  stubs it. On a container stack without a context path:
+  `$V/scripts/drive.sh e2e-tests/e2e-legacy/monitor/query-and-updates/queries-and-updates-with-repository.spec.js --run-id $RID`
+  → `should not allow aborting an update while it is replicated to the cluster` passes.
 - **Run it (Cypress).** No verify spec; `QueriesAndUpdatesSteps` / `SystemMonitoringSteps`
   (`e2e-tests/steps/monitoring/`) and `e2e-legacy/monitor/` hold the selectors.
 

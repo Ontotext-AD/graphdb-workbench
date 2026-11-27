@@ -26,7 +26,9 @@ it, and deletes it; external SQL clients then see the table through GraphDB's JD
 - Source: `packages/legacy-workbench/src/js/angular/jdbc/plugin.js` (`JdbcListCtrl`, `JdbcCreateCtrl` in
   `jdbc/controllers.js`), templates `src/pages/jdbc.html`, `src/pages/jdbc-create.html`; REST
   `rest/jdbc.rest.service.js`: `GET rest/sql-views/tables`, `GET|DELETE rest/sql-views/tables/<name>`,
-  `POST rest/sql-views/columns` (suggestions); repository via header `X-GraphDB-Repository: <id>`.
+  `POST|PUT rest/sql-views/tables[/<name>]` (save), `POST rest/sql-views/columns` (column names) +
+  `POST rest/sql-views/types` (type suggestions), `POST rest/sql-views/preview`; edit route
+  `/jdbc/configuration/create?name=<table>`; repository via header `X-GraphDB-Repository: <id>`.
 
 ## Driving it with verify-workbench
 

@@ -11,12 +11,13 @@ limits it to one named graph.
   groups `#dependencies-chord .group`, 10 active rows in `#wb-dependencies-classInClasses`.
 - `cr-filter` typing in `.search-filter-field` filters the class list.
 - `cr-add-remove` the row's `+` adds a class to the diagram (11 classes / 11 groups); "remove all" empties it
-  ("Showing the dependencies between 0 classes / No dependencies between these classes").
+  (0 groups; the visible message is "At least two classes are needed to show dependency diagram").
 - `cr-related` the row's arrow lists the related classes with counts in `#wb-dependencies-classToShow`.
 - `cr-graph-dropdown` with a named graph, choosing it in `#selectGraphDropdown` reloads status, classes and
   matrix for that graph (`rest/dependencies/*?graphURI=<graph>`).
 - `cr-direction` (all / in / out radios `.direction-filter`), `cr-reload` (recalculate after a data change),
-  `cr-export-svg`, chord hover tooltips — not driven yet (e2e `class-relationships.spec.js` covers reload).
+  `cr-export-svg` — not driven yet. A chord **click** (not hover) opens `.dependencies-tooltip` with the
+  predicates (`rest/dependencies/predicates`) (e2e `class-relationships.spec.js` covers reload).
 
 ## How to get to it (user POV)
 
@@ -45,7 +46,9 @@ Preconditions:
   `.locator('.plusminus .ri-add-line').click()` → 11 classes, 11 groups, the row gets `.deps-data.active`.
 - **Related + remove all.** Same row locator for `:Winery`, `.locator('.related-arrow').click()`, wait
   `#wb-dependencies-classToShow` → `:Zinfandel 10`, `:Chardonnay 10`, `:SauvignonBlanc 8`, …;
-  `page.locator('.remove-all-classes-btn').click()` → 0 classes, 0 groups.
+  `page.locator('.remove-all-classes-btn').click()` → 0 groups, visible "At least two classes are
+  needed …" (the "Showing the dependencies between 0 classes" label stays in the DOM hidden: check
+  visibility, not `textContent`).
 - **Graph dropdown.** `$PW click '#graphsBtnGroup'` → items `The default graph`, `urn:verify:g2`;
   `$PW click '#selectGraphDropdown .dropdown-item >> text="urn:verify:g2"'` → button `urn:verify:g2`, 10 classes;
   `$PW requests` shows `rest/dependencies/status|classes|matrix?…graphURI=urn:verify:g2 => [200]`.

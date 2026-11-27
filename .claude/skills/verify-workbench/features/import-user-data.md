@@ -65,7 +65,8 @@ Preconditions:
 ## Gotchas
 
 - Setting the same file again on `#ngf-wb-import-uploadFile` does nothing (no settings dialog). `reload` the page
-  before the next upload of the same file.
+  before the next upload of the same file; it then opens `Confirm files overwrite` (`Cancel`, `Keep both`,
+  `Overwrite`).
 - An upload made before confirming the deep link's repository switch goes to the *previously* active repository
   ([driving.md](../reference/driving.md) › Setup data).
 - The row's import/remove buttons were reported hover-only (Cypress steps use `invoke('show')`); with `hover` on the

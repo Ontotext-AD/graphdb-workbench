@@ -15,7 +15,7 @@ reopened from the landing page.
 - `vg-save-graph` Save graph stores the current graph (`toast: Saved graph <name> was saved.`); it is listed under
   Saved graphs on the landing page.
 - `vg-search` (Easy graph search box), `vg-graph-config` (Advanced graph configurations,
-  `/graphs-visualizations/config/save`), `vg-links-limit`, `vg-delete-saved`, `vg-export` — not driven yet.
+  `/graphs-visualizations/config/save`), `vg-links-limit`, `vg-delete-saved` — not driven yet.
   The search needs the autocomplete index; graph configs need a config created first
   (`POST rest/explore-graph/config` with header `X-GraphDB-Repository`, see `graph-config.rest.service.js`).
 
