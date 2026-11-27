@@ -44,7 +44,8 @@ finish with `check-paths.sh`; `drive.sh` refuses context stacks (exit 65). Recip
 Container runs only. `security.sh $RID on|off|free-access|login|oidc-up|oidc-down|status`; recipes in
 `features/security-login.md` and `features/security-oidc.md`. Local admin is `admin`/`root`; `repo.sh` and
 `setup.sh` log in with it once security is on. A security spec (`e2e-security/…`) leaves security on:
-`drive.sh` switches it off again on a container stack.
+`drive.sh` switches it off again on a container stack. While security is on, `doctor.sh --run-id` WARNs (FAILs
+only on the dev stack).
 
 ## Cluster (`cluster.sh`)
 

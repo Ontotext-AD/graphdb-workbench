@@ -8,7 +8,8 @@ access on, an anonymous user works without logging in, sees only the repositorie
 
 ## Sub-features
 
-- `login-local` username/password login returns to page `r`.
+- `login-local` username/password login returns to page `r`; a wrong password gets `POST rest/login` 401 and
+  a short-lived toast "Wrong credentials!" (`.toast-message`).
 - `logout` Logout from the user menu opens `/login?r=<page>` with the "Signed out" toast.
 - `free-access` anonymous user: header "Login" button, repository selector lists only the granted repositories,
   pages the authorities do not cover show "You have no permission to access this functionality".
@@ -42,7 +43,8 @@ Proven sequences (`PW="$V/scripts/pw.sh $RID"`):
 - **Logout.** `$PW click '.onto-user-menu-toggle'` → `$PW click 'role=button[name="Logout"]'` →
   `$PW wait '#username'` → `Page URL` `…/login?r=%2F<page>`, toast "Signed out".
 - **Free access.** `security.sh $RID free-access <repo-id>` (repo id → `READ_REPO_<id>`; pass
-  `WRITE_REPO_<id>` for writes) → anonymous `$PW goto @/sparql` → header `role=button[name="Login"]`, the
+  `WRITE_REPO_<id>` for writes) → anonymous `$PW goto @/sparql` → header
+  `onto-user-login button` ("Login"; `role=button[name="Login"]` matches nothing: the icon is part of its name), the
   repository selector (`role=button[name="Choose repository"]`) lists only `<repo-id>`; `@/repository` shows the
   no-permission alert. `security.sh $RID free-access off` → `$PW goto @/sparql` lands on `/login?r=%2Fsparql`.
 - **Two tabs.** Log in, `$PW goto @/graphs`, `$PW tab-new @/import`, wait for `.onto-user-menu-toggle`; log out
@@ -69,8 +71,9 @@ Proven sequences (`PW="$V/scripts/pw.sh $RID"`):
   out, or that sits on the login page when the other tab logs in, sometimes stops answering (`tab-list` shows it
   `[crashed]`; `eval`/`run-code` on it hang, `reload`/`goto` in it stay on "Loading..." while a new tab at the same
   URL renders). Seen 3 times on master 4.0.0-TR19 (twice with `/sparql`, once on `/login` after re-login in the
-  other tab). Not yet confirmed in a headed browser: report it as an observation, not a verified bug, and close
-  the session (`pw.sh $RID close`) when it happens.
+  other tab). GDB-15863 (master `f5c0deb2b`) made other tabs reload once instead of twice; no crash in the
+  two-tab sequence after it. Keep the timeout; if it happens again, report it and close the session
+  (`pw.sh $RID close`).
 - Login, logout and return-URL code: `packages/api/src/services/utils/routing-utils.ts`,
   `packages/workbench/src/app/app.component.ts` (two-tab logout, GDB-15509),
   `packages/workbench/src/app/services/repository-url-sync.service.ts` (return URL vs. repository in the URL,

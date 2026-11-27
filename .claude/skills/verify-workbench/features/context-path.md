@@ -12,6 +12,8 @@ often.
 - `ctx-trailing-slash` a deep link with a trailing slash (`<prefix>/graphs/`) lands on `<prefix>/graphs`
   (inline script in `packages/root-config/src/index.ejs`).
 - `ctx-reload` reloading a deep link renders the same route again (server fallback + `base href`).
+- `ctx-login-reload` with security on, reloading `<prefix>/login?r=…` renders the login form, not "Loading..."
+  (GDB-15859).
 - `ctx-menu-nav` menu navigation and back keep the prefix in the URL.
 - `ctx-no-escape` no request (page, asset, REST, i18n, plugin) goes to the origin outside the prefix.
 - `ctx-forward` browser forward — not verified: forward after back stays on the previous route in **both**
@@ -35,6 +37,9 @@ Preconditions:
   Proven 2026-11-24 (deep link with trailing slash, reload, SPARQL menu link, back, `check-paths.sh` exit 0).
 - **Menu navigation.** `$PW click 'role=link[name="SPARQL"]'` → `…/graphdb/sparql`, `$PW wait '#title-container'`;
   `$PW go-back` → `…/graphdb/graphs`, `#wb-export`. Repeat for every route the change touches.
+- **Login reload.** `$V/scripts/security.sh $RID on` → `$PW goto @/sparql` → `$PW wait '#username'` (URL
+  `…/graphdb/login?r=%2Fsparql`) → `$PW reload` → `$PW wait '#username'`, `onto-layout` without `loading`;
+  `$V/scripts/security.sh $RID off` after.
 - **No escape.** After the scenario: `$V/scripts/check-paths.sh $RID` — exit 0 and `OK no request left …`.
   It saves the full request log to the run's evidence dir. Proven negative: a page-side
   `fetch('/rest/info/version')` is reported as `FAIL requests outside …` (exit 1).

@@ -63,4 +63,5 @@ Proven sequences (`PW="$V/scripts/pw.sh $RID"`), on a plain and a `/graphdb` sta
   re-login from the first tab opens `/import`. With local users each tab keeps its own page. The OpenID logout
   stores the return page in shared browser storage (GDB-15059); report it as an observation for that area.
 - OpenID flow code: `packages/api/src/services/domain/security/openid/`,
-  `packages/api/src/services/utils/routing-utils.ts`, `packages/workbench/src/app/app.component.ts`.
+  `packages/api/src/services/domain/security/auth-strategies/openid-auth-strategy.ts` (flow, logout),
+  `packages/api/src/services/utils/routing-utils.ts`.

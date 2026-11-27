@@ -35,10 +35,9 @@ the repository's graph-navigator settings (a Turtle file) from a side drawer.
 
 Preconditions:
 
-- Baseline from the README, plus a repository named `SystemRepository` (see Gotchas). On a container stack create
-  it from the e2e template:
-  `curl -X POST <gdb>/rest/repositories -H 'Content-Type: application/json' -d "$(jq -c '.id="SystemRepository"' e2e-tests/fixtures/repo-template.json)"`
-  → `201`. `cleanup.sh --run-id` removes it with the container; on the dev stack, never create or delete it.
+- Baseline from the README, plus a repository named `SystemRepository` (see Gotchas). On a container stack:
+  `$V/scripts/repo.sh $RID --system`. `cleanup.sh --run-id` removes it with the container; on the dev stack,
+  never create or delete it.
 - A repository with data: `$V/scripts/repo.sh $RID nav`, then
   `curl -X POST -H 'Content-Type: text/turtle' --data-binary @e2e-tests/fixtures/graphdb-import/resource-test-data.ttl <gdb>/repositories/verify-$RID-nav/statements`
   → `204`.

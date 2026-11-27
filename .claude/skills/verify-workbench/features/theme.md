@@ -38,8 +38,9 @@ Preconditions: a container stack (`container.sh up --run-id $RID`), `PW="$V/scri
 - **Settings page (user path).** `$PW goto @/settings`, `$PW wait '#themeSelect'`,
   `$PW js "[...document.querySelectorAll('#themeSelect option')].map(o => (o.selected ? '* ' : '  ') + o.textContent.trim())"`
   → `* System (Currently Dark)` after `theme os dark`; `$PW select '#themeSelect' 'Light'`, `$PW click '#wb-user-submit'`
-  → `localStorage['ontotext.gdb.application.settings']` is `{"theme":"default","themeMode":"light"}`, `:root` not dark.
-  Proof: `$PW screenshot '#workbench-settings' --filename=theme-settings.png`.
+  → `PATCH rest/security/users/<user>` 200 first, then `localStorage['ontotext.gdb.application.settings']` has
+  `"themeMode":"light"`, `:root` not dark. The page returns to the previous route ~2 s after Save: take the
+  proof `$PW screenshot '#workbench-settings' --filename=theme-settings.png` before clicking Save.
 - **A style change.** Read the value back in both themes: `$PW theme dark`, `$PW css '<selector>' color`, then
   `$PW theme light` and again; `css` lists the rule and the resolved `--gw-*` variables.
 

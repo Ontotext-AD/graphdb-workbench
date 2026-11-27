@@ -23,7 +23,8 @@ saves; the defaults are stored on the GraphDB user and the theme in browser stor
 - Source: route in `packages/legacy-workbench/src/js/angular/security/plugin.js`, controller
   `security/controllers/user-settings.controller.js` (`UserSettingsController`), template
   `security/templates/user.html` (shared with Edit user). Save = `PATCH /rest/security/users/<username>`
-  (`UsersRestService.updateCurrentUser`); read-back `GET /rest/security/users/admin` (security off = `admin`).
+  (`SecurityService.updateAuthenticatedUser` → `UsersRestService.updateCurrentUser`);
+  read-back `GET /rest/security/users/admin` (security off = `admin`).
 
 ## Driving it with verify-workbench
 
@@ -48,8 +49,9 @@ Preconditions:
     `/graphs` ~2 s later; read-back `DEFAULT_VIS_GRAPH_SCHEMA: false`.
   - Restore: toggle back inference **and** sameAs, schema, `select '#themeSelect' 'System (Currently Light)'`, save,
     read back all `true`.
-  `screenshot --filename=…` after each state. No Cypress spec yet; `e2e-legacy/setup/settings/my-settings.spec.js`
-  and `SettingsSteps` (`e2e-tests/steps/setup/settings-steps.js`) hold the Cypress selectors.
+  `screenshot --filename=…` after each state. No verify spec; the repo's
+  `e2e-legacy/setup/settings/my-settings.spec.js` replays with `drive.sh`; it and `SettingsSteps`
+  (`e2e-tests/steps/setup/settings-steps.js`) hold the Cypress selectors.
 
 ## Gotchas
 

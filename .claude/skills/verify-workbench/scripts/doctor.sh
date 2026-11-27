@@ -4,7 +4,8 @@
 #   --run-id ID  check the container stack of that run (container.sh up) instead of the shared dev stack;
 #                an ID with no run record FAILs. Container checks: page, served dist/, GraphDB container alive,
 #                no OutOfMemoryError since start, license state, repository states; on a cluster run (cluster.sh)
-#                a leader seen from every node.
+#                a leader seen from every node. Security on WARNs here (security.sh recipes) and FAILs on the dev
+#                stack.
 #   --tree PATH  checkout the dev stack must be serving (default: git toplevel of $PWD)
 # Dev stack checks include the webpack dev servers' compile state (a "Compiled with problems" overlay covers the
 # page) and npm-linked ontotext-yasgui-web-component. Every run lists verify-wb-* containers and stack dirs that
@@ -40,7 +41,10 @@ if [[ -n "$ver_json" ]]; then ok "GraphDB $GDB_URL: $ver_json"; else bad "GraphD
 
 sec="$(curl -s -m 5 "$GDB_URL/rest/security" || true)"
 if [[ "$sec" == "false" ]]; then ok "security disabled (recipes assume this)"
-else bad "security is '$sec' - recipes assume security OFF; log-in flows are not scripted"; fi
+elif [[ "$sec" == "true" && "$RUN_MODE" == container ]]; then
+  warn "security on - only the login recipes (features/security-*.md) expect it; security.sh $RUN_ID off for the rest"
+elif [[ "$sec" == "true" ]]; then bad "security is on - the dev stack's GraphDB stays as it is: use a container stack"
+else bad "security state unknown ('$sec') from $GDB_URL/rest/security"; fi
 
 # Compile state of a webpack dev server, from its live-reload websocket: on connect it sends the overlay config,
 # then ok / warnings / errors for the last compilation. Prints: ok | errors N MSG | warnings N MSG | unknown.

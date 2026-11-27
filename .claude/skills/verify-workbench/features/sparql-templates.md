@@ -8,8 +8,8 @@ stored per repository.
 
 - `templates-create` `Create new SPARQL template` › IRI + UPDATE query › `Save` → back on `/sparql-templates`, row
   with the IRI.
-- `templates-edit` row IRI link opens `/sparql-template/create?templateID=<iri>` with the stored query; `Save` is
-  disabled until a key event marks the editor dirty; saving stores the new query.
+- `templates-edit` row IRI link opens `/sparql-template/create?repositoryId=<id>&templateID=<iri>` with the
+  stored query; `Save` is disabled until a key event marks the editor dirty; saving stores the new query.
 - `templates-delete` row delete › `Warning` dialog `Are you sure you want to delete the SPARQL template '<iri>'?` › `Yes`.
 - Validation messages (`.template-id-required`, `.template-id-invalid`, `.invalid-query-mode` for a non-UPDATE
   query, `.invalid-query`), unsaved-changes confirm on navigation, executing a template from SPARQL — not driven
@@ -45,7 +45,8 @@ Preconditions:
     → `$PW click '.save-query-btn'` → URL `/sparql-templates`, `$T` present; read-back
     `GET /rest/repositories/<id>/sparql-templates` = `["http://example.com/verify-template"]`.
   - Edit: `$PW click "$T a.configuration-name"` → editor shows the stored query → `setValue(…"edited"…)` as above →
-    `$PW press End` (marks dirty, `.save-query-btn` enabled) → `$PW click '.save-query-btn'` → `$PW wait "$T"`;
+    `$PW js "document.querySelector('.ontotext-yasgui .CodeMirror').CodeMirror.focus()"` → `$PW press End` (marks
+    dirty, `.save-query-btn` enabled) → `$PW click '.save-query-btn'` → `$PW wait "$T"`;
     read-back `…/configuration?templateID=…` returns the `"edited"` query.
   - Delete: `$PW click "$T .delete-configuration-btn"` → `$PW click 'role=dialog >> role=button[name="Yes"]'` →
     `$PW wait-gone "$T"`; read-back `[]`.
@@ -57,8 +58,9 @@ Preconditions:
 
 - The edit view's dirty flag comes from a jQuery `keyup` on `.CodeMirror textarea`
   (`core/directives/yasgui-component/yasgui-component.directive.js`). `CodeMirror.setValue` and `type` do not fire
-  it, so `Save` stays disabled; follow `setValue` with `$PW press End` (focus is in the editor textarea).
+  it, so `Save` stays disabled; follow `setValue` with `CodeMirror.focus()` and `$PW press End`. The editor does not
+  take focus on load (GDB-15818): `press End` without `focus()` lands on the page and `Save` stays disabled.
   A new template saves without it (`isNewTemplate`).
 - The Cypress steps type the IRI with `{force: true}` because the editor grabs focus while loading; `fill` after the
   editor is visible avoids that.
-- The template IRI must be a valid absolute IRI (`invalid-template-id` is rejected) and the query an UPDATE.
+- The template IRI must be a valid absolute IRI (`.template-id-invalid` otherwise) and the query an UPDATE.

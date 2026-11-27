@@ -62,7 +62,8 @@ With `PW="$V/scripts/pw.sh $RID"` (proven 2026-11-24 on 12.0.0-TR23 + master dis
   --gdb-version 10.7.0 --bundled-ui` → the Status sequence up to the gear: the panel lists node1 LEADER, node2/3
   FOLLOWER (10.x has no tabs; the Nodes list is in the panel body). `$V/scripts/repo.sh $RID r1` through the
   proxy appears on all three nodes.
-- No Cypress spec yet: `drive.sh` would replay against the proxy URL; the e2e `ClusterPageSteps`,
+- No Cypress spec against a real cluster: the repo's `e2e-legacy/cluster/` and `e2e-legacy/setup/cluster/` specs
+  stub `rest/cluster`; the e2e `ClusterPageSteps`,
   `ClusterConfigurationSteps`, `ClusterNodesConfigurationSteps` (`e2e-tests/steps/cluster/`) hold the selectors.
 
 ## Gotchas

@@ -51,6 +51,8 @@ Preconditions:
   re-renders into an endless spinner.
 - The yasgui web component renders twice on load; use `visitSparqlEditorPageAndWaitForEditor` rather than a
   bare `cy.visit('/sparql')`.
+- The editor does not take focus on load (GDB-15818): call `CodeMirror.focus()` before keyboard or paste input;
+  `setValue` works without it.
 - `pasteQuery` sets CodeMirror directly then types two spaces so Angular notices; `writeInEditor` types for real
   (slow).
 - Editor state persists in `localStorage` across page loads of one Playwright session and is shared by `/sparql`

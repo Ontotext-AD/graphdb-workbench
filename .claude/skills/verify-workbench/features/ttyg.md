@@ -10,7 +10,7 @@ are stored by GraphDB.
 - `ttyg-no-agents` with no agents the view shows `[data-test="no-agents-view-component"]` (info text, `Create your
   first agent`, LLM API prerequisite message).
 - `ttyg-create-modal` `Create your first agent` opens `Create Agent` with the selected repository preselected,
-  model `gpt-4.1`, five query methods off.
+  model from the server defaults (`GET rest/chat/agents/default`, `gpt-4.1` on 12.0.0-TR23), query methods off.
 - `ttyg-ontology-graph-check` saving with SPARQL › `Fetch ontology from a named graph` on an empty graph shows the
   toast `There is no data in the ontology named graph.`
 - `ttyg-create-agent`, chats, agent edit/clone/delete, agent select menu, external integration (Dify / query
