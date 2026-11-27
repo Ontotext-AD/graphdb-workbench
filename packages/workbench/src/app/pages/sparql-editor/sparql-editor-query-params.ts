@@ -4,7 +4,6 @@
 export const SavedQueryParams = {
   name: 'savedQueryName',
   owner: 'owner',
-  execute: 'execute',
 } as const;
 
 /**
@@ -14,7 +13,6 @@ export const SharedQueryParams = {
   name: 'name',
   owner: 'owner',
   query: 'query',
-  execute: 'execute',
 } as const;
 
 export const YasguiQueryParams = {

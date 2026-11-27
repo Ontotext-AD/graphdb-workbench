@@ -5,7 +5,7 @@
 # Usage: compare.sh --run-id ID [options] (route | name=route)...
 #        compare.sh --run-id ID [options] --steps FILE.cjs
 #   compare.sh --run-id cmp-1700 --repo s import graphs          # origin/master vs the current checkout
-#   compare.sh --run-id cmp-1700 --tree ../wt --no-build --theme dark sparql=sparql-new
+#   compare.sh --run-id cmp-1700 --tree ../wt --no-build --theme dark sparql=sparql
 #   --ref REF        baseline commit (default origin/master; fetched first when it starts with origin/)
 #   --tree PATH      tree under test (default: git toplevel of $PWD); built by container.sh unless --no-build
 #   --no-build       serve the tree under test's existing dist/

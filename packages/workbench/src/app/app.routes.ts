@@ -1,15 +1,16 @@
 import {WorkbenchRoute} from './models/route/workbench-route';
 import {documentationLinkResolve} from './services/route-data-resolver';
-import {ViewRestrictionCondition} from '@ontotext/workbench-api';
+import {RepositoryPermissionType, ViewRestrictionCondition} from '@ontotext/workbench-api';
 
 export const routes: WorkbenchRoute[] = [
   {
-    path: 'sparql-new',
+    path: 'sparql',
     data: {
       title: 'sparql_editor.title',
       helpInfo: 'sparql_editor.helpInfo',
       documentationUrl: 'sparql-queries.html',
       viewRestrictions: [ViewRestrictionCondition.IS_REPOSITORY_NOT_SELECTED],
+      requiredRepositoryPermission: RepositoryPermissionType.READ,
     },
     resolve: {documentationLink: documentationLinkResolve},
     loadComponent: () => import('./pages/sparql-editor/sparql-editor-page.component').then(m => m.SparqlEditorPageComponent)

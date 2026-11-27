@@ -1,6 +1,6 @@
 import {SparqlEditorSteps} from "../../../steps/sparql-editor-steps";
 import {YasguiSteps} from "../../../steps/yasgui/yasgui-steps";
-import {ApplicationSteps} from "../../../steps/application-steps";
+import {OntoToastrSteps} from "../../../steps/onto-toastr-steps";
 import {QueryStubs} from "../../../stubs/yasgui/query-stubs";
 import {DEFAULT_QUERY} from "../../../steps/yasgui/saved-query";
 import {ShareSavedQueryDialog} from "../../../steps/yasgui/share-saved-query-dialog";
@@ -32,7 +32,13 @@ describe('Share query', () => {
         ShareSavedQueryDialog.getDialog().should('be.visible');
         ShareSavedQueryDialog.getDialogTitle().should('contain', 'Copy URL to clipboard');
         ShareSavedQueryDialog.getShareLink().then((shareLink) => {
-            expect(shareLink).to.have.string(`/sparql?name=Unnamed&query=select%20*%20where%20%7B%0A%20%20%20%20%3Fs%20%3Fp%20%3Fo%20.%0A%7D%20limit%20100&infer=true&sameAs=true`);
+            const url = new URL(shareLink);
+            expect(url.pathname).to.equal('/sparql');
+            expect(url.searchParams.get('repositoryId')).to.equal(repositoryId);
+            expect(url.searchParams.get('name')).to.equal('Unnamed');
+            expect(url.searchParams.get('query')).to.equal('select * where {\n    ?s ?p ?o .\n} limit 100');
+            expect(url.searchParams.get('infer')).to.equal('true');
+            expect(url.searchParams.get('sameAs')).to.equal('true');
         });
         // When I cancel operation
         ShareSavedQueryDialog.closeDialog();
@@ -44,7 +50,7 @@ describe('Share query', () => {
         ShareSavedQueryDialog.copyLink();
         // Then I expect that the share link is copied in the clipboard
         ShareSavedQueryDialog.getDialog().should('not.exist');
-        ApplicationSteps.getSuccessNotifications().should('be.visible');
+        OntoToastrSteps.getSuccessToast().should('be.visible');
     });
 
     it('Should be able to open a share link in a new editor tab',() => {

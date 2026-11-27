@@ -75,7 +75,7 @@ Explore:
 
 SPARQL and data access:
 
-- [SPARQL query](./sparql-query.md) — run a SELECT in the SPARQL editor (`/sparql` and `/sparql-new`) and read
+- [SPARQL query](./sparql-query.md) — run a SELECT in the SPARQL editor (`/sparql`) and read
   the result table. Spec: `specs/sparql-query.cy.js`.
 - [SPARQL templates](./sparql-templates.md) — create, edit, delete UPDATE templates. Driven with `pw.sh`.
 - [JDBC](./jdbc.md) — create, preview and delete SQL table configurations. Driven with `pw.sh`.

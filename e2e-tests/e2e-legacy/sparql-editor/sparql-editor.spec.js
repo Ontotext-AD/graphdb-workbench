@@ -17,7 +17,10 @@ describe('Sparql editor', () => {
 
     afterEach(() => {
         cy.deleteRepository(repositoryId);
-        cy.deleteRepository(secondRepositoryId);
+        if (secondRepositoryId) {
+            cy.deleteRepository(secondRepositoryId);
+            secondRepositoryId = undefined;
+        }
     });
 
     it('Should load yasgui with default configuration', () => {
@@ -67,16 +70,10 @@ describe('Sparql editor', () => {
         // I paste a query into the editor
         cy.pasteIntoCodeMirror('.CodeMirror', query);
         // Then I expect the prefixes to be added automatically
-        cy.get('.CodeMirror').then((codeMirrorElement) => {
-            expect(codeMirrorElement[0].CodeMirror).to.exist;
+        YasqeSteps.getCodeMirrorEl().should((codeMirrorElement) => {
             const codeMirror = codeMirrorElement[0].CodeMirror;
-            // Wait, so that Yasqe can have time to replace the existing query with the new one
-            cy.waitUntil(() => {
-                return codeMirror.getValue() === prefix + query;
-            }).then(() => {
-                const value = codeMirror.getValue();
-                expect(value).to.equal(prefix + query);
-            });
+            expect(codeMirror).to.exist;
+            expect(codeMirror.getValue()).to.equal(prefix + query);
         });
     });
 });

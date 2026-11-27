@@ -1,4 +1,4 @@
-import {RouteConstants} from "../utils/route-constants";
+import {RouteConstants} from "../../../utils/route-constants";
 import {WindowService} from '@ontotext/workbench-api';
 
 angular

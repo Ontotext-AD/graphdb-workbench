@@ -206,7 +206,6 @@ export class YasguiComponentFacadeComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.autocompleteAbortController?.abort();
-    this.removeDirtyCheckHandlers();
     this.subscriptionList.unsubscribeAll();
   }
 
@@ -505,13 +504,6 @@ export class YasguiComponentFacadeComponent implements OnInit, OnDestroy {
     this.language.set(newLang ?? this.languageContextService.getDefaultLanguage());
   }
 
-  private removeDirtyCheckHandlers(): void {
-    this.getOntotextYasguiElements().forEach((el) => {
-      el.removeEventListener('paste', this.delegatedPasteHandler);
-      el.removeEventListener('keyup', this.delegatedKeyupHandler);
-    });
-  }
-
   private async init(yasguiConfig: OntotextYasguiConfig | undefined) {
     if (!yasguiConfig) {
       return;
@@ -574,8 +566,6 @@ export class YasguiComponentFacadeComponent implements OnInit, OnDestroy {
     const actualConfig = ObjectUtil.mergeWithDefaults(runtimeConfig as OntotextYasguiConfig, baseConfig);
     this.config.set(actualConfig);
 
-    this.addDirtyCheckHandlers();
-
     this.setInitialQueryState().then(() => {
       this.afterInit()?.();
     });
@@ -586,32 +576,18 @@ export class YasguiComponentFacadeComponent implements OnInit, OnDestroy {
     this.initialQueryValue = JSON.stringify(query);
   };
 
-  private readonly addDirtyCheckHandlers = () => {
-    const waitOntotextInitialized = setInterval(() => {
-      const ontotextYasguiElements = this.getOntotextYasguiElements();
-      if (ontotextYasguiElements.length > 0) {
-        clearInterval(waitOntotextInitialized);
-
-        ontotextYasguiElements.forEach((el) => {
-          el.addEventListener('paste', this.delegatedPasteHandler);
-          el.addEventListener('keyup', this.delegatedKeyupHandler);
-        });
-      }
-    }, 100);
-  };
-
-  private readonly delegatedPasteHandler = (event: Event) => {
+  protected onEditorPaste(event: Event): void {
     if ((event.target as HTMLElement).closest('.CodeMirror')) {
       this.codeMirrorPasteHandler();
     }
-  };
+  }
 
-  private readonly delegatedKeyupHandler = (event: Event) => {
+  protected onEditorKeyup(event: Event): void {
     const target = event.target as HTMLElement;
     if (target.tagName === 'TEXTAREA' && target.closest('.CodeMirror')) {
       this.codeMirrorKeyupHandler();
     }
-  };
+  }
 
   private readonly codeMirrorKeyupHandler = () => {
     this.getOntotextYasguiComponent().getQuery()

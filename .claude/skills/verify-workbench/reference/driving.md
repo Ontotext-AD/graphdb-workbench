@@ -64,7 +64,7 @@ anything else passes through to `playwright-cli` (`playwright-cli --help`).
 - Text matches hidden copies: a repository id is in the DOM twice (hidden header-selector item and the view).
   Scope to the view or append `>> visible=true`.
 - YASQE/CodeMirror input: `js "document.querySelector('<scope> .CodeMirror').CodeMirror.setValue('…')"`
-  (`.tabPanel.active` on `/sparql`, `ontotext-yasgui` on `/sparql-new`); `Run` picks it up.
+  (`ontotext-yasgui .tabPanel.active` on `/sparql`); `Run` picks it up.
 - Toasts: legacy pages `#toast-container .toast-<type>`, Angular pages `.onto-toastr-container .onto-toast.<type>`;
   read them right after the action (error toasts vanish in seconds). Confirm dialogs carry both
   `.modal-dialog` and `.p-confirmdialog`.

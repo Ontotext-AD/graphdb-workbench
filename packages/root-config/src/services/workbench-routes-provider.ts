@@ -7,11 +7,7 @@ export function getWorkbenchRoutes(): Route[] {
       default: false,
     },
     {
-      path: 'new-view',
-      default: false,
-    },
-    {
-      path: 'sparql-new',
+      path: 'sparql',
       default: false,
     },
     {

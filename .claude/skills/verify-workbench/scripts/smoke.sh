@@ -5,13 +5,13 @@
 # Usage: smoke.sh <run-id> [--repo ID] [--theme light|dark] [--viewport 1440x900] [--settle MS]
 #                 [--baseline RUN-ID] [route...]
 #   smoke.sh vm-1700 --repo verify-vm-1700-s          # all routes; create the repo first (repo.sh vm-1700 s)
-#   smoke.sh vm-1700 import sparql-new                 # just these
+#   smoke.sh vm-1700 import sparql                     # just these
 #   smoke.sh vm-1700 --baseline vm-base                # fail only on errors that run vm-base's sweep did not have
 # --baseline compares per route with that run's smoke.json, ignoring origin/port, ?v=, timestamps and verify-*
 # repository ids, so a master stack swept first turns "errors" into "new errors" (bare routes such as
 # /resource/edit or /domain-range-graph answer 500 without parameters on master too).
 # Default routes are read from the served build itself: legacy PluginRegistry 'route' urls without parameters
-# (packages/legacy-workbench/src/js/angular/*/plugin.js) plus the Angular routes /sparql-new, /graph-navigator.
+# (packages/legacy-workbench/src/js/angular/*/plugin.js) plus the Angular routes /sparql, /graph-navigator.
 # Output: table (route, new/old errors, noise count, visible h1, final path when redirected); per-route detail,
 # smoke.json and screenshots in <evidence root>/<run-id>/smoke/.
 # Exit 0 = no new errors (outside noise.txt and the baseline), 1 = new errors, 2 = the sweep itself failed.

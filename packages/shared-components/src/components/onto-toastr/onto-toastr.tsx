@@ -56,9 +56,11 @@ export class OntoToastr {
   render() {
     return (
       <section style={{display: this.toasts.isEmpty() ? 'none' : 'flex'}}
-        class={`onto-toastr-container ${this.config.position}`}>
+        class={`onto-toastr-container ${this.config.position}`}
+        data-test="onto-toastr">
         {this.toasts?.getItems().map((toast) => (
           <div class={`onto-toast toast ${toast.type}`} key={toast.id}
+            data-test={`onto-toastr-toast-${toast.type}`}
             onMouseEnter={this.onToastMouseEnter(toast)}
             onMouseLeave={this.onToastMouseLeave(toast)}
             onClick={this.handleToastClick(toast)}
