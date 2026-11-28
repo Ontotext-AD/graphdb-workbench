@@ -140,9 +140,10 @@ export class GraphsConfig {
 
     /**
      * Converts this model to a payload JSON object needed for a save config operation.
+     * @param {string} repositoryId The repository identifier to which this config belongs.
      * @return {{owner: (string|undefined), shared: (boolean|undefined), startIRI: (string|undefined), resourceQuery: (string|undefined), startGraphQuery: (string|undefined), expandQuery: (string|undefined), description: (string|undefined), startIRILabel: (string|undefined), startQueryIncludeInferred: (boolean|undefined), resourcePropertiesQuery: (string|undefined), predicateLabelQuery: (string|undefined), startMode: (string|undefined), hint: (string|undefined), name: (string|undefined), id: (string|undefined), startQuerySameAs: (boolean|undefined)}}
      */
-    toSavePayload() {
+    toSavePayload(repositoryId) {
         return {
             id: this.id,
             name: this.name,
@@ -159,7 +160,8 @@ export class GraphsConfig {
             resourcePropertiesQuery: this.resourcePropertiesQuery,
             shared: this.shared,
             description: this.description,
-            hint: this.hint
+            hint: this.hint,
+            repositoryId: repositoryId,
         };
     }
 
