@@ -205,7 +205,7 @@ export class ShepherdService implements Service {
 
   private createGuide(guideId: string): Tour {
     this.subscribeToGuideCanceled();
-    return new Shepherd.Tour({
+    const guide = new Shepherd.Tour({
       tourName: guideId,
       useModalOverlay: true,
       confirmCancel: () => this.confirmGuideCancel(),
@@ -218,6 +218,14 @@ export class ShepherdService implements Service {
         },
       },
     });
+    // A hidden step keeps observing its target and resizes, which can cause a "ResizeObserver loop" error.
+    // Destroying it removes the observers. The step is created again when shown.
+    guide.on('show', ({step, previous}: {step: Step; previous?: Step}) => {
+      if (previous && previous !== step) {
+        previous.destroy();
+      }
+    });
+    return guide;
   }
 
   private addGuideSteps(guide: ActiveTour, stepsDescriptions: GuideStep[]): void {

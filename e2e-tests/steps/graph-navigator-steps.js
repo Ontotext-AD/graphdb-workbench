@@ -154,6 +154,6 @@ export class GraphNavigatorSteps extends BaseSteps {
     }
 
     static verifyFileDownloaded(fileName) {
-        cy.readFile('cypress/downloads/' + fileName);
+        cy.readFile(`${Cypress.config('downloadsFolder')}/${fileName}`);
     }
 }

@@ -20,6 +20,14 @@ export class RepositorySelectorSteps {
         RepositorySelectorSteps.getRepositorySelectorButton(repositoryId).click();
     }
 
+    static verifyRepositoryInUrl(repositoryId) {
+        cy.location('search').should('contain', `repositoryId=${repositoryId}`);
+    }
+
+    static getRepositorySelection() {
+        return cy.getByTestId('onto-repository-selector').getByTestId('repository-selection');
+    }
+
     static getSelectedRepository() {
         return RepositorySelectorSteps.getRepositorySelectorDropdown().find('.active-repository');
     }

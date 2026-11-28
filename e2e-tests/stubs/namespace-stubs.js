@@ -8,6 +8,10 @@ export class NamespaceStubs {
         cy.intercept(`/repositories/${repositoryId}/namespaces`, {fixture, delay: withDelay}).as(`${repositoryId}-stub-namespaces`);
     }
 
+    static spyGetNamespaces(repositoryId) {
+        cy.intercept('GET', `/repositories/${repositoryId}/namespaces`).as('getNamespaces');
+    }
+
     static stubErrorOnNamespaceUpdate(repositoryId) {
         cy.intercept('PUT', `/repositories/${repositoryId}/namespaces/*`,
             {statusCode: 500, body: 'Internal Server Error'}).as(`stub-namespace-update-error`);

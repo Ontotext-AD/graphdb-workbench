@@ -56,8 +56,29 @@ export class MainMenuSteps {
         MainMenuSteps.getMenuButton(menuName).realClick();
     }
 
+    static getCurrentPageLink(testId) {
+        return MainMenuSteps.getMainMenu().getByTestId(testId).getByTestId('navbar-current-page');
+    }
+
     static getSubmenuFor(menuName) {
         return MainMenuSteps.getMainMenu().contains('.menu-element', menuName).find('.sub-menu');
+    }
+
+    /**
+     * Opens the submenu of a menu group again if it was closed. The navbar closes an opened submenu when the layout
+     * re-renders or a navigation ends, which can happen right after the group is clicked.
+     */
+    static reopenSubmenuIfClosed(menuName) {
+        // The navbar renders in an animation frame, so wait for the next two frames to check the rendered state.
+        cy.window().then((win) => new Cypress.Promise((resolve) => {
+            win.requestAnimationFrame(() => win.requestAnimationFrame(resolve));
+        }));
+        MainMenuSteps.getSubmenuFor(menuName).then(($submenu) => {
+            if (Cypress.dom.isHidden($submenu)) {
+                MainMenuSteps.clickOnMenu(menuName);
+            }
+        });
+        MainMenuSteps.getSubmenuFor(menuName).scrollIntoView().should('be.visible');
     }
 
     static clickOnSubmenuTriggerElement(menuName) {

@@ -122,7 +122,7 @@
     "resolutions": {},
     "dependencies": {
         "@single-spa/import-map-injector": "^2.0.2",
-        "graphdb-workbench-plugins": "^1.0.5",
+        "graphdb-workbench-plugins": "^1.0.6",
         "graphwise-reactodia": "^1.0.0-RC1",
         "import-map-overrides": "^6.1.0"
     },

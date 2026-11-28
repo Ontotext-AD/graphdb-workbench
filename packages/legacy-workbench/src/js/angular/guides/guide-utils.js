@@ -5,6 +5,9 @@ import {LoggerProvider} from "../core/services/logger-provider";
 const d3 = {select};
 const logger = LoggerProvider.logger;
 
+// How long a guide step waits for its element by default. Pages can take a few seconds to render on a slow machine.
+const DEFAULT_WAIT_TIME_IN_SECONDS = 3;
+
 const GuideUtils = (function() {
     /**
      * Checks whether a given DOM element is visible in the document.
@@ -41,11 +44,11 @@ const GuideUtils = (function() {
     /**
      * Waits element to be present.
      * @param {string} elementSelector - selector of element looking for.
-     * @param {number} timeoutInSeconds - max time to waite in second. Default value is 1 second.
+     * @param {number} timeoutInSeconds - max time to waite in second. Default value is 3 seconds.
      * @param {boolean} checkVisibility - if true will wait to become visible. Default value is true
      * @return {Promise}
      */
-    const waitFor = function(elementSelector, timeoutInSeconds = 1, checkVisibility = true) {
+    const waitFor = function(elementSelector, timeoutInSeconds = DEFAULT_WAIT_TIME_IN_SECONDS, checkVisibility = true) {
         const selector = getElementSelector(elementSelector);
         return new Promise(function(resolve, reject) {
             let iteration = timeoutInSeconds * 1000;
@@ -119,7 +122,7 @@ const GuideUtils = (function() {
         });
     };
 
-    const getOrWaitFor = (elementSelector, timeoutInSeconds = 1, checkVisibility = true) => {
+    const getOrWaitFor = (elementSelector, timeoutInSeconds = DEFAULT_WAIT_TIME_IN_SECONDS, checkVisibility = true) => {
         const selector = getElementSelector(elementSelector);
         const element = document.querySelector(selector);
         if (!ObjectUtils.isNullOrUndefined(element) && (!checkVisibility || isElementVisible(element))) {

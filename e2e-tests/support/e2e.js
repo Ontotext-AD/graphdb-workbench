@@ -39,6 +39,8 @@ installLogsCollector();
 beforeEach(() => {
     // Ensure no pre-set repository leaks between specs
     cy.unsetRepository();
+    // Ensure no downloaded file leaks between tests or retry attempts
+    cy.task('clearDownloads');
 
     LicenseStubs.stubGoogleCalls();
     // This env variable is set globally in the cypress.config.js and

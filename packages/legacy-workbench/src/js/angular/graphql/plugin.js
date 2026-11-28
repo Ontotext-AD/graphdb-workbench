@@ -48,6 +48,7 @@ PluginRegistry.add('main.menu', {
             order: 10,
             role: 'ROLE_REPO_MAINTAINER',
             parent: 'GraphQL',
+            testSelector: 'sub-menu-graphql-endpoint-management',
             children: [
                 {
                     href: 'graphql/endpoint/create',
@@ -62,5 +63,6 @@ PluginRegistry.add('main.menu', {
             order: 15,
             role: 'IS_AUTHENTICATED_FULLY',
             parent: 'GraphQL',
+            testSelector: 'sub-menu-graphql-playground',
         }],
 });
